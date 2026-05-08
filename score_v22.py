@@ -50,6 +50,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import random
 import sys
 import time
 import warnings
@@ -265,6 +266,47 @@ def fetch_yfinance(use_cache: bool = True) -> Optional[Dict[str, pd.DataFrame]]:
 
 
 # ═══════════════════════════════════════════════════════════════════════════
+#  HTTP 重試 helper（雲端機房常被擋 / timeout，用真實瀏覽器 headers + 指數退避）
+# ═══════════════════════════════════════════════════════════════════════════
+
+BROWSER_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+                  "AppleWebKit/537.36 (KHTML, like Gecko) "
+                  "Chrome/124.0.0.0 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,"
+              "text/csv,application/json;q=0.8,*/*;q=0.7",
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept-Encoding": "gzip, deflate, br",
+    "DNT": "1",
+    "Connection": "keep-alive",
+    "Upgrade-Insecure-Requests": "1",
+}
+
+
+def http_get_with_retry(url: str, max_retries: int = 4, timeout: int = 60,
+                         extra_headers: Optional[Dict] = None) -> Optional[requests.Response]:
+    """帶有指數退避重試的 HTTP GET。為了應付雲端機房被擋/timeout 的情境。"""
+    headers = dict(BROWSER_HEADERS)
+    if extra_headers:
+        headers.update(extra_headers)
+    
+    last_err = None
+    for attempt in range(max_retries):
+        try:
+            if attempt > 0:
+                wait = (2 ** attempt) + random.uniform(0, 1.5)
+                time.sleep(wait)
+            r = requests.get(url, timeout=timeout, headers=headers)
+            r.raise_for_status()
+            return r
+        except Exception as e:
+            last_err = e
+            continue
+    log(f"HTTP 重試 {max_retries} 次仍失敗 [{url[:80]}]：{last_err}", "WARN")
+    return None
+
+
+# ═══════════════════════════════════════════════════════════════════════════
 #  資料抓取：FRED CSV（無需 API key）
 # ═══════════════════════════════════════════════════════════════════════════
 
@@ -285,9 +327,12 @@ def fetch_fred(series_id: str, use_cache: bool = True) -> Optional[pd.Series]:
                              index=pd.to_datetime(cached["dates"]))
     
     url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}"
+    r = http_get_with_retry(url, max_retries=5, timeout=60,
+                              extra_headers={"Referer": "https://fred.stlouisfed.org/"})
+    if r is None:
+        log(f"FRED {series_id} 抓取失敗（已重試）", "WARN")
+        return None
     try:
-        r = requests.get(url, timeout=60, headers={"User-Agent": "Mozilla/5.0"})
-        r.raise_for_status()
         df = pd.read_csv(StringIO(r.text))
         date_col = df.columns[0]
         val_col = df.columns[1]
@@ -300,9 +345,10 @@ def fetch_fred(series_id: str, use_cache: bool = True) -> Optional[pd.Series]:
             "dates": [d.isoformat() for d in s.index],
             "values": s.tolist()
         })
+        log(f"FRED {series_id}：最新 {s.iloc[-1]:.4f}", "OK")
         return s
     except Exception as e:
-        log(f"FRED {series_id} 抓取失敗：{e}", "WARN")
+        log(f"FRED {series_id} 解析失敗：{e}", "WARN")
         return None
 
 
@@ -420,13 +466,15 @@ def fetch_putcall(use_cache: bool = True) -> Optional[pd.Series]:
         if cached is not None:
             return pd.Series(cached["values"], index=pd.to_datetime(cached["dates"]))
     
-    # CBOE 提供日資料 CSV（可能會被擋，需要 Mozilla user-agent）
+    # CBOE 對自動化請求嚴格，需要完整 browser headers + Referer
     url = "https://cdn.cboe.com/api/global/us_indices/daily_prices/total_pc_history.csv"
+    r = http_get_with_retry(url, max_retries=4, timeout=60,
+                              extra_headers={"Referer": "https://www.cboe.com/"})
+    if r is None:
+        log("P/C 抓取失敗（已重試）", "WARN")
+        return None
     try:
-        r = requests.get(url, timeout=60, headers={"User-Agent": "Mozilla/5.0"})
-        r.raise_for_status()
         df = pd.read_csv(StringIO(r.text))
-        # 找出日期欄與比值欄
         date_col = None
         ratio_col = None
         for c in df.columns:
@@ -445,9 +493,10 @@ def fetch_putcall(use_cache: bool = True) -> Optional[pd.Series]:
             "dates": [d.isoformat() for d in s.index],
             "values": s.tolist()
         })
+        log(f"P/C：最新 {s.iloc[-1]:.3f}", "OK")
         return s
     except Exception as e:
-        log(f"P/C 抓取失敗：{e}", "WARN")
+        log(f"P/C 解析失敗：{e}", "WARN")
         return None
 
 
