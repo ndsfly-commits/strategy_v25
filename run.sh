@@ -17,4 +17,4 @@ cd "$(dirname "$0")"
 
 # 執行 Python 評分腳本，把所有命令列參數透傳過去
 # 例：bash run.sh --no-fetch
-python3 score_v22.py "$@"
+/Library/Frameworks/Python.framework/Versions/3.14/bin/python3 score_v22.py "$@"
