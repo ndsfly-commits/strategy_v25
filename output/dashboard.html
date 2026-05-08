@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>v2.5 五階段策略儀表板 — 2026-05-09</title>
+  <title>v2.5 五階段策略儀表板 — 2026-05-08</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <style>
     *{box-sizing:border-box;margin:0;padding:0}
@@ -20,7 +20,7 @@
     .score-max{font-size:24px;color:#64748b;font-weight:400}
     .score-zone{margin-top:8px;font-size:18px;font-weight:500}
     .score-action{margin-top:16px;padding:12px;background:#0f172a;border-radius:8px;
-                   border-left:4px solid #eab308;font-size:14px}
+                   border-left:4px solid #22c55e;font-size:14px}
     
     h2{font-size:18px;margin:32px 0 12px;color:#f1f5f9;display:flex;align-items:center;gap:8px}
     .ind-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
@@ -54,15 +54,15 @@
 <body>
   <div class="container">
     <h1>v2.5 五階段策略儀表板（完全自動 + 完整覆蓋）</h1>
-    <div class="subtitle">最後更新：2026-05-09 02:56:22 ｜ 觸發門檻：頂部 ≥ 7、底部 ≥ 6</div>
+    <div class="subtitle">最後更新：2026-05-08 19:32:59 ｜ 觸發門檻：頂部 ≥ 7、底部 ≥ 6</div>
     
     <div class="score-grid">
       <div class="score-card">
         <div class="score-label">頂部訊號（避險）</div>
-        <div class="score-value" style="color:#eab308">
-          5<span class="score-max"> / 22</span>
+        <div class="score-value" style="color:#22c55e">
+          4<span class="score-max"> / 22</span>
         </div>
-        <div class="score-zone">🟡 高檔警戒</div>
+        <div class="score-zone">🟢 健康多頭</div>
       </div>
       
       <div class="score-card">
@@ -76,7 +76,7 @@
     
     <div class="score-card">
       <div class="score-label">建議動作</div>
-      <div class="score-action">🟡 100% QQQ，TQQQ Runner 強制出場</div>
+      <div class="score-action">🟢 100% QQQ + 允許 TQQQ Runner</div>
     </div>
     
     <h2>🔴 頂部訊號指標明細（最高 22 分，21 個指標）</h2>
@@ -88,7 +88,7 @@
     <div class="ind-grid top">
               <div class="ind ind-trig">
                 <div class="ind-name">CAPE ≥ 30</div>
-                <div class="ind-value">41.06</div>
+                <div class="ind-value">41.69</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">≥ 30</span>
                   <span class="ind-points">+1</span>
@@ -97,7 +97,7 @@
 
               <div class="ind ind-trig">
                 <div class="ind-name">CAPE ≥ 35</div>
-                <div class="ind-value">41.06</div>
+                <div class="ind-value">41.69</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">≥ 35</span>
                   <span class="ind-points">+1</span>
@@ -106,7 +106,7 @@
 
               <div class="ind ind-clear">
                 <div class="ind-name">F&G 10MA ≥ 75</div>
-                <div class="ind-value">65.98</div>
+                <div class="ind-value">65.82</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">≥ 75</span>
                   <span class="ind-points">·</span>
@@ -115,7 +115,7 @@
 
               <div class="ind ind-clear">
                 <div class="ind-name">F&G 10MA ≥ 85</div>
-                <div class="ind-value">65.98</div>
+                <div class="ind-value">65.82</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">≥ 85</span>
                   <span class="ind-points">·</span>
@@ -124,7 +124,7 @@
 
               <div class="ind ind-clear">
                 <div class="ind-name">VIX 21MA < 13</div>
-                <div class="ind-value">18.17</div>
+                <div class="ind-value">18.18</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">< 13</span>
                   <span class="ind-points">·</span>
@@ -133,7 +133,7 @@
 
               <div class="ind ind-clear">
                 <div class="ind-name">RSP/SPY 6M 跌幅</div>
-                <div class="ind-value">-0.19</div>
+                <div class="ind-value">-0.18</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">< -5%</span>
                   <span class="ind-points">·</span>
@@ -142,7 +142,7 @@
 
               <div class="ind ind-clear">
                 <div class="ind-name">QQQ 週 RSI > 75</div>
-                <div class="ind-value">73.51</div>
+                <div class="ind-value">74.01</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">> 75</span>
                   <span class="ind-points">·</span>
@@ -151,7 +151,7 @@
 
               <div class="ind ind-clear">
                 <div class="ind-name">QQQ 週 RSI > 80</div>
-                <div class="ind-value">73.51</div>
+                <div class="ind-value">74.01</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">> 80</span>
                   <span class="ind-points">·</span>
@@ -160,7 +160,7 @@
 
               <div class="ind ind-trig">
                 <div class="ind-name">SPX %>200d <60% 且距高點<3%</div>
-                <div class="ind-value">56.2% (282/502)</div>
+                <div class="ind-value">55.6% (279/502)</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">< 60% 且 距高點 < 3%</span>
                   <span class="ind-points">+1</span>
@@ -232,7 +232,7 @@
 
               <div class="ind ind-clear">
                 <div class="ind-name">VVIX 21MA > 110 且 VIX < 15</div>
-                <div class="ind-value">VVIX 21MA=96.9, VIX=17.3</div>
+                <div class="ind-value">VVIX 21MA=97.0, VIX=17.5</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">VVIX>110 且 VIX<15</span>
                   <span class="ind-points">·</span>
@@ -241,7 +241,7 @@
 
               <div class="ind ind-clear">
                 <div class="ind-name">NAAIM > 100</div>
-                <div class="ind-value">94.15</div>
+                <div class="ind-value">96.67</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">> 100</span>
                   <span class="ind-points">·</span>
@@ -266,12 +266,12 @@
                 </div>
               </div>
 
-              <div class="ind ind-trig">
+              <div class="ind ind-na">
                 <div class="ind-name">🆕 Buffett 指標 > 200%</div>
-                <div class="ind-value">228.30</div>
+                <div class="ind-value">N/A</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">> 200%</span>
-                  <span class="ind-points">+1</span>
+                  <span class="ind-points">·</span>
                 </div>
               </div></div>
     
@@ -279,7 +279,7 @@
     <div class="ind-grid bottom">
               <div class="ind ind-clear">
                 <div class="ind-name">VIX ≥ 40</div>
-                <div class="ind-value">17.27</div>
+                <div class="ind-value">17.47</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">≥ 40</span>
                   <span class="ind-points">·</span>
@@ -288,7 +288,7 @@
 
               <div class="ind ind-clear">
                 <div class="ind-name">VIX ≥ 50</div>
-                <div class="ind-value">17.27</div>
+                <div class="ind-value">17.47</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">≥ 50</span>
                   <span class="ind-points">·</span>
@@ -297,7 +297,7 @@
 
               <div class="ind ind-clear">
                 <div class="ind-name">F&G ≤ 25</div>
-                <div class="ind-value">67.83</div>
+                <div class="ind-value">67.06</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">≤ 25</span>
                   <span class="ind-points">·</span>
@@ -306,7 +306,7 @@
 
               <div class="ind ind-clear">
                 <div class="ind-name">F&G ≤ 15</div>
-                <div class="ind-value">67.83</div>
+                <div class="ind-value">67.06</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">≤ 15</span>
                   <span class="ind-points">·</span>
@@ -342,7 +342,7 @@
 
               <div class="ind ind-clear">
                 <div class="ind-name">QQQ 週 RSI < 35</div>
-                <div class="ind-value">73.51</div>
+                <div class="ind-value">74.01</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">< 35</span>
                   <span class="ind-points">·</span>
@@ -351,7 +351,7 @@
 
               <div class="ind ind-clear">
                 <div class="ind-name">SPX % > 200d < 20%</div>
-                <div class="ind-value">56.2% (282/502)</div>
+                <div class="ind-value">55.6% (279/502)</div>
                 <div class="ind-meta">
                   <span class="ind-thresh">< 20%</span>
                   <span class="ind-points">·</span>
@@ -412,7 +412,7 @@
   </div>
 
   <script>
-    const data = [{"date":"2026-05-08","timestamp":"2026-05-08 22:50:54","top_score":5,"bottom_score":1,"middle_triggered":false,"middle_strength":"none","top_cape_30":1,"top_cape_35":1,"top_fg_75":0,"top_fg_85":0,"top_vix_21ma_low":0,"top_rsp_spy_breadth":0,"top_rsi_75":0,"top_rsi_80":0,"top_breadth_200d":1,"top_distribution_days":0,"top_xly_xlp":0,"top_smh_spy":0,"top_putcall_21ma":0,"top_margin_30":1,"top_margin_50":0,"top_hy_oas_low":0,"top_vvix_divergence":0,"top_naaim_high":0,"top_hy_oas_expansion":0,"top_yield_inversion":0,"top_buffett_200":1,"bot_vix_40":0,"bot_vix_50":0,"bot_fg_25":0,"bot_fg_15":0,"bot_dd_15":0,"bot_dd_20":0,"bot_dd_30":0,"bot_rsi_low":0,"bot_breadth_capitulation":0,"bot_putcall_panic":0,"bot_ftd":1,"bot_oas_stress":0,"bot_oas_recession":0,"bot_naaim_capitulation":0},{"date":"2026-05-09","timestamp":"2026-05-09 02:56:22","top_score":5,"bottom_score":1,"middle_triggered":false,"middle_strength":"none","top_cape_30":1,"top_cape_35":1,"top_fg_75":0,"top_fg_85":0,"top_vix_21ma_low":0,"top_rsp_spy_breadth":0,"top_rsi_75":0,"top_rsi_80":0,"top_breadth_200d":1,"top_distribution_days":0,"top_xly_xlp":0,"top_smh_spy":0,"top_putcall_21ma":0,"top_margin_30":1,"top_margin_50":0,"top_hy_oas_low":0,"top_vvix_divergence":0,"top_naaim_high":0,"top_hy_oas_expansion":0,"top_yield_inversion":0,"top_buffett_200":1,"bot_vix_40":0,"bot_vix_50":0,"bot_fg_25":0,"bot_fg_15":0,"bot_dd_15":0,"bot_dd_20":0,"bot_dd_30":0,"bot_rsi_low":0,"bot_breadth_capitulation":0,"bot_putcall_panic":0,"bot_ftd":1,"bot_oas_stress":0,"bot_oas_recession":0,"bot_naaim_capitulation":0}];
+    const data = [{"date":"2026-05-09","timestamp":"2026-05-09 02:56:22","top_score":5,"bottom_score":1,"middle_triggered":false,"middle_strength":"none","top_cape_30":1,"top_cape_35":1,"top_fg_75":0,"top_fg_85":0,"top_vix_21ma_low":0,"top_rsp_spy_breadth":0,"top_rsi_75":0,"top_rsi_80":0,"top_breadth_200d":1,"top_distribution_days":0,"top_xly_xlp":0,"top_smh_spy":0,"top_putcall_21ma":0,"top_margin_30":1,"top_margin_50":0,"top_hy_oas_low":0,"top_vvix_divergence":0,"top_naaim_high":0,"top_hy_oas_expansion":0,"top_yield_inversion":0,"top_buffett_200":1,"bot_vix_40":0,"bot_vix_50":0,"bot_fg_25":0,"bot_fg_15":0,"bot_dd_15":0,"bot_dd_20":0,"bot_dd_30":0,"bot_rsi_low":0,"bot_breadth_capitulation":0,"bot_putcall_panic":0,"bot_ftd":1,"bot_oas_stress":0,"bot_oas_recession":0,"bot_naaim_capitulation":0},{"date":"2026-05-08","timestamp":"2026-05-08 19:32:59","top_score":4,"bottom_score":1,"middle_triggered":false,"middle_strength":"none","top_cape_30":1,"top_cape_35":1,"top_fg_75":0,"top_fg_85":0,"top_vix_21ma_low":0,"top_rsp_spy_breadth":0,"top_rsi_75":0,"top_rsi_80":0,"top_breadth_200d":1,"top_distribution_days":0,"top_xly_xlp":0,"top_smh_spy":0,"top_putcall_21ma":0,"top_margin_30":1,"top_margin_50":0,"top_hy_oas_low":0,"top_vvix_divergence":0,"top_naaim_high":0,"top_hy_oas_expansion":0,"top_yield_inversion":0,"top_buffett_200":0,"bot_vix_40":0,"bot_vix_50":0,"bot_fg_25":0,"bot_fg_15":0,"bot_dd_15":0,"bot_dd_20":0,"bot_dd_30":0,"bot_rsi_low":0,"bot_breadth_capitulation":0,"bot_putcall_panic":0,"bot_ftd":1,"bot_oas_stress":0,"bot_oas_recession":0,"bot_naaim_capitulation":0}];
     if (data && data.length > 0) {
       const labels = data.map(d => d.date);
       const topScores = data.map(d => d.top_score);
