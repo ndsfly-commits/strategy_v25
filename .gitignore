@@ -1,0 +1,12 @@
+# Python 自動產生的快取
+__pycache__/
+*.pyc
+
+# macOS 系統垃圾檔
+.DS_Store
+
+# 每天執行產生的輸出（不該上傳）
+output/
+
+# 個人化設定（不該分享）
+manual_overrides.json
