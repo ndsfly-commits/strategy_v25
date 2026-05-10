@@ -1,4 +1,4 @@
 date,timestamp,top_score,bottom_score,middle_triggered,middle_strength,top_cape_30,top_cape_35,top_fg_75,top_fg_85,top_vix_21ma_low,top_rsp_spy_breadth,top_rsi_75,top_rsi_80,top_breadth_200d,top_distribution_days,top_xly_xlp,top_smh_spy,top_putcall_21ma,top_margin_30,top_margin_50,top_hy_oas_low,top_vvix_divergence,top_naaim_high,top_hy_oas_expansion,top_yield_inversion,top_buffett_200,bot_vix_40,bot_vix_50,bot_fg_25,bot_fg_15,bot_dd_15,bot_dd_20,bot_dd_30,bot_rsi_low,bot_breadth_capitulation,bot_putcall_panic,bot_ftd,bot_oas_stress,bot_oas_recession,bot_naaim_capitulation
 2026-05-08,2026-05-08 19:52:53,4,1,False,none,1,1,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
 2026-05-09,2026-05-09 06:38:31,4,1,False,none,1,1,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
-2026-05-10,2026-05-10 17:54:54,4,1,False,none,1,1,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
+2026-05-10,2026-05-10 18:03:15,5,1,False,none,1,1,0,0,0,0,0,0,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0
