@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-05-10 17:54:54",
+  "timestamp": "2026-05-10 18:03:15",
   "date": "2026-05-10",
-  "top_score": 4,
+  "top_score": 5,
   "top_max": 22,
-  "top_zone": "🟢 健康多頭",
+  "top_zone": "🟡 高檔警戒",
   "bottom_score": 1,
   "bottom_max": 15,
   "middle_triggered": false,
   "middle_strength": "none",
-  "action": "🟢 100% QQQ + 允許 TQQQ Runner",
+  "action": "🟡 100% QQQ，TQQQ Runner 強制出場",
   "top_indicators": [
     {
       "key": "cape_30",
@@ -178,12 +178,12 @@
     {
       "key": "hy_oas_low",
       "name": "HY OAS < 3.25%",
-      "value": null,
+      "value": 2.79,
       "threshold": "< 3.25%",
-      "triggered": false,
-      "points": 0,
+      "triggered": true,
+      "points": 1,
       "source": "FRED BAMLH0A0HYM2",
-      "confidence": "failed",
+      "confidence": "high",
       "note": ""
     },
     {
@@ -211,23 +211,23 @@
     {
       "key": "hy_oas_expansion",
       "name": "🆕 HY OAS 擴大 ≥ 75 bps（從 12m 低）",
-      "value": null,
+      "value": "15 bps",
       "threshold": "≥ 75 bps",
       "triggered": false,
       "points": 0,
       "source": "FRED BAMLH0A0HYM2 計算",
-      "confidence": "failed",
+      "confidence": "high",
       "note": ""
     },
     {
       "key": "yield_inversion",
       "name": "🆕 10y-2y 倒掛 ≥ 3 個月（過去 12m 內）",
-      "value": null,
+      "value": false,
       "threshold": "累計 ≥ 63 個交易日",
       "triggered": false,
       "points": 0,
       "source": "FRED T10Y2Y 計算",
-      "confidence": "failed",
+      "confidence": "high",
       "note": ""
     },
     {
@@ -367,23 +367,23 @@
     {
       "key": "oas_stress",
       "name": "HY OAS > 6%",
-      "value": null,
+      "value": 2.79,
       "threshold": "> 6%",
       "triggered": false,
       "points": 0,
       "source": "FRED",
-      "confidence": "failed",
+      "confidence": "high",
       "note": ""
     },
     {
       "key": "oas_recession",
       "name": "HY OAS > 8%",
-      "value": null,
+      "value": 2.79,
       "threshold": "> 8%",
       "triggered": false,
       "points": 0,
       "source": "FRED",
-      "confidence": "failed",
+      "confidence": "high",
       "note": ""
     },
     {
@@ -419,6 +419,11 @@
     "rsp_spy_6m_pct": -0.28210791683280806,
     "xly_xlp_below_50d": false,
     "smh_spy_below_50d_3d": false,
+    "hy_oas_current": 2.79,
+    "hy_oas_12m_min": 2.64,
+    "hy_oas_expansion_bps": 14.999999999999991,
+    "yield_curve_today": 0.48,
+    "yield_curve_3m_inverted": false,
     "fg_today": 66.9142857142857,
     "fg_10ma": 67.74571428571429,
     "naaim": 96.67,
