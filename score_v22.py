@@ -228,7 +228,7 @@ def load_manual_overrides() -> Dict[str, Any]:
 #  資料抓取：yfinance
 # ═══════════════════════════════════════════════════════════════════════════
 
-YF_SYMBOLS = ["QQQ", "SPY", "RSP", "XLY", "XLP", "SMH", "^VIX", "^VVIX"]
+YF_SYMBOLS = ["QQQ", "SPY", "RSP", "XLY", "XLP", "SMH", "^VIX", "^VVIX", "^W5000"]
 
 
 def fetch_yfinance(use_cache: bool = True) -> Optional[Dict[str, pd.DataFrame]]:
@@ -313,8 +313,9 @@ def http_get_with_retry(url: str, max_retries: int = 4, timeout: int = 60,
 FRED_SERIES = {
     "hy_oas":     "BAMLH0A0HYM2",   # ICE BofA US HY OAS（日）
     "t10y2y":     "T10Y2Y",         # 10y-2y 殖利率差（日）
-    "wilshire":   "WILL5000PR",     # Wilshire 5000 全市場價格指數（日）
     "gdp":        "GDP",            # 名目 GDP（季）
+    # 註：Wilshire 5000 已於 2024/6/3 從 FRED 移除（Wilshire 終止授權）
+    # 改在 fetch_yfinance 裡抓 ^W5000，於 build_scoring_data 計算 Buffett
 }
 
 
@@ -536,9 +537,32 @@ def fetch_putcall(use_cache: bool = True) -> Optional[pd.Series]:
                 log(f"P/C（yfinance ^CPC）：最新 {s.iloc[-1]:.3f}", "OK")
                 return s
     except Exception as e:
-        log(f"P/C yfinance fallback 失敗：{e}", "WARN")
+        log(f"P/C yfinance fallback 失敗：{e}", "INFO")
     
-    log("P/C 兩個來源都失敗", "WARN")
+    # 路徑 C：stooq.com CSV（^cpc，最後 fallback）
+    try:
+        d2 = datetime.now().strftime("%Y%m%d")
+        d1 = (datetime.now() - timedelta(days=400)).strftime("%Y%m%d")
+        url = f"https://stooq.com/q/d/l/?s=^cpc&d1={d1}&d2={d2}&i=d"
+        r = http_get_with_retry(url, max_retries=3, timeout=30)
+        if r is not None and r.text and "Date" in r.text:
+            df = pd.read_csv(StringIO(r.text))
+            if "Date" in df.columns and "Close" in df.columns:
+                df["Date"] = pd.to_datetime(df["Date"])
+                df["Close"] = pd.to_numeric(df["Close"], errors="coerce")
+                df = df.dropna()
+                s = df.set_index("Date")["Close"].sort_index()
+                if len(s) > 0:
+                    write_cache(cache_key, {
+                        "dates": [d.isoformat() for d in s.index],
+                        "values": s.tolist(),
+                    })
+                    log(f"P/C（stooq）：最新 {s.iloc[-1]:.3f}", "OK")
+                    return s
+    except Exception as e:
+        log(f"P/C stooq fallback 失敗：{e}", "WARN")
+    
+    log("P/C 三個來源都失敗", "WARN")
     return None
 
 
@@ -1358,11 +1382,21 @@ def build_scoring_data(yf_data: Dict, fred_data: Dict, fg: pd.Series,
         d["yield_curve_today"] = float(t10y2y.iloc[-1])
         d["yield_curve_3m_inverted"] = yield_curve_inverted_3m(t10y2y)
     
-    # FRED：Buffett 指標
-    wilshire = fred_data.get("wilshire")
+    # Buffett 指標：Wilshire 5000（從 yfinance ^W5000）÷ GDP × 100
+    # FRED 已於 2024/6/3 移除 Wilshire 系列，改從 yfinance 抓
     gdp = fred_data.get("gdp")
-    if wilshire is not None and gdp is not None:
-        d["buffett"] = buffett_indicator(wilshire, gdp)
+    w5000 = yf_data.get("^W5000") if yf_data else None
+    if (w5000 is not None and not w5000.empty 
+            and gdp is not None and not gdp.empty):
+        try:
+            latest_w5000 = float(w5000["Close"].dropna().iloc[-1])
+            latest_gdp = float(gdp.iloc[-1])  # 季 GDP，已年化（單位：十億美元）
+            # ^W5000 點數 ≈ 美股全市值（單位：十億美元），是 1:1 對應
+            # 例：^W5000 = 60000 點 → 市值 ≈ 60 兆美元
+            # GDP 也是十億美元，相除即得百分比
+            d["buffett"] = latest_w5000 / latest_gdp * 100
+        except (ValueError, IndexError, KeyError) as e:
+            log(f"Buffett 計算失敗：{e}", "WARN")
     
     # F&G
     if fg is not None and not fg.empty:
