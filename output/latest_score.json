@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-05-10 18:03:15",
+  "timestamp": "2026-05-10 18:36:02",
   "date": "2026-05-10",
-  "top_score": 5,
+  "top_score": 6,
   "top_max": 22,
   "top_zone": "🟡 高檔警戒",
   "bottom_score": 1,
@@ -233,12 +233,12 @@
     {
       "key": "buffett_200",
       "name": "🆕 Buffett 指標 > 200%",
-      "value": null,
+      "value": 231.69339621412522,
       "threshold": "> 200%",
-      "triggered": false,
-      "points": 0,
+      "triggered": true,
+      "points": 1,
       "source": "FRED 計算",
-      "confidence": "failed",
+      "confidence": "high",
       "note": ""
     }
   ],
@@ -424,6 +424,7 @@
     "hy_oas_expansion_bps": 14.999999999999991,
     "yield_curve_today": 0.48,
     "yield_curve_3m_inverted": false,
+    "buffett": 231.69339621412522,
     "fg_today": 66.9142857142857,
     "fg_10ma": 67.74571428571429,
     "naaim": 96.67,
