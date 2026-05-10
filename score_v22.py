@@ -326,11 +326,36 @@ def fetch_fred(series_id: str, use_cache: bool = True) -> Optional[pd.Series]:
             return pd.Series(cached["values"], 
                              index=pd.to_datetime(cached["dates"]))
     
+    api_key = os.environ.get("FRED_API_KEY", "").strip()
+    
+    # 路徑 A：官方 API（有 key）— 雲端機房可用
+    if api_key:
+        url = (f"https://api.stlouisfed.org/fred/series/observations"
+               f"?series_id={series_id}&api_key={api_key}&file_type=json")
+        r = http_get_with_retry(url, max_retries=3, timeout=30)
+        if r is not None:
+            try:
+                obs = r.json().get("observations", [])
+                rows = [(o["date"], o["value"]) for o in obs if o["value"] != "."]
+                if rows:
+                    dates = pd.to_datetime([d for d, _ in rows])
+                    values = pd.to_numeric([v for _, v in rows], errors="coerce")
+                    s = pd.Series(values, index=dates).dropna()
+                    write_cache(cache_key, {
+                        "dates": [d.isoformat() for d in s.index],
+                        "values": s.tolist(),
+                    })
+                    log(f"FRED {series_id}（API）：最新 {s.iloc[-1]:.4f}", "OK")
+                    return s
+            except Exception as e:
+                log(f"FRED {series_id} API 解析失敗：{e}", "WARN")
+    
+    # 路徑 B：CSV fallback（無 key 或 API 失敗）— 本機可用、雲端機房常被擋
     url = f"https://fred.stlouisfed.org/graph/fredgraph.csv?id={series_id}"
-    r = http_get_with_retry(url, max_retries=5, timeout=60,
+    r = http_get_with_retry(url, max_retries=4, timeout=60,
                               extra_headers={"Referer": "https://fred.stlouisfed.org/"})
     if r is None:
-        log(f"FRED {series_id} 抓取失敗（已重試）", "WARN")
+        log(f"FRED {series_id} 抓取失敗（請設定 FRED_API_KEY 環境變數）", "WARN")
         return None
     try:
         df = pd.read_csv(StringIO(r.text))
@@ -340,12 +365,11 @@ def fetch_fred(series_id: str, use_cache: bool = True) -> Optional[pd.Series]:
         df[val_col] = pd.to_numeric(df[val_col], errors="coerce")
         df = df.dropna()
         s = df.set_index(date_col)[val_col]
-        
         write_cache(cache_key, {
             "dates": [d.isoformat() for d in s.index],
-            "values": s.tolist()
+            "values": s.tolist(),
         })
-        log(f"FRED {series_id}：最新 {s.iloc[-1]:.4f}", "OK")
+        log(f"FRED {series_id}（CSV）：最新 {s.iloc[-1]:.4f}", "OK")
         return s
     except Exception as e:
         log(f"FRED {series_id} 解析失敗：{e}", "WARN")
@@ -466,38 +490,56 @@ def fetch_putcall(use_cache: bool = True) -> Optional[pd.Series]:
         if cached is not None:
             return pd.Series(cached["values"], index=pd.to_datetime(cached["dates"]))
     
-    # CBOE 對自動化請求嚴格，需要完整 browser headers + Referer
+    # 路徑 A：CBOE 官方 CSV（cdn.cboe.com 對雲端機房 IP block）
     url = "https://cdn.cboe.com/api/global/us_indices/daily_prices/total_pc_history.csv"
-    r = http_get_with_retry(url, max_retries=4, timeout=60,
+    r = http_get_with_retry(url, max_retries=3, timeout=60,
                               extra_headers={"Referer": "https://www.cboe.com/"})
-    if r is None:
-        log("P/C 抓取失敗（已重試）", "WARN")
-        return None
+    if r is not None:
+        try:
+            df = pd.read_csv(StringIO(r.text))
+            date_col = None
+            ratio_col = None
+            for c in df.columns:
+                cl = c.lower()
+                if "date" in cl: date_col = c
+                elif "p/c" in cl or "put/call" in cl or "ratio" in cl: ratio_col = c
+            if date_col and ratio_col:
+                df[date_col] = pd.to_datetime(df[date_col])
+                df[ratio_col] = pd.to_numeric(df[ratio_col], errors="coerce")
+                df = df.dropna()
+                s = df.set_index(date_col)[ratio_col].sort_index()
+                if len(s) > 0:
+                    write_cache(cache_key, {
+                        "dates": [d.isoformat() for d in s.index],
+                        "values": s.tolist(),
+                    })
+                    log(f"P/C（CBOE）：最新 {s.iloc[-1]:.3f}", "OK")
+                    return s
+        except Exception as e:
+            log(f"P/C CBOE 解析失敗，改用 yfinance：{e}", "INFO")
+    
+    # 路徑 B：yfinance ^CPC（CBOE Equity Put/Call Ratio）— 雲端機房可用
     try:
-        df = pd.read_csv(StringIO(r.text))
-        date_col = None
-        ratio_col = None
-        for c in df.columns:
-            cl = c.lower()
-            if "date" in cl: date_col = c
-            elif "p/c" in cl or "put/call" in cl or "ratio" in cl: ratio_col = c
-        if not date_col or not ratio_col:
-            log(f"P/C CSV 欄位辨識失敗：{df.columns.tolist()}", "WARN")
-            return None
-        df[date_col] = pd.to_datetime(df[date_col])
-        df[ratio_col] = pd.to_numeric(df[ratio_col], errors="coerce")
-        df = df.dropna()
-        s = df.set_index(date_col)[ratio_col].sort_index()
-        
-        write_cache(cache_key, {
-            "dates": [d.isoformat() for d in s.index],
-            "values": s.tolist()
-        })
-        log(f"P/C：最新 {s.iloc[-1]:.3f}", "OK")
-        return s
+        ticker = yf.Ticker("^CPC")
+        end = datetime.now()
+        start = end - timedelta(days=400)
+        df = ticker.history(start=start, end=end, auto_adjust=False)
+        if not df.empty and "Close" in df.columns:
+            s = df["Close"].copy()
+            s.index = pd.to_datetime(s.index).tz_localize(None)
+            s = s.dropna().sort_index()
+            if len(s) > 0:
+                write_cache(cache_key, {
+                    "dates": [d.isoformat() for d in s.index],
+                    "values": s.tolist(),
+                })
+                log(f"P/C（yfinance ^CPC）：最新 {s.iloc[-1]:.3f}", "OK")
+                return s
     except Exception as e:
-        log(f"P/C 解析失敗：{e}", "WARN")
-        return None
+        log(f"P/C yfinance fallback 失敗：{e}", "WARN")
+    
+    log("P/C 兩個來源都失敗", "WARN")
+    return None
 
 
 def fetch_margin_debt(use_cache: bool = True) -> Optional[Dict[str, Any]]:
