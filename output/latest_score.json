@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-05-10 18:36:02",
+  "timestamp": "2026-05-10 18:46:21",
   "date": "2026-05-10",
   "top_score": 6,
-  "top_max": 22,
+  "top_max": 21,
   "top_zone": "🟡 高檔警戒",
   "bottom_score": 1,
-  "bottom_max": 15,
+  "bottom_max": 14,
   "middle_triggered": false,
   "middle_strength": "none",
   "action": "🟡 100% QQQ，TQQQ Runner 強制出場",
@@ -140,17 +140,6 @@
       "points": 0,
       "source": "yfinance 計算",
       "confidence": "high",
-      "note": ""
-    },
-    {
-      "key": "putcall_21ma",
-      "name": "Put/Call 21MA < 0.7",
-      "value": null,
-      "threshold": "< 0.7",
-      "triggered": false,
-      "points": 0,
-      "source": "CBOE",
-      "confidence": "failed",
       "note": ""
     },
     {
@@ -340,17 +329,6 @@
       "points": 0,
       "source": "yfinance 計算（500 檔成分股）",
       "confidence": "high",
-      "note": ""
-    },
-    {
-      "key": "putcall_panic",
-      "name": "P/C 5MA > 1.2",
-      "value": null,
-      "threshold": "> 1.2",
-      "triggered": false,
-      "points": 0,
-      "source": "CBOE",
-      "confidence": "failed",
       "note": ""
     },
     {
