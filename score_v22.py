@@ -1037,15 +1037,6 @@ def score_top_signal(data: Dict, manual: Dict) -> Tuple[List[Indicator], int]:
         source="yfinance 計算", confidence="high" if smh_spy_below is not None else "failed",
     ))
     
-    # ─ 籌碼（Put/Call 21MA）─────────────────────────────────────────
-    pc_21ma = data.get("putcall_21ma")
-    inds.append(Indicator(
-        key="putcall_21ma", name="Put/Call 21MA < 0.7", value=pc_21ma,
-        threshold="< 0.7", triggered=bool(pc_21ma and pc_21ma < 0.7),
-        points=1 if (pc_21ma and pc_21ma < 0.7) else 0,
-        source="CBOE", confidence="high" if pc_21ma else "failed",
-    ))
-    
     # ─ 槓桿（Margin Debt YoY，FINRA 自動爬蟲）──────────────────────────
     md_yoy = data.get("margin_debt_yoy_pct")
     md_month = data.get("margin_debt_latest_month", "")
@@ -1213,14 +1204,6 @@ def score_bottom_signal(data: Dict) -> Tuple[List[Indicator], int]:
         points=1 if (spx_200d_bot is not None and spx_200d_bot < 20) else 0,
         source="yfinance 計算（500 檔成分股）",
         confidence="high" if spx_200d_bot is not None else "failed",
-    ))
-    
-    pc_5ma = data.get("putcall_5ma")
-    inds.append(Indicator(
-        key="putcall_panic", name="P/C 5MA > 1.2", value=pc_5ma,
-        threshold="> 1.2", triggered=bool(pc_5ma and pc_5ma > 1.2),
-        points=1 if (pc_5ma and pc_5ma > 1.2) else 0,
-        source="CBOE", confidence="high" if pc_5ma else "failed",
     ))
     
     ftd = data.get("ftd_in_10d")
@@ -1562,7 +1545,7 @@ def render_dashboard(result: ScoreResult, history: pd.DataFrame = None) -> str:
       <div class="score-action">{result.action}</div>
     </div>
     
-    <h2>🔴 頂部訊號指標明細（最高 22 分，21 個指標）</h2>
+    <h2>🔴 頂部訊號指標明細（最高 21 分，20 個指標）</h2>
     <div class="legend">
       <span><span class="swatch" style="background:#7f1d1d"></span>已觸發</span>
       <span><span class="swatch" style="background:#1e293b;border:1px solid #334155"></span>未觸發</span>
@@ -1570,7 +1553,7 @@ def render_dashboard(result: ScoreResult, history: pd.DataFrame = None) -> str:
     </div>
     <div class="ind-grid top">{top_grid}</div>
     
-    <h2>🟢 底部訊號指標明細（最高 15 分，14 個指標）</h2>
+    <h2>🟢 底部訊號指標明細（最高 14 分，13 個指標）</h2>
     <div class="ind-grid bottom">{bot_grid}</div>
     
     <h2>📈 評分歷史趨勢（最近 180 天）</h2>
@@ -1606,7 +1589,7 @@ def render_dashboard(result: ScoreResult, history: pd.DataFrame = None) -> str:
           scales: {{
             x: {{ ticks: {{ color: '#94a3b8' }}, grid: {{ color: '#334155' }} }},
             y: {{ ticks: {{ color: '#94a3b8' }}, grid: {{ color: '#334155' }},
-                  beginAtZero: true, max: 22 }}
+                  beginAtZero: true, max: 21 }}
           }}
         }}
       }});
