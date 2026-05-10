@@ -1384,19 +1384,22 @@ def build_scoring_data(yf_data: Dict, fred_data: Dict, fg: pd.Series,
     
     # Buffett 指標：Wilshire 5000（從 yfinance ^W5000）÷ GDP × 100
     # FRED 已於 2024/6/3 移除 Wilshire 系列，改從 yfinance 抓
-    gdp = fred_data.get("gdp")
-    w5000 = yf_data.get("^W5000") if yf_data else None
-    if (w5000 is not None and not w5000.empty 
-            and gdp is not None and not gdp.empty):
-        try:
-            latest_w5000 = float(w5000["Close"].dropna().iloc[-1])
-            latest_gdp = float(gdp.iloc[-1])  # 季 GDP，已年化（單位：十億美元）
-            # ^W5000 點數 ≈ 美股全市值（單位：十億美元），是 1:1 對應
-            # 例：^W5000 = 60000 點 → 市值 ≈ 60 兆美元
-            # GDP 也是十億美元，相除即得百分比
-            d["buffett"] = latest_w5000 / latest_gdp * 100
-        except (ValueError, IndexError, KeyError) as e:
-            log(f"Buffett 計算失敗：{e}", "WARN")
+    try:
+        gdp = fred_data.get("gdp") if fred_data else None
+        w5000 = yf_data.get("^W5000") if yf_data else None
+        if (w5000 is not None and hasattr(w5000, "empty") and not w5000.empty
+                and gdp is not None and hasattr(gdp, "empty") and not gdp.empty):
+            close_series = w5000["Close"].dropna()
+            if len(close_series) > 0 and len(gdp) > 0:
+                latest_w5000 = float(close_series.iloc[-1])
+                latest_gdp = float(gdp.iloc[-1])
+                # ^W5000 點數 ≈ 美股全市值（單位：十億美元），1:1 對應
+                # GDP 也是十億美元，相除即得百分比
+                d["buffett"] = latest_w5000 / latest_gdp * 100
+                log(f"Buffett 計算：W5000={latest_w5000:,.0f}, "
+                    f"GDP={latest_gdp:,.0f}, 比值={d['buffett']:.1f}%", "OK")
+    except Exception as e:
+        log(f"Buffett 計算失敗：{type(e).__name__}: {e}", "WARN")
     
     # F&G
     if fg is not None and not fg.empty:
@@ -1755,16 +1758,23 @@ def main():
                         help="只重新生成 HTML 儀表板")
     args = parser.parse_args()
     
-    if args.dashboard and LATEST_JSON.exists():
-        with open(LATEST_JSON, "r", encoding="utf-8") as f:
-            j = json.load(f)
-        # 用簡化方式重建 result
-        log("從 latest_score.json 重新生成儀表板...", "INFO")
-        # 這部分省略；建議直接 run() 即可
-        run(use_cache=True)
+    try:
+        if args.dashboard and LATEST_JSON.exists():
+            with open(LATEST_JSON, "r", encoding="utf-8") as f:
+                j = json.load(f)
+            log("從 latest_score.json 重新生成儀表板...", "INFO")
+            run(use_cache=True)
+            return
+        
+        run(use_cache=not args.manual and not args.dashboard, manual_prompt=args.manual)
+    except Exception as e:
+        # 雲端 workflow 即使某環節掛掉也不要讓整體失敗
+        # 至少把錯誤訊息印出來，方便事後 debug
+        log(f"主流程例外：{type(e).__name__}: {e}", "ERR")
+        import traceback
+        traceback.print_exc()
+        # 不 sys.exit(1)，讓 workflow 接著做 commit/push（前次的 dashboard 仍可保留）
         return
-    
-    run(use_cache=not args.manual and not args.dashboard, manual_prompt=args.manual)
 
 
 if __name__ == "__main__":
