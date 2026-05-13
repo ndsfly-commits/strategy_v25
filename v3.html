@@ -1,0 +1,1096 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v2.5 SOP Live Dashboard · 即時策略儀表板</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;1,9..144,400&family=Noto+Serif+TC:wght@300;400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e1014; --bg-elev: #161a21; --bg-soft: #1d222c; --bg-card: #1a1f29;
+    --line: #2a3140; --line-soft: #232934;
+    --ink: #e8e4d8; --ink-mute: #9aa0ad; --ink-dim: #5b6273;
+    --amber: #d4a849; --amber-soft: #8a6f2e; --amber-bg: rgba(212, 168, 73, 0.08);
+    --red: #d65555; --red-bg: rgba(214, 85, 85, 0.1);
+    --green: #6ab26a; --green-bg: rgba(106, 178, 106, 0.1);
+    --yellow: #d4a849;
+    --blue: #6b94c4; --blue-bg: rgba(107, 148, 196, 0.1);
+    --grey: #6e7484;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Noto Serif TC', 'Fraunces', Georgia, serif;
+    line-height: 1.7; color: var(--ink); background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at top, rgba(212, 168, 73, 0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at bottom right, rgba(107, 148, 196, 0.04) 0%, transparent 50%);
+    background-attachment: fixed;
+    min-height: 100vh; padding: 40px 24px 80px;
+    font-feature-settings: "palt" 1;
+  }
+  .container { max-width: 1180px; margin: 0 auto; }
+
+  /* ====== HEADER ====== */
+  header.top {
+    border-top: 1px solid var(--amber-soft);
+    border-bottom: 1px solid var(--line);
+    padding: 36px 0 32px; margin-bottom: 36px;
+  }
+  .top-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.12em; color: var(--ink-dim);
+    text-transform: uppercase; margin-bottom: 22px;
+  }
+  .top-meta .label { color: var(--amber); }
+  h1 {
+    font-family: 'Fraunces', serif; font-weight: 300;
+    font-size: clamp(34px, 5vw, 54px); line-height: 1.05;
+    letter-spacing: -0.02em; margin-bottom: 12px;
+  }
+  h1 em { font-style: italic; color: var(--amber); font-weight: 500; }
+  .subtitle {
+    font-size: 14px; color: var(--ink-mute);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .tagline {
+    margin-top: 20px; font-size: 16px; color: var(--ink-mute);
+    font-style: italic; max-width: 640px;
+  }
+
+  /* ====== STATUS BAR ====== */
+  .status-bar {
+    display: flex; align-items: center; gap: 20px;
+    background: var(--bg-elev); padding: 14px 22px;
+    border: 1px solid var(--line); margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .status-item {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--ink-mute); letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .status-item strong { color: var(--ink); font-weight: 500; }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ink-dim); display: inline-block;
+  }
+  .dot.ok { background: var(--green); box-shadow: 0 0 10px rgba(106,178,106,0.5); }
+  .dot.err { background: var(--red); box-shadow: 0 0 10px rgba(214,85,85,0.5); }
+  .dot.warn { background: var(--amber); box-shadow: 0 0 10px rgba(212,168,73,0.5); }
+  .dot.loading { background: var(--blue); animation: pulse 1.2s ease-in-out infinite; }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+  .btn-refresh {
+    margin-left: auto; background: transparent;
+    color: var(--ink-mute); border: 1px solid var(--line);
+    padding: 6px 14px; font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.1em; cursor: pointer;
+    transition: all 0.2s; text-transform: uppercase;
+  }
+  .btn-refresh:hover {
+    color: var(--amber); border-color: var(--amber-soft);
+  }
+  .btn-refresh:disabled { opacity: 0.4; cursor: wait; }
+
+  /* ====== HERO PANEL ====== */
+  .hero {
+    background: linear-gradient(135deg, var(--bg-elev), var(--bg-soft));
+    border: 1px solid var(--line); border-left: 3px solid var(--amber);
+    padding: 36px 40px; margin-bottom: 40px;
+    display: grid; grid-template-columns: minmax(220px, 320px) 1fr;
+    gap: 40px; align-items: center;
+  }
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; padding: 28px 24px; gap: 28px; }
+  }
+  .score-block { text-align: left; }
+  .score-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    letter-spacing: 0.15em; color: var(--ink-mute);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .score-big {
+    font-family: 'Fraunces', serif; font-weight: 300;
+    font-size: clamp(80px, 12vw, 120px); line-height: 1;
+    color: var(--amber); transition: color 0.3s;
+  }
+  .score-big.cool { color: var(--green); }
+  .score-big.warm { color: var(--amber); }
+  .score-big.hot { color: var(--red); }
+  .score-big small {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px; color: var(--ink-dim); font-weight: 400;
+    margin-left: 8px;
+  }
+  .score-zone {
+    margin-top: 14px; font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--ink-mute);
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .rec-title {
+    font-family: 'Fraunces', serif; font-size: clamp(22px, 3vw, 30px);
+    font-weight: 500; margin-bottom: 16px; line-height: 1.25;
+  }
+  .rec-body {
+    color: var(--ink-mute); font-size: 15px;
+    line-height: 1.8; margin-bottom: 18px;
+  }
+  .rec-actions {
+    display: flex; flex-wrap: wrap; gap: 10px;
+  }
+  .rec-tag {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    padding: 6px 12px; border: 1px solid var(--line);
+    color: var(--ink-mute); letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .rec-tag strong { color: var(--ink); margin-right: 6px; }
+  .rec-tag.red { border-color: var(--red); color: var(--red); background: var(--red-bg); }
+  .rec-tag.green { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+  .rec-tag.amber { border-color: var(--amber); color: var(--amber); background: var(--amber-bg); }
+  .rec-tag.blue { border-color: var(--blue); color: var(--blue); background: var(--blue-bg); }
+
+  /* ====== SECTION ====== */
+  section { margin-bottom: 52px; }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--amber); letter-spacing: 0.2em;
+    margin-bottom: 8px; text-transform: uppercase;
+  }
+  h2 {
+    font-family: 'Fraunces', serif; font-weight: 400;
+    font-size: 28px; line-height: 1.2;
+    margin-bottom: 22px; padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+    letter-spacing: -0.01em;
+  }
+
+  /* ====== MODULE GRID ====== */
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1px; background: var(--line);
+    border: 1px solid var(--line);
+  }
+  .module-card {
+    background: var(--bg-elev); padding: 22px 20px;
+    cursor: pointer; transition: background 0.15s;
+    position: relative; overflow: hidden;
+  }
+  .module-card:hover { background: var(--bg-card); }
+  .module-card.expanded { background: var(--bg-card); }
+  .module-card .mod-name {
+    font-family: 'Fraunces', serif; font-size: 17px;
+    font-weight: 500; margin-bottom: 4px; color: var(--ink);
+  }
+  .module-card .mod-en {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    letter-spacing: 0.15em; color: var(--ink-dim);
+    text-transform: uppercase; margin-bottom: 18px;
+  }
+  .mod-score {
+    font-family: 'Fraunces', serif; font-weight: 300;
+    font-size: 42px; line-height: 1; margin-bottom: 4px;
+  }
+  .mod-score small {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; color: var(--ink-dim); margin-left: 4px;
+  }
+  .mod-score.s0 { color: var(--green); }
+  .mod-score.s1 { color: var(--blue); }
+  .mod-score.s2 { color: var(--amber); }
+  .mod-score.s3 { color: var(--red); }
+  .mod-bar {
+    margin-top: 12px; display: flex; gap: 3px;
+  }
+  .mod-bar-seg {
+    flex: 1; height: 4px; background: var(--line-soft);
+    transition: background 0.3s;
+  }
+  .mod-bar-seg.filled { background: var(--amber); }
+  .mod-trigger-list {
+    margin-top: 14px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--ink-mute); line-height: 1.7;
+  }
+  .mod-trigger-list .triggered::before {
+    content: '◆ '; color: var(--red);
+  }
+  .mod-trigger-list .near::before {
+    content: '◇ '; color: var(--amber);
+  }
+  .mod-trigger-list .quiet::before {
+    content: '· '; color: var(--ink-dim);
+  }
+  .mod-trigger-list .quiet { color: var(--ink-dim); }
+
+  /* ====== INDICATOR DETAIL ====== */
+  .ind-detail {
+    margin-top: 26px; display: none;
+  }
+  .ind-detail.show { display: block; }
+  .ind-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .ind-card {
+    background: var(--bg-elev); border: 1px solid var(--line);
+    border-left: 2px solid var(--line); padding: 16px 18px;
+    transition: all 0.2s;
+  }
+  .ind-card.triggered { border-left-color: var(--red); }
+  .ind-card.near { border-left-color: var(--amber); }
+  .ind-card.failed { border-left-style: dashed; opacity: 0.6; }
+  .ind-name {
+    font-size: 13px; color: var(--ink); margin-bottom: 6px; line-height: 1.4;
+  }
+  .ind-value {
+    font-family: 'JetBrains Mono', monospace; font-size: 17px;
+    color: var(--amber); margin-bottom: 4px;
+  }
+  .ind-card.triggered .ind-value { color: var(--red); }
+  .ind-meta {
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    color: var(--ink-dim); letter-spacing: 0.05em;
+    display: flex; justify-content: space-between; margin-top: 6px;
+  }
+  .ind-status {
+    display: inline-block; padding: 1px 8px;
+    font-family: 'JetBrains Mono', monospace; font-size: 9px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+  }
+  .ind-status.t { background: var(--red-bg); color: var(--red); }
+  .ind-status.n { background: var(--bg-soft); color: var(--ink-dim); }
+  .ind-status.f { background: var(--bg-soft); color: var(--ink-dim); }
+
+  /* ====== TREND CHART ====== */
+  .chart-wrap {
+    background: var(--bg-elev); border: 1px solid var(--line);
+    padding: 24px 28px; position: relative;
+  }
+  .chart-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 18px;
+  }
+  .chart-title {
+    font-family: 'Fraunces', serif; font-size: 18px; font-weight: 500;
+  }
+  .chart-legend {
+    display: flex; gap: 18px; font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--ink-mute); letter-spacing: 0.05em;
+  }
+  .chart-legend span { display: flex; align-items: center; gap: 6px; }
+  .legend-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .legend-dot.top { background: var(--red); }
+  .legend-dot.bot { background: var(--green); }
+  .chart-svg {
+    width: 100%; height: 260px; display: block;
+  }
+
+  /* ====== ACTION TABLE ====== */
+  .table-wrap {
+    border: 1px solid var(--line); overflow-x: auto;
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th {
+    background: var(--bg-soft); color: var(--amber);
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase;
+    text-align: left; padding: 14px 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 14px 18px; border-bottom: 1px solid var(--line); vertical-align: top;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr.current {
+    background: var(--amber-bg);
+  }
+  tr.current td { color: var(--ink); font-weight: 500; }
+  tr.current td:first-child::before {
+    content: '▸ '; color: var(--amber); font-weight: 700;
+  }
+  td.mono {
+    font-family: 'JetBrains Mono', monospace; font-size: 13px;
+    color: var(--amber); white-space: nowrap;
+  }
+
+  /* ====== PILL ====== */
+  .pill {
+    display: inline-block; padding: 3px 9px; border-radius: 1px;
+    font-family: 'JetBrains Mono', monospace; font-size: 10px;
+    font-weight: 500; letter-spacing: 0.05em;
+  }
+  .pill.green { background: var(--green-bg); color: var(--green); }
+  .pill.yellow { background: var(--amber-bg); color: var(--yellow); }
+  .pill.red { background: var(--red-bg); color: var(--red); }
+  .pill.grey { background: rgba(110, 116, 132, 0.18); color: var(--grey); }
+  .pill.blue { background: var(--blue-bg); color: var(--blue); }
+
+  /* ====== WATCHLIST ====== */
+  .watch-grid {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+  .watch-item {
+    border: 1px solid var(--line); padding: 16px 18px;
+    background: var(--bg-elev);
+  }
+  .watch-name {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    color: var(--amber); margin-bottom: 6px; letter-spacing: 0.05em;
+  }
+  .watch-current {
+    font-family: 'Fraunces', serif; font-size: 19px; margin-bottom: 4px;
+  }
+  .watch-trigger {
+    font-size: 12px; color: var(--ink-mute);
+  }
+  .watch-distance {
+    font-family: 'JetBrains Mono', monospace; font-size: 11px;
+    margin-top: 6px; color: var(--ink-dim);
+  }
+
+  /* ====== LOADING / ERROR ====== */
+  .loading-screen, .error-screen {
+    text-align: center; padding: 80px 20px; color: var(--ink-mute);
+  }
+  .loading-screen .spin {
+    display: inline-block; width: 32px; height: 32px;
+    border: 2px solid var(--line); border-top-color: var(--amber);
+    border-radius: 50%; animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error-screen .err-icon {
+    font-size: 36px; color: var(--red); margin-bottom: 16px;
+  }
+
+  /* ====== FOOTER ====== */
+  footer {
+    margin-top: 60px; padding-top: 30px;
+    border-top: 1px solid var(--line);
+    text-align: center; color: var(--ink-dim);
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
+  }
+  footer a { color: var(--amber); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  /* ====== UTILS ====== */
+  .text-amber { color: var(--amber); }
+  .text-red { color: var(--red); }
+  .text-green { color: var(--green); }
+  .text-mute { color: var(--ink-mute); }
+  .hidden { display: none !important; }
+
+  @media (max-width: 640px) {
+    body { padding: 24px 14px 60px; }
+    h1 { font-size: 32px; }
+    h2 { font-size: 22px; }
+    .top-meta { flex-direction: column; gap: 8px; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ====== HEADER ====== -->
+  <header class="top">
+    <div class="top-meta">
+      <span><span class="label">Strategy v2.5</span> · Live SOP Dashboard</span>
+      <span id="header-date">Loading...</span>
+    </div>
+    <h1>即時 <em>SOP</em> 儀表板</h1>
+    <div class="subtitle">Late-Cycle Discipline · Live View</div>
+    <p class="tagline">
+      自動讀取你的 <code style="font-family:'JetBrains Mono',monospace;color:var(--amber)">score_v22.py</code> 輸出，套用五模塊上限計分與趨勢保護邏輯。
+    </p>
+  </header>
+
+  <!-- ====== STATUS BAR ====== -->
+  <div class="status-bar">
+    <div class="status-item">
+      <span class="dot loading" id="status-dot"></span>
+      <span id="status-text">載入中…</span>
+    </div>
+    <div class="status-item">
+      Last Updated: <strong id="last-updated">—</strong>
+    </div>
+    <div class="status-item">
+      Next Run: <strong id="next-run">每日 07:00 (TW)</strong>
+    </div>
+    <button class="btn-refresh" id="btn-refresh">⟳ Refresh</button>
+  </div>
+
+  <!-- ====== MAIN CONTENT ====== -->
+  <div id="main-content" class="hidden">
+
+    <!-- HERO PANEL -->
+    <div class="hero">
+      <div class="score-block">
+        <div class="score-label">SOP 五模塊總分</div>
+        <div class="score-big" id="sop-score">—<small>/ 15</small></div>
+        <div class="score-zone" id="sop-zone">—</div>
+      </div>
+      <div>
+        <div class="rec-title" id="rec-title">—</div>
+        <div class="rec-body" id="rec-body">—</div>
+        <div class="rec-actions" id="rec-actions"></div>
+      </div>
+    </div>
+
+    <!-- MODULE GRID -->
+    <section>
+      <div class="section-num">SECTION 01 · MODULES</div>
+      <h2>五大模塊計分</h2>
+      <p style="color:var(--ink-mute); margin-bottom:22px; font-size:15px;">
+        每模塊上限 3 分，避免單一類別獨大。點擊任一模塊查看指標明細。
+      </p>
+      <div class="module-grid" id="module-grid"></div>
+      <div class="ind-detail" id="ind-detail"></div>
+    </section>
+
+    <!-- TREND CHART -->
+    <section>
+      <div class="section-num">SECTION 02 · TREND</div>
+      <h2>評分趨勢（最近 90 天）</h2>
+      <div class="chart-wrap">
+        <div class="chart-header">
+          <div class="chart-title">頂部訊號 vs 底部訊號</div>
+          <div class="chart-legend">
+            <span><span class="legend-dot top"></span>頂部</span>
+            <span><span class="legend-dot bot"></span>底部</span>
+          </div>
+        </div>
+        <svg class="chart-svg" id="trend-chart" viewBox="0 0 1000 260" preserveAspectRatio="none"></svg>
+      </div>
+    </section>
+
+    <!-- ACTION TABLE -->
+    <section>
+      <div class="section-num">SECTION 03 · ACTION MAP</div>
+      <h2>SOP 部位映射</h2>
+      <p style="color:var(--ink-mute); margin-bottom:18px; font-size:15px;">
+        根據五模塊總分與趨勢保護層決定的部位。當前位置以箭頭標記。
+      </p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>SOP 分數</th>
+              <th>狀態</th>
+              <th>TQQQ / SOXL</th>
+              <th>QQQ</th>
+              <th>整體股票</th>
+            </tr>
+          </thead>
+          <tbody id="action-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- WATCHLIST -->
+    <section>
+      <div class="section-num">SECTION 04 · WATCHLIST</div>
+      <h2>關鍵盯盤指標</h2>
+      <p style="color:var(--ink-mute); margin-bottom:18px; font-size:15px;">
+        距離觸發門檻最近的指標，動了就會推升模塊分數。
+      </p>
+      <div class="watch-grid" id="watch-grid"></div>
+    </section>
+
+    <!-- ORIGINAL VIEW -->
+    <section>
+      <div class="section-num">SECTION 05 · ORIGINAL</div>
+      <h2>原始 v2.5 計分</h2>
+      <p style="color:var(--ink-mute); margin-bottom:18px; font-size:15px;">
+        對照原本 21/14 等權加總的結果，與本系統計算的結果。
+      </p>
+      <div class="table-wrap">
+        <table>
+          <tbody id="original-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ====== LOADING / ERROR ====== -->
+  <div class="loading-screen" id="loading-screen">
+    <div class="spin"></div>
+    <div>讀取 latest_score.json 中…</div>
+  </div>
+
+  <div class="error-screen hidden" id="error-screen">
+    <div class="err-icon">⚠</div>
+    <div id="error-message">無法讀取資料</div>
+    <div style="margin-top:14px; font-size:12px;">請確認你的網路連線，或檢查 JSON 是否有更新。</div>
+  </div>
+
+  <footer>
+    v2.5 SOP Live Dashboard · 自動讀取 <a href="output/latest_score.json">latest_score.json</a><br>
+    本評分為策略架構演練，非投資建議
+  </footer>
+
+</div>
+
+<script>
+// ===================================================================
+// 設定
+// ===================================================================
+const JSON_URL = 'https://ndsfly-commits.github.io/strategy_v25/output/latest_score.json';
+const HISTORY_URL = 'https://ndsfly-commits.github.io/strategy_v25/output/history.csv';
+
+// ===================================================================
+// 模塊對應表：把 v2.5 原本的 20 個頂部指標分類進 5 大模塊
+// 每模塊上限 3 分（避免單一類別獨大）
+// ===================================================================
+const MODULES = {
+  valuation: {
+    name: '估值', en: 'Valuation',
+    description: '估值與槓桿結構',
+    keys: ['cape_30', 'cape_35', 'buffett_200', 'margin_30', 'margin_50']
+  },
+  sentiment: {
+    name: '情緒', en: 'Sentiment',
+    description: '貪婪、自滿、持倉熱度',
+    keys: ['fg_75', 'fg_85', 'naaim_high', 'vvix_divergence', 'vix_21ma_low']
+  },
+  breadth: {
+    name: '廣度', en: 'Breadth',
+    description: '市場內部健康度',
+    keys: ['rsp_spy_breadth', 'breadth_200d', 'xly_xlp', 'smh_spy']
+  },
+  credit: {
+    name: '信用', en: 'Credit',
+    description: '高收益債、殖利率曲線',
+    keys: ['hy_oas_low', 'hy_oas_expansion', 'yield_inversion']
+  },
+  technical: {
+    name: '技術', en: 'Technical',
+    description: '動能、機構行為',
+    keys: ['rsi_75', 'rsi_80', 'distribution_days']
+  }
+};
+
+const MODULE_CAP = 3; // 每模塊最高 3 分
+const MAX_TOTAL = 15;  // 5 × 3
+
+// ===================================================================
+// SOP 部位映射表
+// ===================================================================
+const ACTION_MAP = [
+  { range: [0, 3], status: { text: '健康', tag: 'green' }, tqqq: '可滿倉', qqq: '滿倉', total: '100%' },
+  { range: [4, 5], status: { text: '略熱', tag: 'blue' }, tqqq: '減半', qqq: '滿倉', total: '100%' },
+  { range: [6, 6], status: { text: '高檔警戒', tag: 'yellow' }, tqqq: '全部出清', qqq: '100% QQQ', total: '100%' },
+  { range: [7, 8], status: { text: '避險啟動', tag: 'yellow' }, tqqq: '—', qqq: '減至 80%', total: '80%' },
+  { range: [9, 10], status: { text: '明顯偏空', tag: 'red' }, tqqq: '—', qqq: '減至 60%', total: '60%' },
+  { range: [11, 15], status: { text: '全面避險', tag: 'red' }, tqqq: '—', qqq: '30% 或以下', total: '≤ 40%' }
+];
+
+// ===================================================================
+// 工具函式
+// ===================================================================
+function setStatus(state, msg) {
+  const dot = document.getElementById('status-dot');
+  const text = document.getElementById('status-text');
+  dot.className = 'dot ' + state;
+  text.textContent = msg;
+}
+
+function fmtNum(v, digits = 2) {
+  if (v === null || v === undefined) return '—';
+  if (typeof v === 'boolean') return v ? '✓' : '✗';
+  if (typeof v === 'string') return v;
+  const n = Number(v);
+  if (Number.isNaN(n)) return String(v);
+  return n.toFixed(digits);
+}
+
+function fmtTimeAgo(timestamp) {
+  if (!timestamp) return '—';
+  const d = new Date(timestamp.replace(' ', 'T'));
+  const diff = (Date.now() - d.getTime()) / 1000;
+  if (diff < 60) return `${Math.floor(diff)} 秒前`;
+  if (diff < 3600) return `${Math.floor(diff/60)} 分鐘前`;
+  if (diff < 86400) return `${Math.floor(diff/3600)} 小時前`;
+  return `${Math.floor(diff/86400)} 天前`;
+}
+
+function getActionFor(score) {
+  return ACTION_MAP.find(a => score >= a.range[0] && score <= a.range[1]) || ACTION_MAP[0];
+}
+
+// ===================================================================
+// 計算「距離觸發還差多少」(用於 watchlist 判斷哪些指標接近觸發)
+// ===================================================================
+function nearTriggerDistance(ind) {
+  // 如果已觸發，距離 = 0；如果無資料，距離 = Infinity
+  if (ind.triggered) return 0;
+  if (ind.value === null || ind.value === undefined) return Infinity;
+  if (ind.confidence === 'failed') return Infinity;
+  
+  // 從 threshold 字串解析閾值
+  const t = String(ind.threshold);
+  const valNum = typeof ind.value === 'string'
+    ? parseFloat(ind.value.replace(/[^\d.\-+]/g, ''))
+    : Number(ind.value);
+  if (Number.isNaN(valNum)) return Infinity;
+  
+  // 解析常見格式: ">= N", "> N", "< N", "<= N"
+  const m = t.match(/([≥≤<>]=?)\s*(-?\d+\.?\d*)/);
+  if (!m) return Infinity;
+  const op = m[1]; const target = parseFloat(m[2]);
+  
+  if (op === '≥' || op === '>=' || op === '>') {
+    // 需要 value >= target，距離 = target - value
+    return Math.max(0, target - valNum);
+  } else if (op === '≤' || op === '<=' || op === '<') {
+    return Math.max(0, valNum - target);
+  }
+  return Infinity;
+}
+
+function isNearTrigger(ind) {
+  // 「接近觸發」定義：距離 < 10% 的 target 數值，或絕對差 < 5
+  if (ind.triggered) return false;
+  const dist = nearTriggerDistance(ind);
+  if (dist === Infinity || dist === 0) return false;
+  
+  const t = String(ind.threshold);
+  const m = t.match(/([≥≤<>]=?)\s*(-?\d+\.?\d*)/);
+  if (!m) return false;
+  const target = Math.abs(parseFloat(m[2]));
+  
+  // 距離 < 目標值的 8% 或絕對 < 3，就算「接近」
+  return dist < Math.max(target * 0.08, 3);
+}
+
+// ===================================================================
+// 渲染：Hero panel (主結果)
+// ===================================================================
+function renderHero(sopScore, sopAction, originalAction, qqqAboveMA200) {
+  const elScore = document.getElementById('sop-score');
+  elScore.innerHTML = `${sopScore}<small>/ 15</small>`;
+  elScore.classList.remove('cool', 'warm', 'hot');
+  if (sopScore <= 4) elScore.classList.add('cool');
+  else if (sopScore <= 8) elScore.classList.add('warm');
+  else elScore.classList.add('hot');
+
+  document.getElementById('sop-zone').textContent = sopAction.status.text;
+
+  // 推薦文字
+  const titleMap = {
+    0: '🟢 健康多頭', 1: '🟢 健康多頭', 2: '🟢 健康多頭', 3: '🟢 健康多頭',
+    4: '🔵 略熱·檢視槓桿', 5: '🔵 略熱·檢視槓桿',
+    6: '🟡 高檔警戒·拆槓桿', 7: '🟠 避險啟動', 8: '🟠 避險啟動',
+    9: '🔴 明顯偏空', 10: '🔴 明顯偏空',
+    11: '⚫ 全面避險', 12: '⚫ 全面避險', 13: '⚫ 全面避險',
+    14: '⚫ 極端避險', 15: '⚫ 極端避險'
+  };
+  document.getElementById('rec-title').textContent = titleMap[sopScore] || '—';
+
+  // 推薦動作 body
+  let body;
+  if (sopScore <= 3) {
+    body = '市場結構健康，可滿倉。允許 TQQQ / SOXL 衛星部位。';
+  } else if (sopScore <= 5) {
+    body = '部分模塊出現過熱訊號。減半 TQQQ 部位但維持滿倉。';
+  } else if (sopScore === 6) {
+    body = '估值與槓桿達高位，廣度開始走弱。TQQQ 全部出清，QQQ 留。';
+  } else if (sopScore <= 8) {
+    body = '多模塊同時惡化。整體股票降至 80%，但 QQQ 仍 > 200MA 時不轉現金。';
+  } else if (sopScore <= 10) {
+    body = '系統性風險明顯。整體股票降至 60%，搭配防禦資產。';
+  } else {
+    body = '進入歷史性高風險區。整體股票壓到 40% 以下，現金與防禦為主。';
+  }
+  document.getElementById('rec-body').textContent = body;
+
+  // 動作 tags
+  const actions = document.getElementById('rec-actions');
+  actions.innerHTML = `
+    <span class="rec-tag ${sopAction.status.tag}"><strong>TQQQ</strong>${sopAction.tqqq}</span>
+    <span class="rec-tag ${sopAction.status.tag}"><strong>QQQ</strong>${sopAction.qqq}</span>
+    <span class="rec-tag ${sopAction.status.tag}"><strong>整體</strong>${sopAction.total}</span>
+    <span class="rec-tag ${qqqAboveMA200 ? 'green' : 'red'}"><strong>趨勢</strong>${qqqAboveMA200 ? 'QQQ > 200MA' : 'QQQ < 200MA'}</span>
+  `;
+}
+
+// ===================================================================
+// 渲染：模塊卡片
+// ===================================================================
+let expandedModule = null;
+function renderModules(indicators) {
+  const grid = document.getElementById('module-grid');
+  grid.innerHTML = '';
+
+  const moduleData = {};
+  Object.entries(MODULES).forEach(([key, mod]) => {
+    const inds = indicators.filter(i => mod.keys.includes(i.key));
+    const rawPoints = inds.reduce((s, i) => s + (i.points || 0), 0);
+    const cappedScore = Math.min(rawPoints, MODULE_CAP);
+    moduleData[key] = { mod, inds, rawPoints, cappedScore };
+  });
+
+  Object.entries(moduleData).forEach(([key, m]) => {
+    const card = document.createElement('div');
+    card.className = 'module-card';
+    card.dataset.module = key;
+
+    const triggered = m.inds.filter(i => i.triggered);
+    const near = m.inds.filter(i => !i.triggered && isNearTrigger(i));
+    const quiet = m.inds.filter(i => !i.triggered && !isNearTrigger(i));
+
+    const triggerList = m.inds.map(i => {
+      const cls = i.triggered ? 'triggered' : (isNearTrigger(i) ? 'near' : 'quiet');
+      const shortName = i.name.replace(/^🆕\s*/, '');
+      return `<div class="${cls}">${shortName}</div>`;
+    }).join('');
+
+    const bars = Array(MODULE_CAP).fill(0).map((_, idx) =>
+      `<div class="mod-bar-seg ${idx < m.cappedScore ? 'filled' : ''}"></div>`
+    ).join('');
+
+    card.innerHTML = `
+      <div class="mod-name">${m.mod.name}</div>
+      <div class="mod-en">${m.mod.en}</div>
+      <div class="mod-score s${m.cappedScore}">${m.cappedScore}<small>/ ${MODULE_CAP}</small></div>
+      <div class="mod-bar">${bars}</div>
+      <div class="mod-trigger-list">${triggerList}</div>
+    `;
+
+    card.addEventListener('click', () => toggleDetail(key, moduleData));
+    grid.appendChild(card);
+  });
+
+  return moduleData;
+}
+
+// ===================================================================
+// 渲染：指標明細（點擊模塊後展開）
+// ===================================================================
+function toggleDetail(moduleKey, moduleData) {
+  const detail = document.getElementById('ind-detail');
+  const cards = document.querySelectorAll('.module-card');
+  cards.forEach(c => c.classList.remove('expanded'));
+
+  if (expandedModule === moduleKey) {
+    detail.classList.remove('show');
+    expandedModule = null;
+    return;
+  }
+
+  expandedModule = moduleKey;
+  document.querySelector(`[data-module="${moduleKey}"]`).classList.add('expanded');
+
+  const m = moduleData[moduleKey];
+  const cardsHTML = m.inds.map(i => {
+    const triggered = i.triggered;
+    const near = !triggered && isNearTrigger(i);
+    const failed = i.confidence === 'failed';
+    const cls = failed ? 'failed' : (triggered ? 'triggered' : (near ? 'near' : ''));
+    const status = triggered ? 't' : (near ? 'n' : 'f');
+    const statusText = triggered ? '已觸發' : (near ? '接近' : (failed ? '無資料' : '未觸發'));
+    const shortName = i.name.replace(/^🆕\s*/, '');
+
+    return `
+      <div class="ind-card ${cls}">
+        <div class="ind-name">${shortName}</div>
+        <div class="ind-value">${fmtNum(i.value)}</div>
+        <div class="ind-meta">
+          <span>${i.threshold}</span>
+          <span class="ind-status ${status}">${statusText}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  detail.innerHTML = `
+    <div style="margin-bottom:14px; color:var(--ink-mute); font-size:14px;">
+      <strong style="color:var(--amber); font-family:'JetBrains Mono',monospace; letter-spacing:0.05em;">${m.mod.name.toUpperCase()}</strong>
+      　${m.mod.description}　
+      <span style="font-family:'JetBrains Mono',monospace; color:var(--ink-dim);">
+        原始得分 ${m.rawPoints} · 上限後 ${m.cappedScore}
+      </span>
+    </div>
+    <div class="ind-grid">${cardsHTML}</div>
+  `;
+  detail.classList.add('show');
+}
+
+// ===================================================================
+// 渲染：行動表 (含當前位置高亮)
+// ===================================================================
+function renderActionTable(currentScore) {
+  const tbody = document.getElementById('action-tbody');
+  tbody.innerHTML = '';
+  ACTION_MAP.forEach(a => {
+    const rangeText = a.range[0] === a.range[1]
+      ? `${a.range[0]}`
+      : (a.range[1] === 15 ? `≥ ${a.range[0]}` : `${a.range[0]} – ${a.range[1]}`);
+    const isCurrent = currentScore >= a.range[0] && currentScore <= a.range[1];
+    const tr = document.createElement('tr');
+    if (isCurrent) tr.className = 'current';
+    tr.innerHTML = `
+      <td class="mono">${rangeText}</td>
+      <td><span class="pill ${a.status.tag}">${a.status.text}</span></td>
+      <td>${a.tqqq}</td>
+      <td>${a.qqq}</td>
+      <td class="mono">${a.total}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// ===================================================================
+// 渲染：Watchlist (找出最接近觸發的指標)
+// ===================================================================
+function renderWatchlist(indicators) {
+  // 取所有「未觸發」但「接近觸發」的指標，按距離排序
+  const candidates = indicators
+    .filter(i => !i.triggered && i.confidence !== 'failed')
+    .map(i => ({ ind: i, distance: nearTriggerDistance(i) }))
+    .filter(x => x.distance !== Infinity && x.distance > 0)
+    .sort((a, b) => {
+      // 用相對距離比較
+      const tA = parseFloat((a.ind.threshold.match(/(-?\d+\.?\d*)/) || [0])[0]) || 1;
+      const tB = parseFloat((b.ind.threshold.match(/(-?\d+\.?\d*)/) || [0])[0]) || 1;
+      return (a.distance / Math.abs(tA)) - (b.distance / Math.abs(tB));
+    })
+    .slice(0, 8);
+
+  const grid = document.getElementById('watch-grid');
+  grid.innerHTML = candidates.map(({ ind, distance }) => {
+    const shortName = ind.name.replace(/^🆕\s*/, '');
+    return `
+      <div class="watch-item">
+        <div class="watch-name">${shortName}</div>
+        <div class="watch-current">${fmtNum(ind.value)}</div>
+        <div class="watch-trigger">門檻：${ind.threshold}</div>
+        <div class="watch-distance">距觸發 ${distance.toFixed(2)}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ===================================================================
+// 渲染：原始 v2.5 計分對照
+// ===================================================================
+function renderOriginalView(json, sopScore) {
+  const tbody = document.getElementById('original-tbody');
+  tbody.innerHTML = `
+    <tr>
+      <td style="color:var(--ink-mute);">原始 v2.5 頂部分數（等權加總）</td>
+      <td class="mono">${json.top_score} / ${json.top_max}</td>
+      <td><span class="pill yellow">${json.top_zone}</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--ink-mute);">原始 v2.5 底部分數</td>
+      <td class="mono">${json.bottom_score} / ${json.bottom_max}</td>
+      <td>${json.bottom_score >= 6 ? '<span class="pill green">觸發中</span>' : '<span class="pill grey">靜止</span>'}</td>
+    </tr>
+    <tr>
+      <td style="color:var(--ink-mute);">原始 v2.5 建議</td>
+      <td colspan="2">${json.action}</td>
+    </tr>
+    <tr style="background:var(--amber-bg);">
+      <td><strong style="color:var(--ink);">SOP 五模塊總分（每模塊上限 3 分）</strong></td>
+      <td class="mono"><strong>${sopScore} / 15</strong></td>
+      <td><span class="pill ${getActionFor(sopScore).status.tag}">${getActionFor(sopScore).status.text}</span></td>
+    </tr>
+  `;
+}
+
+// ===================================================================
+// 渲染：趨勢圖 (自製 SVG)
+// ===================================================================
+function renderChart(history) {
+  const svg = document.getElementById('trend-chart');
+  svg.innerHTML = '';
+  if (!history || history.length === 0) {
+    svg.innerHTML = `<text x="500" y="130" fill="var(--ink-dim)" text-anchor="middle"
+      style="font-family:'JetBrains Mono',monospace; font-size:13px">尚無歷史資料</text>`;
+    return;
+  }
+
+  const W = 1000, H = 260, PAD = { top: 20, right: 20, bottom: 36, left: 36 };
+  const innerW = W - PAD.left - PAD.right;
+  const innerH = H - PAD.top - PAD.bottom;
+  const maxScore = 22;
+
+  const recent = history.slice(-90);
+  const n = recent.length;
+  const xStep = n > 1 ? innerW / (n - 1) : 0;
+
+  // 背景網格
+  for (let s = 0; s <= maxScore; s += 5) {
+    const y = PAD.top + innerH - (s / maxScore) * innerH;
+    svg.innerHTML += `<line x1="${PAD.left}" y1="${y}" x2="${W - PAD.right}" y2="${y}"
+      stroke="#232934" stroke-width="1"/>`;
+    svg.innerHTML += `<text x="${PAD.left - 8}" y="${y + 4}" fill="#5b6273"
+      font-family="JetBrains Mono" font-size="10" text-anchor="end">${s}</text>`;
+  }
+
+  // 門檻線
+  const y7 = PAD.top + innerH - (7 / maxScore) * innerH;
+  svg.innerHTML += `<line x1="${PAD.left}" y1="${y7}" x2="${W - PAD.right}" y2="${y7}"
+    stroke="#d65555" stroke-width="1" stroke-dasharray="4,4" opacity="0.5"/>`;
+  svg.innerHTML += `<text x="${W - PAD.right - 4}" y="${y7 - 4}" fill="#d65555"
+    font-family="JetBrains Mono" font-size="9" text-anchor="end">頂部觸發 ≥ 7</text>`;
+
+  // 頂部分數線 (紅)
+  const topPath = recent.map((d, i) => {
+    const x = PAD.left + i * xStep;
+    const y = PAD.top + innerH - (d.top_score / maxScore) * innerH;
+    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+  const topArea = topPath + ` L ${PAD.left + (n-1) * xStep} ${PAD.top + innerH} L ${PAD.left} ${PAD.top + innerH} Z`;
+  svg.innerHTML += `<path d="${topArea}" fill="rgba(214,85,85,0.08)" />`;
+  svg.innerHTML += `<path d="${topPath}" stroke="#d65555" stroke-width="2" fill="none" stroke-linejoin="round"/>`;
+
+  // 底部分數線 (綠)
+  const botPath = recent.map((d, i) => {
+    const x = PAD.left + i * xStep;
+    const y = PAD.top + innerH - (d.bottom_score / maxScore) * innerH;
+    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+  svg.innerHTML += `<path d="${botPath}" stroke="#6ab26a" stroke-width="2" fill="none" stroke-linejoin="round"/>`;
+
+  // 最新點高亮
+  const lastIdx = n - 1;
+  const lastX = PAD.left + lastIdx * xStep;
+  const topY = PAD.top + innerH - (recent[lastIdx].top_score / maxScore) * innerH;
+  svg.innerHTML += `<circle cx="${lastX}" cy="${topY}" r="4" fill="#d65555"/>`;
+  svg.innerHTML += `<text x="${lastX - 8}" y="${topY - 8}" fill="#d65555"
+    font-family="JetBrains Mono" font-size="11" text-anchor="end" font-weight="500">${recent[lastIdx].top_score}</text>`;
+
+  // X 軸日期 (起、中、末)
+  if (n >= 3) {
+    const dates = [0, Math.floor(n / 2), n - 1];
+    dates.forEach(i => {
+      const x = PAD.left + i * xStep;
+      svg.innerHTML += `<text x="${x}" y="${H - 12}" fill="#5b6273"
+        font-family="JetBrains Mono" font-size="10" text-anchor="middle">${recent[i].date}</text>`;
+    });
+  }
+}
+
+// ===================================================================
+// CSV 解析
+// ===================================================================
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',');
+  return lines.slice(1).map(line => {
+    const vals = line.split(',');
+    const obj = {};
+    headers.forEach((h, i) => {
+      const v = vals[i];
+      if (v === '' || v === undefined) { obj[h] = null; return; }
+      const n = Number(v);
+      obj[h] = (v === 'True') ? true : (v === 'False') ? false :
+               (!Number.isNaN(n) && v.trim() !== '') ? n : v;
+    });
+    return obj;
+  });
+}
+
+// ===================================================================
+// 主流程
+// ===================================================================
+async function loadDashboard() {
+  const btn = document.getElementById('btn-refresh');
+  btn.disabled = true;
+  setStatus('loading', '抓取資料中…');
+
+  try {
+    // Cache-bust：每分鐘換一次 URL，避免 GitHub Pages 快取
+    const cacheBust = Math.floor(Date.now() / 60000);
+    const [jsonRes, csvRes] = await Promise.allSettled([
+      fetch(`${JSON_URL}?t=${cacheBust}`),
+      fetch(`${HISTORY_URL}?t=${cacheBust}`)
+    ]);
+
+    if (jsonRes.status !== 'fulfilled' || !jsonRes.value.ok) {
+      throw new Error(`JSON 讀取失敗：${jsonRes.value?.status || 'network error'}`);
+    }
+
+    const json = await jsonRes.value.json();
+    let history = [];
+    if (csvRes.status === 'fulfilled' && csvRes.value.ok) {
+      const csvText = await csvRes.value.text();
+      history = parseCSV(csvText);
+    }
+
+    renderAll(json, history);
+    setStatus('ok', '已更新');
+    document.getElementById('main-content').classList.remove('hidden');
+    document.getElementById('loading-screen').classList.add('hidden');
+    document.getElementById('error-screen').classList.add('hidden');
+  } catch (err) {
+    console.error(err);
+    setStatus('err', '讀取失敗');
+    document.getElementById('error-message').textContent = err.message;
+    document.getElementById('main-content').classList.add('hidden');
+    document.getElementById('loading-screen').classList.add('hidden');
+    document.getElementById('error-screen').classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function renderAll(json, history) {
+  // 1. 把指標分到 5 模塊，算 SOP 總分
+  const moduleData = renderModules(json.top_indicators);
+  const sopScore = Object.values(moduleData).reduce((s, m) => s + m.cappedScore, 0);
+  const sopAction = getActionFor(sopScore);
+
+  // 2. Header 日期
+  document.getElementById('header-date').textContent = json.date;
+  document.getElementById('last-updated').textContent = `${json.timestamp} (${fmtTimeAgo(json.timestamp)})`;
+
+  // 3. 趨勢保護判斷 (簡化：QQQ drawdown 是否 > -10% 大致等於 QQQ 在 200MA 上方)
+  // 真正準確判斷需要 QQQ 收盤價 vs 200MA，這裡用代理：drawdown 小於 -8% 視為仍站上
+  const qqqDD = json.raw_data?.qqq_drawdown_pct;
+  const qqqAboveMA200 = qqqDD === null || qqqDD === undefined || qqqDD > -8;
+
+  // 4. Hero
+  renderHero(sopScore, sopAction, json.action, qqqAboveMA200);
+
+  // 5. Action table
+  renderActionTable(sopScore);
+
+  // 6. Watchlist
+  renderWatchlist(json.top_indicators);
+
+  // 7. Original view
+  renderOriginalView(json, sopScore);
+
+  // 8. Chart
+  renderChart(history);
+}
+
+// 綁定 refresh 按鈕
+document.getElementById('btn-refresh').addEventListener('click', loadDashboard);
+
+// 啟動
+loadDashboard();
+
+// 每 30 分鐘自動 refresh (不會打太多次)
+setInterval(loadDashboard, 30 * 60 * 1000);
+</script>
+</body>
+</html>
