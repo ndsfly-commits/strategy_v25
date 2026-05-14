@@ -305,6 +305,19 @@ header.top {
   color: var(--ink-2);
   font-weight: 500;
 }
+.card-foot {
+  font-family: var(--font-en);
+  font-size: 11px;
+  color: var(--ink-4);
+  letter-spacing: 0.04em;
+  margin-top: -4px;
+  position: relative;
+  z-index: 1;
+}
+.card-foot strong {
+  color: var(--ink-3);
+  font-weight: 500;
+}
 
 /* ==================== SUMMARY CARD ==================== */
 .summary-card {
@@ -649,6 +662,31 @@ section { margin-bottom: 36px; }
 .chart-svg { width: 100%; height: 240px; display: block; }
 
 /* ==================== ACTION LIST (mobile card style) ==================== */
+.action-group { margin-bottom: 22px; }
+.action-group:last-child { margin-bottom: 0; }
+.action-group-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding-left: 2px;
+  flex-wrap: wrap;
+}
+.action-group-label .zh {
+  font-family: var(--font-mix);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.action-group-label .en {
+  font-family: var(--font-en);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
 .action-list {
   display: flex;
   flex-direction: column;
@@ -667,6 +705,10 @@ section { margin-bottom: 36px; }
 .action-row.current {
   border-left-color: var(--orange);
   background: linear-gradient(90deg, var(--orange-soft), var(--surface) 70%);
+}
+.action-row.current-bottom {
+  border-left-color: var(--sage);
+  background: linear-gradient(90deg, var(--sage-soft), var(--surface) 70%);
 }
 .ar-main {
   display: grid;
@@ -693,12 +735,17 @@ section { margin-bottom: 36px; }
   color: var(--orange);
   font-weight: 600;
 }
+.action-row.current-bottom .ar-total {
+  color: var(--sage);
+  font-weight: 600;
+}
 .ar-summary {
   font-size: 13.5px;
   color: var(--ink-3);
   line-height: 1.55;
 }
-.action-row.current .ar-summary {
+.action-row.current .ar-summary,
+.action-row.current-bottom .ar-summary {
   color: var(--ink-2);
 }
 
@@ -941,9 +988,10 @@ footer a:hover { color: var(--ink); }
         <div class="section-bar"></div>
         <div class="section-titles">
           <h2>評分趨勢</h2>
-          <div class="section-sub">Score Trend · 90 Days</div>
+          <div class="section-sub">v2.5 Original Score · 90 Days</div>
         </div>
       </div>
+      <p class="section-desc">本圖為原始 v2.5 計分（頂部 0–21、底部 0–14），與上方 SOP 五模塊計分不同。</p>
       <div class="chart-wrap">
         <div class="chart-header">
           <div class="chart-title">頂部 vs 底部訊號</div>
@@ -965,8 +1013,23 @@ footer a:hover { color: var(--ink); }
           <div class="section-sub">SOP Action Map</div>
         </div>
       </div>
-      <p class="section-desc">當前位置以橘色標記。</p>
-      <div class="action-list" id="action-list"></div>
+      <p class="section-desc">當前位置以橘色（頂部減倉）或綠色（底部加倉）標記。</p>
+
+      <div class="action-group">
+        <div class="action-group-label">
+          <span class="zh">頂部訊號 → 減倉動作</span>
+          <span class="en">Top · De-risk</span>
+        </div>
+        <div class="action-list" id="action-list"></div>
+      </div>
+
+      <div class="action-group">
+        <div class="action-group-label">
+          <span class="zh">底部訊號 → 抄底加倉</span>
+          <span class="en">Bottom · Buy-the-Dip</span>
+        </div>
+        <div class="action-list" id="bottom-action-list"></div>
+      </div>
     </section>
 
     <!-- WATCHLIST -->
@@ -1042,6 +1105,19 @@ const ACTION_MAP = [
   { range: [11, 15], status: { text: '全面避險', tag: 'red' },
     tqqq: '出場', qqq: '≤ 30%', total: '≤ 40%',
     summary: '股票壓至 40% 以下，現金為主' }
+];
+
+const BOTTOM_ACTION_MAP = [
+  { range: [0, 2], status: { text: '靜止', tag: 'grey' },
+    action: '不動', summary: '無抄底訊號，市場無極端恐慌' },
+  { range: [3, 4], status: { text: '警戒', tag: 'yellow' },
+    action: '不動', summary: '部分恐慌訊號出現，留意是否擴大' },
+  { range: [5, 6], status: { text: '觸發', tag: 'green' },
+    action: '+30% TQQQ', summary: '首批進場，多項極端恐慌出現' },
+  { range: [7, 8], status: { text: '加強', tag: 'green' },
+    action: '+60% TQQQ', summary: '加碼進場，深度熊市訊號' },
+  { range: [9, 14], status: { text: '極端', tag: 'green' },
+    action: '+100% TQQQ', summary: '全壓抄底，歷史性買點' }
 ];
 
 function setStatus(state, msg) {
@@ -1121,6 +1197,7 @@ function renderScorePanel(sopScore, sopAction, json, moduleData) {
       <div class="card-status"><span class="pill ${sopAction.status.tag}">${sopAction.status.text}</span></div>
     </div>
     <div class="card-desc">${moduleSummary}</div>
+    <div class="card-foot">原始 v2.5：<strong>${json.top_score} / ${json.top_max}</strong></div>
   `;
 
   // ===== BOTTOM CARD =====
@@ -1304,6 +1381,26 @@ function renderActionList(currentScore) {
   });
 }
 
+function renderBottomActionList(bottomScore) {
+  const list = document.getElementById('bottom-action-list');
+  list.innerHTML = '';
+  BOTTOM_ACTION_MAP.forEach(a => {
+    const rangeText = a.range[0] === a.range[1] ? `${a.range[0]}`
+      : (a.range[1] === 14 ? `≥ ${a.range[0]}` : `${a.range[0]}–${a.range[1]}`);
+    const isCurrent = bottomScore >= a.range[0] && bottomScore <= a.range[1];
+    const row = document.createElement('div');
+    row.className = 'action-row' + (isCurrent ? ' current-bottom' : '');
+    row.innerHTML = `
+      <div class="ar-main">
+        <div class="ar-score">${rangeText}</div>
+        <div class="ar-status"><span class="pill ${a.status.tag}">${a.status.text}</span></div>
+        <div class="ar-total">${a.action}</div>
+      </div>
+      <div class="ar-summary">${a.summary}</div>`;
+    list.appendChild(row);
+  });
+}
+
 function renderWatchlist(indicators) {
   const candidates = indicators
     .filter(i => !i.triggered && i.confidence !== 'failed')
@@ -1353,7 +1450,13 @@ function renderChart(history) {
   svg.innerHTML += `<line x1="${PAD.left}" y1="${y7}" x2="${W - PAD.right}" y2="${y7}"
     stroke="#DD2F3B" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>`;
   svg.innerHTML += `<text x="${W - PAD.right - 6}" y="${y7 - 6}" fill="#DD2F3B"
-    font-family="Poppins" font-size="11" text-anchor="end" opacity="0.7">≥ 7</text>`;
+    font-family="Poppins" font-size="11" text-anchor="end" opacity="0.7">頂部觸發 ≥ 7</text>`;
+
+  const y5 = PAD.top + innerH - (5 / maxScore) * innerH;
+  svg.innerHTML += `<line x1="${PAD.left}" y1="${y5}" x2="${W - PAD.right}" y2="${y5}"
+    stroke="#6B8C73" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>`;
+  svg.innerHTML += `<text x="${W - PAD.right - 6}" y="${y5 - 6}" fill="#6B8C73"
+    font-family="Poppins" font-size="11" text-anchor="end" opacity="0.7">底部觸發 ≥ 5</text>`;
 
   const topPath = recent.map((d, i) => {
     const x = PAD.left + i * xStep;
@@ -1453,6 +1556,7 @@ function renderAll(json, history) {
   renderScorePanel(sopScore, sopAction, json, moduleData);
   renderSummary(sopScore, sopAction, qqqAboveMA200);
   renderActionList(sopScore);
+  renderBottomActionList(json.bottom_score);
   renderWatchlist(json.top_indicators);
   renderChart(history);
 }
