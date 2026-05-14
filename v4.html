@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v2.5 SOP Dashboard · 守牛之道</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&family=Noto+Sans+TC:wght@200;300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ===================================================================
+     Wonder Core CIS Design Tokens
+     =================================================================== */
+  :root {
+    /* Surface */
+    --bg: #F0EFEE;              /* Radiant White 微光白 */
+    --surface: #FFFFFF;
+    --surface-2: #F8F7F6;
+    --surface-3: #ECEBEA;
+
+    /* Ink (text) */
+    --ink: #1F2024;
+    --ink-2: #53565A;           /* Titanium Silver 鈦石黑銀 */
+    --ink-3: #888B8D;           /* Sand Grey 流沙灰 */
+    --ink-4: #B5B4B2;
+
+    /* Lines */
+    --line: rgba(83, 86, 90, 0.10);
+    --line-2: rgba(83, 86, 90, 0.16);
+    --line-strong: #53565A;
+
+    /* Neutrals */
+    --silver: #C9C8C7;           /* Luxury Silver */
+    --warm-gray: #B6ADA5;
+    --cool-gray: #CECCC8;
+
+    /* Accent */
+    --red: #DD2F3B;              /* Flame Red 烈焰紅 */
+    --red-soft: rgba(221, 47, 59, 0.10);
+    --orange: #EA8C5A;
+    --orange-soft: rgba(234, 140, 90, 0.12);
+    --sage: #6B8C73;             /* 自訂柔和綠 */
+    --sage-soft: rgba(107, 140, 115, 0.12);
+    --slate: #6B7A8C;
+    --slate-soft: rgba(107, 122, 140, 0.10);
+
+    /* Typography */
+    --font-zh: 'Noto Sans TC', 'PingFang TC', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-en: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mix: 'Poppins', 'Noto Sans TC', 'PingFang TC', sans-serif;
+
+    /* Shadow */
+    --shadow-sm: 0 1px 2px rgba(83, 86, 90, 0.04), 0 0 0 1px rgba(83, 86, 90, 0.04);
+    --shadow-md: 0 1px 3px rgba(83, 86, 90, 0.06), 0 8px 24px rgba(83, 86, 90, 0.06);
+    --shadow-lg: 0 4px 12px rgba(83, 86, 90, 0.08), 0 24px 48px rgba(83, 86, 90, 0.10);
+
+    /* Radius */
+    --r-sm: 6px;
+    --r-md: 12px;
+    --r-lg: 18px;
+    --r-xl: 24px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font-mix);
+    font-weight: 400;
+    line-height: 1.7;
+    color: var(--ink);
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at top right, rgba(255,255,255,0.6), transparent 60%),
+      radial-gradient(ellipse at bottom left, rgba(201, 200, 199, 0.18), transparent 60%);
+    background-attachment: fixed;
+    min-height: 100vh;
+    padding: 56px 24px 80px;
+    font-feature-settings: "palt" 1;
+    -webkit-font-smoothing: antialiased;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  /* ==================== HEADER ==================== */
+  header.top {
+    margin-bottom: 56px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .brand {
+    display: flex; align-items: center; gap: 18px;
+  }
+  .brand-mark {
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--ink-2), var(--ink-3));
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-family: var(--font-en); font-weight: 600;
+    font-size: 14px; letter-spacing: -0.02em;
+  }
+  .brand-text h1 {
+    font-family: var(--font-mix);
+    font-weight: 600;
+    font-size: clamp(24px, 3vw, 32px);
+    line-height: 1.1;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+  .brand-text .brand-sub {
+    font-family: var(--font-en);
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+  .header-meta {
+    font-family: var(--font-en);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    text-align: right;
+  }
+  .header-meta .meta-date {
+    color: var(--ink-2);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+
+  /* ==================== STATUS BAR ==================== */
+  .status-bar {
+    display: flex; align-items: center; gap: 24px;
+    background: var(--surface);
+    padding: 14px 22px;
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .status-item {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-en);
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .status-item strong {
+    color: var(--ink);
+    font-weight: 500;
+    font-family: var(--font-mix);
+    letter-spacing: normal;
+    text-transform: none;
+    font-size: 13px;
+  }
+  .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--ink-4);
+  }
+  .dot.ok { background: var(--sage); box-shadow: 0 0 0 4px var(--sage-soft); }
+  .dot.err { background: var(--red); box-shadow: 0 0 0 4px var(--red-soft); }
+  .dot.warn { background: var(--orange); box-shadow: 0 0 0 4px var(--orange-soft); }
+  .dot.loading { background: var(--slate); animation: pulse 1.2s ease-in-out infinite; }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+  }
+  .btn-refresh {
+    margin-left: auto;
+    background: transparent;
+    color: var(--ink-2);
+    border: 1px solid var(--line-2);
+    padding: 7px 18px;
+    border-radius: 99px;
+    font-family: var(--font-en);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+  }
+  .btn-refresh:hover {
+    background: var(--ink);
+    color: var(--surface);
+    border-color: var(--ink);
+  }
+  .btn-refresh:disabled { opacity: 0.4; cursor: wait; }
+
+  /* ==================== HERO ==================== */
+  .hero {
+    background: var(--surface);
+    border-radius: var(--r-xl);
+    padding: 44px 48px;
+    margin-bottom: 56px;
+    box-shadow: var(--shadow-md);
+    display: grid;
+    grid-template-columns: minmax(220px, 320px) 1fr;
+    gap: 48px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, var(--silver) 0%, transparent 60%);
+    opacity: 0.3;
+    pointer-events: none;
+  }
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; padding: 32px 28px; gap: 28px; }
+  }
+  .score-block { position: relative; z-index: 1; }
+  .score-label {
+    font-family: var(--font-en);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .score-label-zh {
+    font-size: 13px;
+    color: var(--ink-2);
+    margin-bottom: 14px;
+  }
+  .score-big {
+    font-family: var(--font-en);
+    font-weight: 200;
+    font-size: clamp(80px, 13vw, 128px);
+    line-height: 1;
+    color: var(--ink);
+    letter-spacing: -0.04em;
+    transition: color 0.4s ease;
+  }
+  .score-big.cool { color: var(--sage); }
+  .score-big.warm { color: var(--orange); }
+  .score-big.hot { color: var(--red); }
+  .score-big small {
+    font-family: var(--font-en);
+    font-size: 22px;
+    color: var(--ink-4);
+    font-weight: 300;
+    margin-left: 4px;
+    letter-spacing: 0;
+  }
+  .score-zone {
+    margin-top: 8px;
+    font-size: 14px;
+    color: var(--ink-2);
+    font-weight: 500;
+  }
+  .rec-block { position: relative; z-index: 1; }
+  .rec-title {
+    font-family: var(--font-mix);
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 600;
+    margin-bottom: 14px;
+    line-height: 1.3;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .rec-body {
+    color: var(--ink-2);
+    font-size: 15px;
+    line-height: 1.8;
+    margin-bottom: 24px;
+    max-width: 620px;
+  }
+  .rec-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+  .rec-tag {
+    font-family: var(--font-mix);
+    font-size: 12px;
+    padding: 6px 14px;
+    background: var(--surface-2);
+    color: var(--ink-2);
+    border-radius: 99px;
+    letter-spacing: 0;
+  }
+  .rec-tag strong {
+    color: var(--ink-3);
+    margin-right: 8px;
+    font-weight: 500;
+    font-size: 10px;
+    font-family: var(--font-en);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .rec-tag.red { background: var(--red-soft); color: var(--red); }
+  .rec-tag.red strong { color: var(--red); opacity: 0.7; }
+  .rec-tag.sage { background: var(--sage-soft); color: var(--sage); }
+  .rec-tag.sage strong { color: var(--sage); opacity: 0.7; }
+  .rec-tag.orange { background: var(--orange-soft); color: #B86640; }
+  .rec-tag.orange strong { color: #B86640; opacity: 0.7; }
+  .rec-tag.slate { background: var(--slate-soft); color: var(--slate); }
+  .rec-tag.slate strong { color: var(--slate); opacity: 0.7; }
+
+  /* ==================== SECTION HEADER (CIS pattern) ==================== */
+  section { margin-bottom: 56px; }
+  .section-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    margin-bottom: 28px;
+    padding-bottom: 4px;
+  }
+  .section-bar {
+    width: 3px;
+    height: 38px;
+    background: var(--ink);
+    border-radius: 2px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .section-titles h2 {
+    font-family: var(--font-mix);
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.3;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .section-titles .section-sub {
+    font-family: var(--font-en);
+    font-size: 12px;
+    color: var(--ink-3);
+    letter-spacing: 0.08em;
+    margin-top: 2px;
+    font-weight: 400;
+  }
+  .section-desc {
+    color: var(--ink-2);
+    font-size: 15px;
+    margin-bottom: 24px;
+    max-width: 760px;
+  }
+
+  /* ==================== MODULE GRID ==================== */
+  .module-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(208px, 1fr));
+    gap: 16px;
+  }
+  .module-card {
+    background: var(--surface);
+    border-radius: var(--r-lg);
+    padding: 26px 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid transparent;
+  }
+  .module-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  .module-card.expanded {
+    border-color: var(--ink-3);
+    box-shadow: var(--shadow-md);
+  }
+  .mod-name {
+    font-family: var(--font-mix);
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 2px;
+    color: var(--ink);
+  }
+  .mod-en {
+    font-family: var(--font-en);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    color: var(--ink-3);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .mod-score {
+    font-family: var(--font-en);
+    font-weight: 300;
+    font-size: 44px;
+    line-height: 1;
+    margin-bottom: 6px;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  .mod-score small {
+    font-family: var(--font-en);
+    font-size: 13px;
+    color: var(--ink-4);
+    margin-left: 4px;
+    font-weight: 400;
+  }
+  .mod-score.s0 { color: var(--sage); }
+  .mod-score.s1 { color: var(--slate); }
+  .mod-score.s2 { color: var(--orange); }
+  .mod-score.s3 { color: var(--red); }
+  .mod-bar { display: flex; gap: 4px; margin-bottom: 16px; }
+  .mod-bar-seg {
+    flex: 1; height: 3px;
+    background: var(--surface-3);
+    border-radius: 2px;
+    transition: background 0.3s;
+  }
+  .mod-bar-seg.filled { background: var(--ink-3); }
+  .mod-card.s3 .mod-bar-seg.filled { background: var(--red); }
+  .mod-trigger-list {
+    font-size: 12px;
+    color: var(--ink-3);
+    line-height: 1.85;
+  }
+  .mod-trigger-list .triggered { color: var(--red); }
+  .mod-trigger-list .triggered::before { content: '● '; }
+  .mod-trigger-list .near { color: var(--orange); }
+  .mod-trigger-list .near::before { content: '○ '; }
+  .mod-trigger-list .quiet { color: var(--ink-4); }
+  .mod-trigger-list .quiet::before { content: '· '; opacity: 0.5; }
+
+  /* ==================== INDICATOR DETAIL ==================== */
+  .ind-detail {
+    margin-top: 24px;
+    display: none;
+    animation: fadeIn 0.3s ease;
+  }
+  .ind-detail.show { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+  .ind-detail-head {
+    margin-bottom: 16px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border-radius: var(--r-md);
+    border-left: 3px solid var(--ink-3);
+    font-size: 14px;
+    color: var(--ink-2);
+  }
+  .ind-detail-head strong {
+    color: var(--ink);
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  .ind-detail-head .meta {
+    font-family: var(--font-en);
+    color: var(--ink-3);
+    font-size: 11px;
+    margin-left: 6px;
+  }
+  .ind-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .ind-card {
+    background: var(--surface);
+    border-radius: var(--r-md);
+    padding: 18px 20px;
+    box-shadow: var(--shadow-sm);
+    border-left: 3px solid transparent;
+    transition: all 0.2s;
+  }
+  .ind-card.triggered { border-left-color: var(--red); }
+  .ind-card.near { border-left-color: var(--orange); }
+  .ind-card.failed { opacity: 0.5; }
+  .ind-name {
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 8px;
+    line-height: 1.4;
+    font-weight: 500;
+  }
+  .ind-value {
+    font-family: var(--font-en);
+    font-size: 22px;
+    font-weight: 300;
+    color: var(--ink);
+    margin-bottom: 2px;
+    letter-spacing: -0.02em;
+  }
+  .ind-card.triggered .ind-value { color: var(--red); }
+  .ind-meta {
+    font-family: var(--font-en);
+    font-size: 11px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 6px;
+  }
+  .ind-status {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 99px;
+    font-family: var(--font-mix);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    font-weight: 500;
+  }
+  .ind-status.t { background: var(--red-soft); color: var(--red); }
+  .ind-status.n { background: var(--orange-soft); color: #B86640; }
+  .ind-status.f { background: var(--surface-3); color: var(--ink-3); }
+
+  /* ==================== TREND CHART ==================== */
+  .chart-wrap {
+    background: var(--surface);
+    border-radius: var(--r-lg);
+    padding: 28px 32px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+  }
+  .chart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 22px;
+  }
+  .chart-title {
+    font-family: var(--font-mix);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .chart-legend {
+    display: flex;
+    gap: 18px;
+    font-family: var(--font-en);
+    font-size: 11px;
+    color: var(--ink-2);
+    letter-spacing: 0.06em;
+  }
+  .chart-legend span { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .legend-dot.top { background: var(--red); }
+  .legend-dot.bot { background: var(--sage); }
+  .chart-svg { width: 100%; height: 280px; display: block; }
+
+  /* ==================== TABLE ==================== */
+  .table-wrap {
+    background: var(--surface);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+  }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th {
+    background: var(--surface-2);
+    color: var(--ink-3);
+    font-family: var(--font-en);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-2);
+    vertical-align: middle;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr.current {
+    background: linear-gradient(90deg, var(--orange-soft), transparent 70%);
+  }
+  tr.current td {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  tr.current td:first-child {
+    position: relative;
+    padding-left: 28px;
+  }
+  tr.current td:first-child::before {
+    content: '';
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--orange);
+  }
+  td.mono {
+    font-family: var(--font-en);
+    font-size: 13px;
+    color: var(--ink);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+
+  /* ==================== PILL ==================== */
+  .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 99px;
+    font-family: var(--font-mix);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .pill.green { background: var(--sage-soft); color: var(--sage); }
+  .pill.yellow { background: var(--orange-soft); color: #B86640; }
+  .pill.red { background: var(--red-soft); color: var(--red); }
+  .pill.grey { background: var(--surface-3); color: var(--ink-3); }
+  .pill.blue { background: var(--slate-soft); color: var(--slate); }
+
+  /* ==================== WATCHLIST ==================== */
+  .watch-grid {
+    display: grid;
+    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+  .watch-item {
+    background: var(--surface);
+    border-radius: var(--r-md);
+    padding: 20px 22px;
+    box-shadow: var(--shadow-sm);
+    transition: all 0.2s;
+  }
+  .watch-item:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  .watch-name {
+    font-family: var(--font-en);
+    font-size: 10px;
+    color: var(--ink-3);
+    margin-bottom: 8px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .watch-current {
+    font-family: var(--font-en);
+    font-size: 26px;
+    font-weight: 300;
+    color: var(--ink);
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+  .watch-trigger {
+    font-size: 12px;
+    color: var(--ink-2);
+    line-height: 1.5;
+  }
+  .watch-distance {
+    font-family: var(--font-en);
+    font-size: 11px;
+    margin-top: 8px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+  }
+
+  /* ==================== LOADING / ERROR ==================== */
+  .loading-screen, .error-screen {
+    text-align: center;
+    padding: 100px 20px;
+    color: var(--ink-3);
+  }
+  .loading-screen .spin {
+    display: inline-block;
+    width: 32px; height: 32px;
+    border: 2px solid var(--line-2);
+    border-top-color: var(--ink-3);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 20px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error-screen .err-icon {
+    font-size: 36px;
+    color: var(--red);
+    margin-bottom: 16px;
+  }
+
+  /* ==================== FOOTER ==================== */
+  footer {
+    margin-top: 80px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+    text-align: center;
+    color: var(--ink-3);
+    font-size: 11px;
+    font-family: var(--font-en);
+    letter-spacing: 0.1em;
+  }
+  footer a { color: var(--ink-2); text-decoration: none; }
+  footer a:hover { color: var(--ink); }
+
+  /* utils */
+  .hidden { display: none !important; }
+
+  @media (max-width: 640px) {
+    body { padding: 32px 16px 60px; }
+    .hero { padding: 28px 24px; }
+    .header-meta { text-align: left; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">守</div>
+      <div class="brand-text">
+        <h1>守牛之道</h1>
+        <div class="brand-sub">The Way of Holding the Bull · v2.5</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="meta-date" id="header-date">—</div>
+      <div>Live SOP Dashboard</div>
+    </div>
+  </header>
+
+  <!-- ==================== STATUS BAR ==================== -->
+  <div class="status-bar">
+    <div class="status-item">
+      <span class="dot loading" id="status-dot"></span>
+      <span id="status-text">載入中…</span>
+    </div>
+    <div class="status-item">
+      Last Updated · <strong id="last-updated">—</strong>
+    </div>
+    <div class="status-item">
+      Next Run · <strong>每日 07:00 (TW)</strong>
+    </div>
+    <button class="btn-refresh" id="btn-refresh">↻ Refresh</button>
+  </div>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <div id="main-content" class="hidden">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="score-block">
+        <div class="score-label">SOP Score</div>
+        <div class="score-label-zh">五模塊總分</div>
+        <div class="score-big" id="sop-score">—<small>/ 15</small></div>
+        <div class="score-zone" id="sop-zone">—</div>
+      </div>
+      <div class="rec-block">
+        <div class="rec-title" id="rec-title">—</div>
+        <div class="rec-body" id="rec-body">—</div>
+        <div class="rec-actions" id="rec-actions"></div>
+      </div>
+    </div>
+
+    <!-- MODULES -->
+    <section>
+      <div class="section-head">
+        <div class="section-bar"></div>
+        <div class="section-titles">
+          <h2>五大模塊計分</h2>
+          <div class="section-sub">Five Module Scoring · Capped at 3</div>
+        </div>
+      </div>
+      <p class="section-desc">每模塊上限 3 分，避免單一類別獨大。點擊任一模塊查看指標明細。</p>
+      <div class="module-grid" id="module-grid"></div>
+      <div class="ind-detail" id="ind-detail"></div>
+    </section>
+
+    <!-- TREND -->
+    <section>
+      <div class="section-head">
+        <div class="section-bar"></div>
+        <div class="section-titles">
+          <h2>評分趨勢</h2>
+          <div class="section-sub">Score Trend · Last 90 Days</div>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-header">
+          <div class="chart-title">頂部訊號 vs 底部訊號</div>
+          <div class="chart-legend">
+            <span><span class="legend-dot top"></span>Top Signal 頂部</span>
+            <span><span class="legend-dot bot"></span>Bottom Signal 底部</span>
+          </div>
+        </div>
+        <svg class="chart-svg" id="trend-chart" viewBox="0 0 1000 280" preserveAspectRatio="none"></svg>
+      </div>
+    </section>
+
+    <!-- ACTION MAP -->
+    <section>
+      <div class="section-head">
+        <div class="section-bar"></div>
+        <div class="section-titles">
+          <h2>部位映射</h2>
+          <div class="section-sub">SOP Action Map</div>
+        </div>
+      </div>
+      <p class="section-desc">根據五模塊總分與趨勢保護層決定的部位。當前位置以圓點標記。</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>SOP Score</th>
+              <th>狀態</th>
+              <th>TQQQ / SOXL</th>
+              <th>QQQ</th>
+              <th>整體股票</th>
+            </tr>
+          </thead>
+          <tbody id="action-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- WATCHLIST -->
+    <section>
+      <div class="section-head">
+        <div class="section-bar"></div>
+        <div class="section-titles">
+          <h2>關鍵盯盤</h2>
+          <div class="section-sub">Watchlist · Closest to Trigger</div>
+        </div>
+      </div>
+      <p class="section-desc">距離觸發門檻最近的指標，動了就會推升模塊分數。</p>
+      <div class="watch-grid" id="watch-grid"></div>
+    </section>
+
+    <!-- ORIGINAL -->
+    <section>
+      <div class="section-head">
+        <div class="section-bar"></div>
+        <div class="section-titles">
+          <h2>原始 v2.5 對照</h2>
+          <div class="section-sub">Original v2.5 Reference</div>
+        </div>
+      </div>
+      <p class="section-desc">對照原本 21/14 等權加總的結果與本系統計算的結果。</p>
+      <div class="table-wrap">
+        <table>
+          <tbody id="original-tbody"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- LOADING / ERROR -->
+  <div class="loading-screen" id="loading-screen">
+    <div class="spin"></div>
+    <div>讀取 latest_score.json 中…</div>
+  </div>
+
+  <div class="error-screen hidden" id="error-screen">
+    <div class="err-icon">⚠</div>
+    <div id="error-message">無法讀取資料</div>
+    <div style="margin-top: 14px; font-size: 12px;">請確認你的網路連線，或檢查 JSON 是否有更新。</div>
+  </div>
+
+  <footer>
+    The Way of Holding the Bull · v2.5 SOP Live Dashboard<br>
+    Auto-fetched from <a href="output/latest_score.json">latest_score.json</a> · Not Investment Advice
+  </footer>
+
+</div>
+
+<script>
+// ===================================================================
+// CONFIG
+// ===================================================================
+const JSON_URL = 'https://ndsfly-commits.github.io/strategy_v25/output/latest_score.json';
+const HISTORY_URL = 'https://ndsfly-commits.github.io/strategy_v25/output/history.csv';
+
+const MODULES = {
+  valuation: { name: '估值', en: 'Valuation', description: '估值與槓桿結構',
+    keys: ['cape_30', 'cape_35', 'buffett_200', 'margin_30', 'margin_50'] },
+  sentiment: { name: '情緒', en: 'Sentiment', description: '貪婪、自滿、持倉熱度',
+    keys: ['fg_75', 'fg_85', 'naaim_high', 'vvix_divergence', 'vix_21ma_low'] },
+  breadth: { name: '廣度', en: 'Breadth', description: '市場內部健康度',
+    keys: ['rsp_spy_breadth', 'breadth_200d', 'xly_xlp', 'smh_spy'] },
+  credit: { name: '信用', en: 'Credit', description: '高收益債、殖利率曲線',
+    keys: ['hy_oas_low', 'hy_oas_expansion', 'yield_inversion'] },
+  technical: { name: '技術', en: 'Technical', description: '動能、機構行為',
+    keys: ['rsi_75', 'rsi_80', 'distribution_days'] }
+};
+const MODULE_CAP = 3;
+
+const ACTION_MAP = [
+  { range: [0, 3], status: { text: '健康', tag: 'green' }, tqqq: '可滿倉', qqq: '滿倉', total: '100%' },
+  { range: [4, 5], status: { text: '略熱', tag: 'blue' }, tqqq: '減半', qqq: '滿倉', total: '100%' },
+  { range: [6, 6], status: { text: '高檔警戒', tag: 'yellow' }, tqqq: '全部出清', qqq: '100% QQQ', total: '100%' },
+  { range: [7, 8], status: { text: '避險啟動', tag: 'yellow' }, tqqq: '—', qqq: '減至 80%', total: '80%' },
+  { range: [9, 10], status: { text: '明顯偏空', tag: 'red' }, tqqq: '—', qqq: '減至 60%', total: '60%' },
+  { range: [11, 15], status: { text: '全面避險', tag: 'red' }, tqqq: '—', qqq: '30% 或以下', total: '≤ 40%' }
+];
+
+// ===================================================================
+// UTILS
+// ===================================================================
+function setStatus(state, msg) {
+  document.getElementById('status-dot').className = 'dot ' + state;
+  document.getElementById('status-text').textContent = msg;
+}
+function fmtNum(v, digits = 2) {
+  if (v === null || v === undefined) return '—';
+  if (typeof v === 'boolean') return v ? '✓' : '✗';
+  if (typeof v === 'string') return v;
+  const n = Number(v);
+  if (Number.isNaN(n)) return String(v);
+  return n.toFixed(digits);
+}
+function fmtTimeAgo(timestamp) {
+  if (!timestamp) return '—';
+  const d = new Date(timestamp.replace(' ', 'T'));
+  const diff = (Date.now() - d.getTime()) / 1000;
+  if (diff < 60) return `${Math.floor(diff)}s ago`;
+  if (diff < 3600) return `${Math.floor(diff/60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}h ago`;
+  return `${Math.floor(diff/86400)}d ago`;
+}
+function getActionFor(score) {
+  return ACTION_MAP.find(a => score >= a.range[0] && score <= a.range[1]) || ACTION_MAP[0];
+}
+function nearTriggerDistance(ind) {
+  if (ind.triggered) return 0;
+  if (ind.value === null || ind.value === undefined) return Infinity;
+  if (ind.confidence === 'failed') return Infinity;
+  const t = String(ind.threshold);
+  const valNum = typeof ind.value === 'string'
+    ? parseFloat(ind.value.replace(/[^\d.\-+]/g, ''))
+    : Number(ind.value);
+  if (Number.isNaN(valNum)) return Infinity;
+  const m = t.match(/([≥≤<>]=?)\s*(-?\d+\.?\d*)/);
+  if (!m) return Infinity;
+  const op = m[1]; const target = parseFloat(m[2]);
+  if (op === '≥' || op === '>=' || op === '>') return Math.max(0, target - valNum);
+  if (op === '≤' || op === '<=' || op === '<') return Math.max(0, valNum - target);
+  return Infinity;
+}
+function isNearTrigger(ind) {
+  if (ind.triggered) return false;
+  const dist = nearTriggerDistance(ind);
+  if (dist === Infinity || dist === 0) return false;
+  const t = String(ind.threshold);
+  const m = t.match(/([≥≤<>]=?)\s*(-?\d+\.?\d*)/);
+  if (!m) return false;
+  const target = Math.abs(parseFloat(m[2]));
+  return dist < Math.max(target * 0.08, 3);
+}
+
+// ===================================================================
+// HERO RENDER
+// ===================================================================
+function renderHero(sopScore, sopAction, qqqAboveMA200) {
+  const elScore = document.getElementById('sop-score');
+  elScore.innerHTML = `${sopScore}<small>/ 15</small>`;
+  elScore.classList.remove('cool', 'warm', 'hot');
+  if (sopScore <= 4) elScore.classList.add('cool');
+  else if (sopScore <= 8) elScore.classList.add('warm');
+  else elScore.classList.add('hot');
+
+  document.getElementById('sop-zone').textContent = sopAction.status.text;
+
+  const titleMap = {
+    0: '健康多頭 · 安心持倉', 1: '健康多頭 · 安心持倉', 2: '健康多頭 · 安心持倉', 3: '健康多頭 · 安心持倉',
+    4: '略熱 · 檢視槓桿', 5: '略熱 · 檢視槓桿',
+    6: '高檔警戒 · 拆槓桿', 7: '避險啟動 · 減碼動作',
+    8: '避險啟動 · 減碼動作', 9: '明顯偏空 · 大幅減碼',
+    10: '明顯偏空 · 大幅減碼', 11: '全面避險', 12: '全面避險',
+    13: '全面避險', 14: '極端避險', 15: '極端避險'
+  };
+  document.getElementById('rec-title').textContent = titleMap[sopScore] || '—';
+
+  let body;
+  if (sopScore <= 3) body = '市場結構健康，可滿倉。允許 TQQQ / SOXL 衛星部位。';
+  else if (sopScore <= 5) body = '部分模塊出現過熱訊號。減半 TQQQ 部位但維持滿倉。';
+  else if (sopScore === 6) body = '估值與槓桿達高位，廣度開始走弱。TQQQ 全部出清，QQQ 留。';
+  else if (sopScore <= 8) body = '多模塊同時惡化。整體股票降至 80%，但 QQQ 仍 > 200MA 時不轉現金。';
+  else if (sopScore <= 10) body = '系統性風險明顯。整體股票降至 60%，搭配防禦資產。';
+  else body = '進入歷史性高風險區。整體股票壓到 40% 以下，現金與防禦為主。';
+  document.getElementById('rec-body').textContent = body;
+
+  const tagClass = {
+    green: 'sage', yellow: 'orange', red: 'red', blue: 'slate'
+  };
+  const t = tagClass[sopAction.status.tag] || 'slate';
+  document.getElementById('rec-actions').innerHTML = `
+    <span class="rec-tag ${t}"><strong>TQQQ</strong>${sopAction.tqqq}</span>
+    <span class="rec-tag ${t}"><strong>QQQ</strong>${sopAction.qqq}</span>
+    <span class="rec-tag ${t}"><strong>Total</strong>${sopAction.total}</span>
+    <span class="rec-tag ${qqqAboveMA200 ? 'sage' : 'red'}"><strong>Trend</strong>${qqqAboveMA200 ? 'QQQ > 200MA' : 'QQQ < 200MA'}</span>
+  `;
+}
+
+// ===================================================================
+// MODULES RENDER
+// ===================================================================
+let expandedModule = null;
+function renderModules(indicators) {
+  const grid = document.getElementById('module-grid');
+  grid.innerHTML = '';
+  const moduleData = {};
+  Object.entries(MODULES).forEach(([key, mod]) => {
+    const inds = indicators.filter(i => mod.keys.includes(i.key));
+    const rawPoints = inds.reduce((s, i) => s + (i.points || 0), 0);
+    const cappedScore = Math.min(rawPoints, MODULE_CAP);
+    moduleData[key] = { mod, inds, rawPoints, cappedScore };
+  });
+
+  Object.entries(moduleData).forEach(([key, m]) => {
+    const card = document.createElement('div');
+    card.className = 'module-card';
+    card.dataset.module = key;
+    const triggerList = m.inds.map(i => {
+      const cls = i.triggered ? 'triggered' : (isNearTrigger(i) ? 'near' : 'quiet');
+      const shortName = i.name.replace(/^🆕\s*/, '');
+      return `<div class="${cls}">${shortName}</div>`;
+    }).join('');
+    const bars = Array(MODULE_CAP).fill(0).map((_, idx) =>
+      `<div class="mod-bar-seg ${idx < m.cappedScore ? 'filled' : ''}"></div>`
+    ).join('');
+    card.innerHTML = `
+      <div class="mod-name">${m.mod.name}</div>
+      <div class="mod-en">${m.mod.en}</div>
+      <div class="mod-score s${m.cappedScore}">${m.cappedScore}<small>/ ${MODULE_CAP}</small></div>
+      <div class="mod-bar">${bars}</div>
+      <div class="mod-trigger-list">${triggerList}</div>
+    `;
+    card.addEventListener('click', () => toggleDetail(key, moduleData));
+    grid.appendChild(card);
+  });
+  return moduleData;
+}
+
+function toggleDetail(moduleKey, moduleData) {
+  const detail = document.getElementById('ind-detail');
+  document.querySelectorAll('.module-card').forEach(c => c.classList.remove('expanded'));
+  if (expandedModule === moduleKey) {
+    detail.classList.remove('show');
+    expandedModule = null;
+    return;
+  }
+  expandedModule = moduleKey;
+  document.querySelector(`[data-module="${moduleKey}"]`).classList.add('expanded');
+  const m = moduleData[moduleKey];
+  const cardsHTML = m.inds.map(i => {
+    const triggered = i.triggered;
+    const near = !triggered && isNearTrigger(i);
+    const failed = i.confidence === 'failed';
+    const cls = failed ? 'failed' : (triggered ? 'triggered' : (near ? 'near' : ''));
+    const status = triggered ? 't' : (near ? 'n' : 'f');
+    const statusText = triggered ? '已觸發' : (near ? '接近' : (failed ? '無資料' : '未觸發'));
+    const shortName = i.name.replace(/^🆕\s*/, '');
+    return `
+      <div class="ind-card ${cls}">
+        <div class="ind-name">${shortName}</div>
+        <div class="ind-value">${fmtNum(i.value)}</div>
+        <div class="ind-meta">
+          <span>${i.threshold}</span>
+          <span class="ind-status ${status}">${statusText}</span>
+        </div>
+      </div>`;
+  }).join('');
+  detail.innerHTML = `
+    <div class="ind-detail-head">
+      <strong>${m.mod.name} · ${m.mod.en}</strong>${m.mod.description}
+      <span class="meta">原始 ${m.rawPoints} → 上限後 ${m.cappedScore}</span>
+    </div>
+    <div class="ind-grid">${cardsHTML}</div>`;
+  detail.classList.add('show');
+}
+
+// ===================================================================
+// ACTION TABLE
+// ===================================================================
+function renderActionTable(currentScore) {
+  const tbody = document.getElementById('action-tbody');
+  tbody.innerHTML = '';
+  ACTION_MAP.forEach(a => {
+    const rangeText = a.range[0] === a.range[1] ? `${a.range[0]}`
+      : (a.range[1] === 15 ? `≥ ${a.range[0]}` : `${a.range[0]} – ${a.range[1]}`);
+    const isCurrent = currentScore >= a.range[0] && currentScore <= a.range[1];
+    const tr = document.createElement('tr');
+    if (isCurrent) tr.className = 'current';
+    tr.innerHTML = `
+      <td class="mono">${rangeText}</td>
+      <td><span class="pill ${a.status.tag}">${a.status.text}</span></td>
+      <td>${a.tqqq}</td>
+      <td>${a.qqq}</td>
+      <td class="mono">${a.total}</td>`;
+    tbody.appendChild(tr);
+  });
+}
+
+// ===================================================================
+// WATCHLIST
+// ===================================================================
+function renderWatchlist(indicators) {
+  const candidates = indicators
+    .filter(i => !i.triggered && i.confidence !== 'failed')
+    .map(i => ({ ind: i, distance: nearTriggerDistance(i) }))
+    .filter(x => x.distance !== Infinity && x.distance > 0)
+    .sort((a, b) => {
+      const tA = parseFloat((a.ind.threshold.match(/(-?\d+\.?\d*)/) || [0])[0]) || 1;
+      const tB = parseFloat((b.ind.threshold.match(/(-?\d+\.?\d*)/) || [0])[0]) || 1;
+      return (a.distance / Math.abs(tA)) - (b.distance / Math.abs(tB));
+    }).slice(0, 8);
+  const grid = document.getElementById('watch-grid');
+  grid.innerHTML = candidates.map(({ ind, distance }) => {
+    const shortName = ind.name.replace(/^🆕\s*/, '');
+    return `
+      <div class="watch-item">
+        <div class="watch-name">${shortName}</div>
+        <div class="watch-current">${fmtNum(ind.value)}</div>
+        <div class="watch-trigger">門檻：${ind.threshold}</div>
+        <div class="watch-distance">距觸發 ${distance.toFixed(2)}</div>
+      </div>`;
+  }).join('');
+}
+
+// ===================================================================
+// ORIGINAL VIEW
+// ===================================================================
+function renderOriginalView(json, sopScore) {
+  const tbody = document.getElementById('original-tbody');
+  tbody.innerHTML = `
+    <tr>
+      <td style="color:var(--ink-3);">原始 v2.5 頂部分數（等權加總）</td>
+      <td class="mono">${json.top_score} / ${json.top_max}</td>
+      <td><span class="pill yellow">${json.top_zone}</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--ink-3);">原始 v2.5 底部分數</td>
+      <td class="mono">${json.bottom_score} / ${json.bottom_max}</td>
+      <td>${json.bottom_score >= 6 ? '<span class="pill green">觸發中</span>' : '<span class="pill grey">靜止</span>'}</td>
+    </tr>
+    <tr>
+      <td style="color:var(--ink-3);">原始 v2.5 建議</td>
+      <td colspan="2">${json.action}</td>
+    </tr>
+    <tr style="background: linear-gradient(90deg, var(--orange-soft), transparent 60%);">
+      <td><strong style="color:var(--ink);">SOP 五模塊總分（每模塊上限 3）</strong></td>
+      <td class="mono"><strong>${sopScore} / 15</strong></td>
+      <td><span class="pill ${getActionFor(sopScore).status.tag}">${getActionFor(sopScore).status.text}</span></td>
+    </tr>`;
+}
+
+// ===================================================================
+// CHART
+// ===================================================================
+function renderChart(history) {
+  const svg = document.getElementById('trend-chart');
+  svg.innerHTML = '';
+  if (!history || history.length === 0) {
+    svg.innerHTML = `<text x="500" y="140" fill="#888B8D" text-anchor="middle"
+      style="font-family:Poppins; font-size:13px">尚無歷史資料</text>`;
+    return;
+  }
+  const W = 1000, H = 280, PAD = { top: 24, right: 24, bottom: 40, left: 36 };
+  const innerW = W - PAD.left - PAD.right, innerH = H - PAD.top - PAD.bottom;
+  const maxScore = 22;
+  const recent = history.slice(-90);
+  const n = recent.length;
+  const xStep = n > 1 ? innerW / (n - 1) : 0;
+
+  // Background grid
+  for (let s = 0; s <= maxScore; s += 5) {
+    const y = PAD.top + innerH - (s / maxScore) * innerH;
+    svg.innerHTML += `<line x1="${PAD.left}" y1="${y}" x2="${W - PAD.right}" y2="${y}"
+      stroke="rgba(83,86,90,0.08)" stroke-width="1"/>`;
+    svg.innerHTML += `<text x="${PAD.left - 10}" y="${y + 4}" fill="#B5B4B2"
+      font-family="Poppins" font-size="10" text-anchor="end">${s}</text>`;
+  }
+  // 7-threshold line
+  const y7 = PAD.top + innerH - (7 / maxScore) * innerH;
+  svg.innerHTML += `<line x1="${PAD.left}" y1="${y7}" x2="${W - PAD.right}" y2="${y7}"
+    stroke="#DD2F3B" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>`;
+  svg.innerHTML += `<text x="${W - PAD.right - 6}" y="${y7 - 6}" fill="#DD2F3B"
+    font-family="Poppins" font-size="10" text-anchor="end" opacity="0.7">Trigger ≥ 7</text>`;
+
+  // Top line
+  const topPath = recent.map((d, i) => {
+    const x = PAD.left + i * xStep;
+    const y = PAD.top + innerH - (d.top_score / maxScore) * innerH;
+    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+  const topArea = topPath + ` L ${PAD.left + (n-1) * xStep} ${PAD.top + innerH} L ${PAD.left} ${PAD.top + innerH} Z`;
+  svg.innerHTML += `<path d="${topArea}" fill="rgba(221,47,59,0.06)" />`;
+  svg.innerHTML += `<path d="${topPath}" stroke="#DD2F3B" stroke-width="2" fill="none" stroke-linejoin="round"/>`;
+
+  // Bottom line
+  const botPath = recent.map((d, i) => {
+    const x = PAD.left + i * xStep;
+    const y = PAD.top + innerH - (d.bottom_score / maxScore) * innerH;
+    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+  svg.innerHTML += `<path d="${botPath}" stroke="#6B8C73" stroke-width="2" fill="none" stroke-linejoin="round"/>`;
+
+  // Last point
+  const lastIdx = n - 1;
+  const lastX = PAD.left + lastIdx * xStep;
+  const topY = PAD.top + innerH - (recent[lastIdx].top_score / maxScore) * innerH;
+  svg.innerHTML += `<circle cx="${lastX}" cy="${topY}" r="5" fill="white" stroke="#DD2F3B" stroke-width="2"/>`;
+  svg.innerHTML += `<text x="${lastX - 8}" y="${topY - 10}" fill="#DD2F3B"
+    font-family="Poppins" font-size="11" text-anchor="end" font-weight="500">${recent[lastIdx].top_score}</text>`;
+
+  if (n >= 3) {
+    const dates = [0, Math.floor(n / 2), n - 1];
+    dates.forEach(i => {
+      const x = PAD.left + i * xStep;
+      svg.innerHTML += `<text x="${x}" y="${H - 14}" fill="#888B8D"
+        font-family="Poppins" font-size="10" text-anchor="middle">${recent[i].date}</text>`;
+    });
+  }
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',');
+  return lines.slice(1).map(line => {
+    const vals = line.split(',');
+    const obj = {};
+    headers.forEach((h, i) => {
+      const v = vals[i];
+      if (v === '' || v === undefined) { obj[h] = null; return; }
+      const n = Number(v);
+      obj[h] = (v === 'True') ? true : (v === 'False') ? false :
+               (!Number.isNaN(n) && v.trim() !== '') ? n : v;
+    });
+    return obj;
+  });
+}
+
+// ===================================================================
+// MAIN
+// ===================================================================
+async function loadDashboard() {
+  const btn = document.getElementById('btn-refresh');
+  btn.disabled = true;
+  setStatus('loading', '抓取資料中…');
+  try {
+    const cacheBust = Math.floor(Date.now() / 60000);
+    const [jsonRes, csvRes] = await Promise.allSettled([
+      fetch(`${JSON_URL}?t=${cacheBust}`),
+      fetch(`${HISTORY_URL}?t=${cacheBust}`)
+    ]);
+    if (jsonRes.status !== 'fulfilled' || !jsonRes.value.ok) {
+      throw new Error(`JSON 讀取失敗：${jsonRes.value?.status || 'network error'}`);
+    }
+    const json = await jsonRes.value.json();
+    let history = [];
+    if (csvRes.status === 'fulfilled' && csvRes.value.ok) {
+      const csvText = await csvRes.value.text();
+      history = parseCSV(csvText);
+    }
+    renderAll(json, history);
+    setStatus('ok', '已更新');
+    document.getElementById('main-content').classList.remove('hidden');
+    document.getElementById('loading-screen').classList.add('hidden');
+    document.getElementById('error-screen').classList.add('hidden');
+  } catch (err) {
+    console.error(err);
+    setStatus('err', '讀取失敗');
+    document.getElementById('error-message').textContent = err.message;
+    document.getElementById('main-content').classList.add('hidden');
+    document.getElementById('loading-screen').classList.add('hidden');
+    document.getElementById('error-screen').classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function renderAll(json, history) {
+  const moduleData = renderModules(json.top_indicators);
+  const sopScore = Object.values(moduleData).reduce((s, m) => s + m.cappedScore, 0);
+  const sopAction = getActionFor(sopScore);
+  document.getElementById('header-date').textContent = json.date;
+  document.getElementById('last-updated').textContent = fmtTimeAgo(json.timestamp);
+  const qqqDD = json.raw_data?.qqq_drawdown_pct;
+  const qqqAboveMA200 = qqqDD === null || qqqDD === undefined || qqqDD > -8;
+  renderHero(sopScore, sopAction, qqqAboveMA200);
+  renderActionTable(sopScore);
+  renderWatchlist(json.top_indicators);
+  renderOriginalView(json, sopScore);
+  renderChart(history);
+}
+
+document.getElementById('btn-refresh').addEventListener('click', loadDashboard);
+loadDashboard();
+setInterval(loadDashboard, 30 * 60 * 1000);
+</script>
+</body>
+</html>
