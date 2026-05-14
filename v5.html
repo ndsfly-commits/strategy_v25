@@ -207,83 +207,172 @@ header.top {
 .btn-refresh:active { background: var(--ink-2); }
 .btn-refresh:disabled { opacity: 0.4; cursor: wait; }
 
-/* ==================== HERO ==================== */
-.hero {
+/* ==================== SCORE PANEL (TOP + BOTTOM) ==================== */
+.score-panel {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.score-card {
   background: var(--surface);
   border-radius: var(--r-xl);
-  padding: 26px 22px;
-  margin-bottom: 32px;
+  padding: 22px 22px;
+  box-shadow: var(--shadow-md);
+  border-left: 3px solid var(--surface-3);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.3s ease, background 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+.score-card.cool { border-left-color: var(--sage); }
+.score-card.warm { border-left-color: var(--orange); }
+.score-card.hot { border-left-color: var(--red); }
+.score-card.active { border-left-color: var(--sage); }
+
+.score-card::before {
+  content: '';
+  position: absolute;
+  top: -30px; right: -30px;
+  width: 140px; height: 140px;
+  background: radial-gradient(circle, var(--silver), transparent 60%);
+  opacity: 0.25;
+  pointer-events: none;
+}
+.score-card.warm::before { background: radial-gradient(circle, var(--orange-soft), transparent 60%); opacity: 0.6; }
+.score-card.hot::before { background: radial-gradient(circle, var(--red-soft), transparent 60%); opacity: 0.6; }
+.score-card.cool::before, .score-card.active::before {
+  background: radial-gradient(circle, var(--sage-soft), transparent 60%); opacity: 0.6;
+}
+
+.card-top { position: relative; z-index: 1; }
+.card-title {
+  font-family: var(--font-mix);
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-bottom: 2px;
+  letter-spacing: -0.005em;
+}
+.card-sub {
+  font-family: var(--font-en);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.card-mid {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
+}
+.big-num {
+  font-family: var(--font-en);
+  font-weight: 200;
+  font-size: 64px;
+  line-height: 0.9;
+  color: var(--ink);
+  letter-spacing: -0.04em;
+  transition: color 0.3s ease;
+}
+.score-card.cool .big-num { color: var(--sage); }
+.score-card.warm .big-num { color: var(--orange); }
+.score-card.hot .big-num { color: var(--red); }
+.score-card.active .big-num { color: var(--sage); }
+.big-num small {
+  font-family: var(--font-en);
+  font-size: 17px;
+  color: var(--ink-4);
+  font-weight: 300;
+  margin-left: 3px;
+  letter-spacing: 0;
+}
+.card-status { position: relative; z-index: 1; }
+.card-desc {
+  font-size: 13.5px;
+  color: var(--ink-3);
+  line-height: 1.6;
+  position: relative;
+  z-index: 1;
+}
+.card-desc strong {
+  color: var(--ink-2);
+  font-weight: 500;
+}
+
+/* ==================== SUMMARY CARD ==================== */
+.summary-card {
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  padding: 26px 24px;
+  margin-bottom: 36px;
   box-shadow: var(--shadow-md);
   position: relative;
   overflow: hidden;
 }
-.hero::before {
+.summary-card::before {
   content: '';
   position: absolute;
-  top: -40px; right: -40px;
-  width: 200px; height: 200px;
-  background: radial-gradient(circle, var(--silver) 0%, transparent 60%);
-  opacity: 0.35;
+  top: -50px; right: -50px;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, var(--orange-soft), transparent 60%);
+  opacity: 0.5;
   pointer-events: none;
 }
-.score-block { position: relative; z-index: 1; margin-bottom: 24px; }
-.score-label {
+.summary-card.cool::before { background: radial-gradient(circle, var(--sage-soft), transparent 60%); }
+.summary-card.hot::before { background: radial-gradient(circle, var(--red-soft), transparent 60%); }
+.summary-label {
   font-family: var(--font-en);
   font-size: 11px;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.18em;
   color: var(--ink-3);
   text-transform: uppercase;
-  margin-bottom: 4px;
   font-weight: 500;
+  margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
 }
-.score-label-zh {
-  font-size: 14px;
-  color: var(--ink-2);
-  margin-bottom: 12px;
-}
-.score-big {
-  font-family: var(--font-en);
-  font-weight: 200;
-  font-size: 88px;
-  line-height: 0.95;
-  color: var(--ink);
-  letter-spacing: -0.04em;
-  transition: color 0.4s ease;
-}
-.score-big.cool { color: var(--sage); }
-.score-big.warm { color: var(--orange); }
-.score-big.hot { color: var(--red); }
-.score-big small {
-  font-family: var(--font-en);
-  font-size: 22px;
-  color: var(--ink-4);
-  font-weight: 300;
-  margin-left: 4px;
-  letter-spacing: 0;
-}
-.score-zone {
-  margin-top: 6px;
-  font-size: 15px;
-  color: var(--ink-2);
-  font-weight: 500;
-}
-.rec-block { position: relative; z-index: 1; }
-.rec-title {
+.summary-label .zh {
   font-family: var(--font-mix);
-  font-size: 21px;
+  font-size: 13px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--ink-2);
+  margin-right: 8px;
+  font-weight: 600;
+}
+.summary-title {
+  font-family: var(--font-mix);
+  font-size: 22px;
   font-weight: 600;
   margin-bottom: 12px;
   line-height: 1.3;
   color: var(--ink);
-  letter-spacing: -0.005em;
+  letter-spacing: -0.01em;
+  position: relative;
+  z-index: 1;
 }
-.rec-body {
+.summary-body {
   color: var(--ink-2);
   font-size: 15px;
-  line-height: 1.7;
+  line-height: 1.75;
   margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
 }
-.rec-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.summary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  position: relative;
+  z-index: 1;
+}
 .rec-tag {
   font-family: var(--font-mix);
   font-size: 13px;
@@ -674,74 +763,7 @@ section { margin-bottom: 36px; }
   letter-spacing: 0.04em;
 }
 
-/* ==================== BOTTOM SIGNAL ==================== */
-.bottom-signal {
-  background: var(--surface);
-  border-radius: var(--r-lg);
-  padding: 22px 22px;
-  box-shadow: var(--shadow-sm);
-  border-left: 3px solid var(--surface-3);
-  transition: border-color 0.3s, background 0.3s;
-}
-.bottom-signal.active {
-  border-left-color: var(--sage);
-  background: linear-gradient(90deg, var(--sage-soft), var(--surface) 60%);
-}
-.bs-main {
-  display: flex;
-  gap: 18px;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-.bs-score-block { flex-shrink: 0; min-width: 86px; }
-.bs-score {
-  font-family: var(--font-en);
-  font-size: 38px;
-  font-weight: 300;
-  color: var(--ink-2);
-  letter-spacing: -0.03em;
-  line-height: 0.95;
-}
-.bottom-signal.active .bs-score { color: var(--sage); }
-.bs-score small {
-  font-size: 14px;
-  color: var(--ink-4);
-  margin-left: 3px;
-  font-weight: 400;
-  letter-spacing: 0;
-}
-.bs-zone { margin-top: 10px; }
-.bs-desc {
-  font-size: 14.5px;
-  color: var(--ink-2);
-  line-height: 1.65;
-  flex: 1;
-  min-width: 200px;
-  padding-top: 6px;
-}
-.bs-triggered {
-  margin-top: 16px;
-  padding-top: 14px;
-  border-top: 1px solid var(--line);
-}
-.bs-triggered-label {
-  font-family: var(--font-en);
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  color: var(--ink-3);
-  text-transform: uppercase;
-  margin-bottom: 8px;
-  font-weight: 500;
-}
-.bs-trigger-item {
-  font-size: 13.5px;
-  color: var(--ink-2);
-  line-height: 1.8;
-}
-.bs-trigger-item::before {
-  content: '● ';
-  color: var(--sage);
-}
+/* (Bottom Signal CSS removed - now part of score-card) */
 
 /* ==================== LOADING / ERROR ==================== */
 .loading-screen, .error-screen {
@@ -811,17 +833,12 @@ footer a:hover { color: var(--ink); }
   }
   .btn-refresh:hover { background: var(--ink); color: white; border-color: var(--ink); }
 
-  .hero {
-    padding: 36px 36px;
-    display: grid;
-    grid-template-columns: minmax(220px, 280px) 1fr;
-    gap: 40px;
-    align-items: center;
-    margin-bottom: 40px;
-  }
-  .score-block { margin-bottom: 0; }
-  .score-big { font-size: 108px; }
-  .rec-title { font-size: 24px; }
+  /* Score panel: 2 cols on tablet+ */
+  .score-panel { grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px; }
+  .score-card { padding: 26px 26px; }
+  .big-num { font-size: 72px; }
+  .summary-card { padding: 32px 32px; margin-bottom: 44px; }
+  .summary-title { font-size: 24px; }
 
   section { margin-bottom: 44px; }
   .section-titles h2 { font-size: 22px; }
@@ -855,8 +872,7 @@ footer a:hover { color: var(--ink); }
 =================================================================== */
 @media (min-width: 960px) {
   body { padding: 56px 32px 80px; }
-  .hero { padding: 44px 48px; gap: 48px; }
-  .score-big { font-size: 128px; }
+  .big-num { font-size: 84px; }
   .section-titles h2 { font-size: 24px; }
 }
 </style>
@@ -896,20 +912,14 @@ footer a:hover { color: var(--ink); }
   <!-- ==================== MAIN ==================== -->
   <div id="main-content" class="hidden">
 
-    <!-- HERO -->
-    <div class="hero">
-      <div class="score-block">
-        <div class="score-label">SOP Score</div>
-        <div class="score-label-zh">五模塊總分</div>
-        <div class="score-big" id="sop-score">—<small>/ 15</small></div>
-        <div class="score-zone" id="sop-zone">—</div>
-      </div>
-      <div class="rec-block">
-        <div class="rec-title" id="rec-title">—</div>
-        <div class="rec-body" id="rec-body">—</div>
-        <div class="rec-actions" id="rec-actions"></div>
-      </div>
+    <!-- ==================== SCORE PANEL (TOP + BOTTOM) ==================== -->
+    <div class="score-panel">
+      <div class="score-card top-card" id="top-card"></div>
+      <div class="score-card bottom-card" id="bottom-card"></div>
     </div>
+
+    <!-- ==================== SUMMARY ==================== -->
+    <div class="summary-card" id="summary-card"></div>
 
     <!-- MODULES -->
     <section>
@@ -972,18 +982,7 @@ footer a:hover { color: var(--ink); }
       <div class="watch-grid" id="watch-grid"></div>
     </section>
 
-    <!-- BOTTOM SIGNAL -->
-    <section>
-      <div class="section-head">
-        <div class="section-bar"></div>
-        <div class="section-titles">
-          <h2>底部訊號</h2>
-          <div class="section-sub">Bottom Signal · Buy-the-Dip</div>
-        </div>
-      </div>
-      <p class="section-desc">與頂部訊號相反方向：恐慌、極端超賣、信用利差爆開。觸發 5 分以上時考慮加碼 / 開 TQQQ 部位。</p>
-      <div id="bottom-signal-wrap"></div>
-    </section>
+    <!-- BOTTOM SIGNAL is now in top SCORE PANEL -->
 
   </div>
 
@@ -1096,15 +1095,83 @@ function isNearTrigger(ind) {
   return dist < Math.max(target * 0.08, 3);
 }
 
-function renderHero(sopScore, sopAction, qqqAboveMA200) {
-  const elScore = document.getElementById('sop-score');
-  elScore.innerHTML = `${sopScore}<small>/ 15</small>`;
-  elScore.classList.remove('cool', 'warm', 'hot');
-  if (sopScore <= 4) elScore.classList.add('cool');
-  else if (sopScore <= 8) elScore.classList.add('warm');
-  else elScore.classList.add('hot');
+function renderScorePanel(sopScore, sopAction, json, moduleData) {
+  // ===== TOP CARD =====
+  const topCard = document.getElementById('top-card');
+  let topClass = 'cool';
+  if (sopScore >= 9) topClass = 'hot';
+  else if (sopScore >= 5) topClass = 'warm';
+  topCard.className = `score-card top-card ${topClass}`;
 
-  document.getElementById('sop-zone').textContent = sopAction.status.text;
+  // Count modules with score > 0, sorted by score desc
+  const modulesWithScore = Object.values(moduleData)
+    .filter(m => m.cappedScore > 0)
+    .sort((a, b) => b.cappedScore - a.cappedScore);
+  const moduleSummary = modulesWithScore.length === 0
+    ? '無模塊觸發訊號'
+    : modulesWithScore.map(m => `<strong>${m.mod.name}</strong> ${m.cappedScore}`).join(' · ');
+
+  topCard.innerHTML = `
+    <div class="card-top">
+      <div class="card-title">頂部訊號</div>
+      <div class="card-sub">Top Signal · Late-Cycle</div>
+    </div>
+    <div class="card-mid">
+      <div class="big-num">${sopScore}<small>/ 15</small></div>
+      <div class="card-status"><span class="pill ${sopAction.status.tag}">${sopAction.status.text}</span></div>
+    </div>
+    <div class="card-desc">${moduleSummary}</div>
+  `;
+
+  // ===== BOTTOM CARD =====
+  const bottomCard = document.getElementById('bottom-card');
+  const bScore = json.bottom_score;
+  const bMax = json.bottom_max;
+  const threshold = 5;
+
+  let bStatusText, bStatusTag, bClass = '';
+  if (bScore >= threshold) {
+    bStatusText = '觸發'; bStatusTag = 'green'; bClass = 'active';
+  } else if (bScore >= 3) {
+    bStatusText = '警戒'; bStatusTag = 'yellow';
+  } else {
+    bStatusText = '靜止'; bStatusTag = 'grey';
+  }
+
+  const triggered = json.bottom_indicators
+    .filter(i => i.triggered)
+    .map(i => i.name.replace(/^🆕\s*/, ''));
+
+  let bDesc;
+  if (bScore >= threshold) {
+    bDesc = `${triggered.length} 個訊號觸發 · 考慮加碼 / 開 TQQQ`;
+  } else if (bScore === 0) {
+    bDesc = '無抄底訊號，市場無極端恐慌';
+  } else {
+    const list = triggered.slice(0, 2).join('、');
+    bDesc = `已觸發：<strong>${list}</strong>　距門檻還差 ${threshold - bScore}`;
+  }
+
+  bottomCard.className = `score-card bottom-card ${bClass}`;
+  bottomCard.innerHTML = `
+    <div class="card-top">
+      <div class="card-title">底部訊號</div>
+      <div class="card-sub">Bottom Signal · Buy-the-Dip</div>
+    </div>
+    <div class="card-mid">
+      <div class="big-num">${bScore}<small>/ ${bMax}</small></div>
+      <div class="card-status"><span class="pill ${bStatusTag}">${bStatusText}</span></div>
+    </div>
+    <div class="card-desc">${bDesc}</div>
+  `;
+}
+
+function renderSummary(sopScore, sopAction, qqqAboveMA200) {
+  const card = document.getElementById('summary-card');
+  let cardClass = 'cool';
+  if (sopScore >= 9) cardClass = 'hot';
+  else if (sopScore >= 5) cardClass = 'warm';
+  card.className = `summary-card ${cardClass}`;
 
   const titleMap = {
     0: '健康多頭 · 安心持倉', 1: '健康多頭 · 安心持倉', 2: '健康多頭 · 安心持倉', 3: '健康多頭 · 安心持倉',
@@ -1114,23 +1181,27 @@ function renderHero(sopScore, sopAction, qqqAboveMA200) {
     10: '明顯偏空 · 大幅減碼', 11: '全面避險', 12: '全面避險',
     13: '全面避險', 14: '極端避險', 15: '極端避險'
   };
-  document.getElementById('rec-title').textContent = titleMap[sopScore] || '—';
 
   let body;
   if (sopScore <= 3) body = '市場結構健康，可滿倉。允許 TQQQ / SOXL 衛星部位。';
   else if (sopScore <= 5) body = '部分模塊出現過熱訊號。減半 TQQQ 部位但維持滿倉。';
-  else if (sopScore === 6) body = '估值與槓桿達高位，廣度開始走弱。TQQQ 全部出清，QQQ 留。';
+  else if (sopScore === 6) body = '估值與槓桿達高位，廣度開始走弱。TQQQ 全部出清，QQQ 維持滿倉。';
   else if (sopScore <= 8) body = '多模塊同時惡化。整體股票降至 80%，但 QQQ 仍 > 200MA 時不轉現金。';
   else if (sopScore <= 10) body = '系統性風險明顯。整體股票降至 60%，搭配防禦資產。';
   else body = '進入歷史性高風險區。整體股票壓到 40% 以下，現金與防禦為主。';
-  document.getElementById('rec-body').textContent = body;
 
   const tagClass = { green: 'sage', yellow: 'orange', red: 'red', blue: 'slate' };
   const t = tagClass[sopAction.status.tag] || 'slate';
-  document.getElementById('rec-actions').innerHTML = `
-    <span class="rec-tag ${t}"><strong>Total</strong>${sopAction.total}</span>
-    <span class="rec-tag ${t}"><strong>TQQQ</strong>${sopAction.tqqq}</span>
-    <span class="rec-tag ${qqqAboveMA200 ? 'sage' : 'red'}"><strong>Trend</strong>${qqqAboveMA200 ? '> 200MA' : '< 200MA'}</span>
+
+  card.innerHTML = `
+    <div class="summary-label"><span class="zh">總結分析</span>Summary</div>
+    <div class="summary-title">${titleMap[sopScore] || '—'}</div>
+    <div class="summary-body">${body}</div>
+    <div class="summary-actions">
+      <span class="rec-tag ${t}"><strong>Total</strong>${sopAction.total}</span>
+      <span class="rec-tag ${t}"><strong>TQQQ</strong>${sopAction.tqqq}</span>
+      <span class="rec-tag ${qqqAboveMA200 ? 'sage' : 'red'}"><strong>Trend</strong>${qqqAboveMA200 ? '> 200MA' : '< 200MA'}</span>
+    </div>
   `;
 }
 
@@ -1256,56 +1327,6 @@ function renderWatchlist(indicators) {
   }).join('');
 }
 
-function renderBottomSignal(json) {
-  const wrap = document.getElementById('bottom-signal-wrap');
-  const score = json.bottom_score;
-  const max = json.bottom_max;
-  const threshold = 5;
-
-  let statusText, statusTag, desc;
-  if (score >= threshold) {
-    statusText = '觸發';
-    statusTag = 'green';
-    desc = '多項極端訊號出現，考慮加碼或開 TQQQ 部位。';
-  } else if (score >= 3) {
-    statusText = '警戒';
-    statusTag = 'yellow';
-    desc = `已出現 ${score} 個訊號，留意是否進一步惡化至觸發門檻 (${threshold})。`;
-  } else if (score === 0) {
-    statusText = '靜止';
-    statusTag = 'grey';
-    desc = '無任何抄底訊號，市場無極端恐慌。';
-  } else {
-    statusText = '靜止';
-    statusTag = 'grey';
-    desc = `僅 ${score} 個訊號觸發，距離抄底門檻 (${threshold}) 還差 ${threshold - score} 分。`;
-  }
-
-  const triggered = json.bottom_indicators
-    .filter(i => i.triggered)
-    .map(i => i.name.replace(/^🆕\s*/, ''));
-
-  const triggeredHTML = triggered.length > 0
-    ? `<div class="bs-triggered">
-         <div class="bs-triggered-label">已觸發</div>
-         ${triggered.map(n => `<div class="bs-trigger-item">${n}</div>`).join('')}
-       </div>`
-    : '';
-
-  const isActive = score >= threshold;
-  wrap.innerHTML = `
-    <div class="bottom-signal${isActive ? ' active' : ''}">
-      <div class="bs-main">
-        <div class="bs-score-block">
-          <div class="bs-score">${score}<small>/ ${max}</small></div>
-          <div class="bs-zone"><span class="pill ${statusTag}">${statusText}</span></div>
-        </div>
-        <div class="bs-desc">${desc}</div>
-      </div>
-      ${triggeredHTML}
-    </div>`;
-}
-
 function renderChart(history) {
   const svg = document.getElementById('trend-chart');
   svg.innerHTML = '';
@@ -1429,10 +1450,10 @@ function renderAll(json, history) {
   document.getElementById('last-updated').textContent = fmtTimeAgo(json.timestamp);
   const qqqDD = json.raw_data?.qqq_drawdown_pct;
   const qqqAboveMA200 = qqqDD === null || qqqDD === undefined || qqqDD > -8;
-  renderHero(sopScore, sopAction, qqqAboveMA200);
+  renderScorePanel(sopScore, sopAction, json, moduleData);
+  renderSummary(sopScore, sopAction, qqqAboveMA200);
   renderActionList(sopScore);
   renderWatchlist(json.top_indicators);
-  renderBottomSignal(json);
   renderChart(history);
 }
 
