@@ -305,17 +305,30 @@ header.top {
   color: var(--ink-2);
   font-weight: 500;
 }
-.card-foot {
-  font-family: var(--font-en);
-  font-size: 11px;
-  color: var(--ink-4);
-  letter-spacing: 0.04em;
-  margin-top: -4px;
-  position: relative;
-  z-index: 1;
+
+/* ==================== MODULE GROUP ==================== */
+.module-group { margin-bottom: 28px; }
+.module-group:last-child { margin-bottom: 0; }
+.module-group-label {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-bottom: 12px;
+  padding-left: 2px;
+  flex-wrap: wrap;
 }
-.card-foot strong {
+.module-group-label .zh {
+  font-family: var(--font-mix);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.module-group-label .en {
+  font-family: var(--font-en);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
   color: var(--ink-3);
+  text-transform: uppercase;
   font-weight: 500;
 }
 
@@ -977,30 +990,24 @@ footer a:hover { color: var(--ink); }
           <div class="section-sub">Five Module Scoring</div>
         </div>
       </div>
-      <p class="section-desc">每模塊上限 3 分。點任一張卡片展開明細。</p>
-      <div class="module-grid" id="module-grid"></div>
-      <div class="ind-detail" id="ind-detail"></div>
-    </section>
+      <p class="section-desc">把指標歸成 5 類，每類有獨立上限分數，避免單一類別獨大。點任一張卡片可以看細項。</p>
 
-    <!-- TREND -->
-    <section>
-      <div class="section-head">
-        <div class="section-bar"></div>
-        <div class="section-titles">
-          <h2>評分趨勢</h2>
-          <div class="section-sub">v2.5 Original Score · 90 Days</div>
+      <div class="module-group">
+        <div class="module-group-label">
+          <span class="zh">頂部訊號模塊</span>
+          <span class="en">Top · Late-Cycle</span>
         </div>
+        <div class="module-grid" id="module-grid"></div>
+        <div class="ind-detail" id="ind-detail"></div>
       </div>
-      <p class="section-desc">本圖為原始 v2.5 計分（頂部 0–21、底部 0–14），與上方 SOP 五模塊計分不同。</p>
-      <div class="chart-wrap">
-        <div class="chart-header">
-          <div class="chart-title">頂部 vs 底部訊號</div>
-          <div class="chart-legend">
-            <span><span class="legend-dot top"></span>頂部 Top</span>
-            <span><span class="legend-dot bot"></span>底部 Bottom</span>
-          </div>
+
+      <div class="module-group">
+        <div class="module-group-label">
+          <span class="zh">底部訊號模塊</span>
+          <span class="en">Bottom · Buy-the-Dip</span>
         </div>
-        <svg class="chart-svg" id="trend-chart" viewBox="0 0 1000 280" preserveAspectRatio="none"></svg>
+        <div class="module-grid" id="bottom-module-grid"></div>
+        <div class="ind-detail" id="bottom-ind-detail"></div>
       </div>
     </section>
 
@@ -1070,54 +1077,65 @@ footer a:hover { color: var(--ink); }
 
 <script>
 const JSON_URL = 'https://ndsfly-commits.github.io/strategy_v25/output/latest_score.json';
-const HISTORY_URL = 'https://ndsfly-commits.github.io/strategy_v25/output/history.csv';
 
 const MODULES = {
-  valuation: { name: '估值', en: 'Valuation', description: '估值與槓桿結構',
+  valuation: { name: '估值', en: 'Valuation', description: '估值與槓桿結構', cap: 3,
     keys: ['cape_30', 'cape_35', 'buffett_200', 'margin_30', 'margin_50'] },
-  sentiment: { name: '情緒', en: 'Sentiment', description: '貪婪、自滿、持倉熱度',
+  sentiment: { name: '情緒', en: 'Sentiment', description: '貪婪、自滿、持倉熱度', cap: 3,
     keys: ['fg_75', 'fg_85', 'naaim_high', 'vvix_divergence', 'vix_21ma_low'] },
-  breadth: { name: '廣度', en: 'Breadth', description: '市場內部健康度',
+  breadth: { name: '廣度', en: 'Breadth', description: '市場內部健康度', cap: 3,
     keys: ['rsp_spy_breadth', 'breadth_200d', 'xly_xlp', 'smh_spy'] },
-  credit: { name: '信用', en: 'Credit', description: '高收益債、殖利率曲線',
+  credit: { name: '信用', en: 'Credit', description: '高收益債、殖利率曲線', cap: 3,
     keys: ['hy_oas_low', 'hy_oas_expansion', 'yield_inversion'] },
-  technical: { name: '技術', en: 'Technical', description: '動能、機構行為',
+  technical: { name: '技術', en: 'Technical', description: '動能、機構行為', cap: 3,
     keys: ['rsi_75', 'rsi_80', 'distribution_days'] }
 };
-const MODULE_CAP = 3;
+
+const BOTTOM_MODULES = {
+  sentiment: { name: '情緒', en: 'Sentiment', description: '極度恐慌、散戶投降', cap: 3,
+    keys: ['fg_25', 'fg_15', 'naaim_capitulation'] },
+  vol: { name: '波動', en: 'Volatility', description: 'VIX 飆升、恐慌爆衝', cap: 3,
+    keys: ['vix_40', 'vix_50'] },
+  price: { name: '回撤', en: 'Drawdown', description: '深度修正、動能超賣', cap: 3,
+    keys: ['dd_15', 'dd_20', 'dd_30', 'rsi_low'] },
+  credit: { name: '信用', en: 'Credit', description: '高收益債利差爆開', cap: 2,
+    keys: ['oas_stress', 'oas_recession'] },
+  breadth: { name: '廣度', en: 'Breadth', description: '廣度投降與右側確認', cap: 2,
+    keys: ['breadth_capitulation', 'ftd'] }
+};
 
 const ACTION_MAP = [
   { range: [0, 3], status: { text: '健康', tag: 'green' },
     tqqq: '可滿倉', qqq: '滿倉', total: '100%',
-    summary: '滿倉，可開 TQQQ 衛星部位' },
+    summary: '滿倉，可加開 TQQQ / SOXL 衛星部位（10–20% 槓桿曝險）' },
   { range: [4, 5], status: { text: '略熱', tag: 'blue' },
     tqqq: '減半', qqq: '滿倉', total: '100%',
-    summary: '維持滿倉，TQQQ 減半' },
+    summary: '維持滿倉，TQQQ 槓桿部位減半以降低風險' },
   { range: [6, 6], status: { text: '高檔警戒', tag: 'yellow' },
     tqqq: '出清', qqq: '滿倉', total: '100%',
-    summary: 'TQQQ 出清，QQQ 維持滿倉' },
+    summary: 'TQQQ 全部出清，QQQ 維持滿倉。撤除槓桿但不離場' },
   { range: [7, 8], status: { text: '避險啟動', tag: 'yellow' },
     tqqq: '出場', qqq: '80%', total: '80%',
-    summary: '股票降至 80%，其餘現金 / 防禦' },
+    summary: '整體股票降至 80%，賣 20% QQQ 轉現金或防禦資產' },
   { range: [9, 10], status: { text: '明顯偏空', tag: 'red' },
     tqqq: '出場', qqq: '60%', total: '60%',
-    summary: '減碼至 60%，搭配防禦資產' },
+    summary: '整體股票降至 60%，40% 配置現金 / 短債 / 黃金 / ALLW' },
   { range: [11, 15], status: { text: '全面避險', tag: 'red' },
     tqqq: '出場', qqq: '≤ 30%', total: '≤ 40%',
-    summary: '股票壓至 40% 以下，現金為主' }
+    summary: '股票壓至 40% 以下，等待底部訊號觸發再回場' }
 ];
 
 const BOTTOM_ACTION_MAP = [
-  { range: [0, 2], status: { text: '靜止', tag: 'grey' },
-    action: '不動', summary: '無抄底訊號，市場無極端恐慌' },
-  { range: [3, 4], status: { text: '警戒', tag: 'yellow' },
-    action: '不動', summary: '部分恐慌訊號出現，留意是否擴大' },
-  { range: [5, 6], status: { text: '觸發', tag: 'green' },
-    action: '+30% TQQQ', summary: '首批進場，多項極端恐慌出現' },
-  { range: [7, 8], status: { text: '加強', tag: 'green' },
-    action: '+60% TQQQ', summary: '加碼進場，深度熊市訊號' },
-  { range: [9, 14], status: { text: '極端', tag: 'green' },
-    action: '+100% TQQQ', summary: '全壓抄底，歷史性買點' }
+  { range: [0, 3], status: { text: '靜止', tag: 'grey' },
+    action: '不動', summary: '無極端恐慌訊號，照常執行頂部訊號的減倉動作' },
+  { range: [4, 5], status: { text: '警戒', tag: 'yellow' },
+    action: '不動', summary: '部分恐慌訊號出現但尚未成立底部，繼續觀察' },
+  { range: [6, 7], status: { text: '觸發', tag: 'green' },
+    action: '+30% TQQQ', summary: '首批進場：多項極端訊號成立，加開 30% TQQQ 部位' },
+  { range: [8, 9], status: { text: '加碼', tag: 'green' },
+    action: '+60% TQQQ', summary: '深度恐慌擴大：TQQQ 部位提升至 60%' },
+  { range: [10, 13], status: { text: '全壓', tag: 'green' },
+    action: '+100% TQQQ', summary: '歷史性買點：全壓抄底，TQQQ 滿倉進場' }
 ];
 
 function setStatus(state, msg) {
@@ -1171,7 +1189,7 @@ function isNearTrigger(ind) {
   return dist < Math.max(target * 0.08, 3);
 }
 
-function renderScorePanel(sopScore, sopAction, json, moduleData) {
+function renderScorePanel(sopScore, sopAction, json, moduleData, bottomModuleData, bScore, bMax) {
   // ===== TOP CARD =====
   const topCard = document.getElementById('top-card');
   let topClass = 'cool';
@@ -1179,7 +1197,6 @@ function renderScorePanel(sopScore, sopAction, json, moduleData) {
   else if (sopScore >= 5) topClass = 'warm';
   topCard.className = `score-card top-card ${topClass}`;
 
-  // Count modules with score > 0, sorted by score desc
   const modulesWithScore = Object.values(moduleData)
     .filter(m => m.cappedScore > 0)
     .sort((a, b) => b.cappedScore - a.cappedScore);
@@ -1197,37 +1214,31 @@ function renderScorePanel(sopScore, sopAction, json, moduleData) {
       <div class="card-status"><span class="pill ${sopAction.status.tag}">${sopAction.status.text}</span></div>
     </div>
     <div class="card-desc">${moduleSummary}</div>
-    <div class="card-foot">原始 v2.5：<strong>${json.top_score} / ${json.top_max}</strong></div>
   `;
 
   // ===== BOTTOM CARD =====
   const bottomCard = document.getElementById('bottom-card');
-  const bScore = json.bottom_score;
-  const bMax = json.bottom_max;
-  const threshold = 5;
+  const threshold = 6; // 新版底部訊號觸發門檻（0-13 scale）
 
   let bStatusText, bStatusTag, bClass = '';
-  if (bScore >= threshold) {
+  if (bScore >= 10) {
+    bStatusText = '全壓'; bStatusTag = 'green'; bClass = 'active';
+  } else if (bScore >= 8) {
+    bStatusText = '加碼'; bStatusTag = 'green'; bClass = 'active';
+  } else if (bScore >= threshold) {
     bStatusText = '觸發'; bStatusTag = 'green'; bClass = 'active';
-  } else if (bScore >= 3) {
+  } else if (bScore >= 4) {
     bStatusText = '警戒'; bStatusTag = 'yellow';
   } else {
     bStatusText = '靜止'; bStatusTag = 'grey';
   }
 
-  const triggered = json.bottom_indicators
-    .filter(i => i.triggered)
-    .map(i => i.name.replace(/^🆕\s*/, ''));
-
-  let bDesc;
-  if (bScore >= threshold) {
-    bDesc = `${triggered.length} 個訊號觸發 · 考慮加碼 / 開 TQQQ`;
-  } else if (bScore === 0) {
-    bDesc = '無抄底訊號，市場無極端恐慌';
-  } else {
-    const list = triggered.slice(0, 2).join('、');
-    bDesc = `已觸發：<strong>${list}</strong>　距門檻還差 ${threshold - bScore}`;
-  }
+  const bottomModulesWithScore = Object.values(bottomModuleData)
+    .filter(m => m.cappedScore > 0)
+    .sort((a, b) => b.cappedScore - a.cappedScore);
+  const bottomModuleSummary = bottomModulesWithScore.length === 0
+    ? '無模塊觸發訊號'
+    : bottomModulesWithScore.map(m => `<strong>${m.mod.name}</strong> ${m.cappedScore}`).join(' · ');
 
   bottomCard.className = `score-card bottom-card ${bClass}`;
   bottomCard.innerHTML = `
@@ -1239,7 +1250,7 @@ function renderScorePanel(sopScore, sopAction, json, moduleData) {
       <div class="big-num">${bScore}<small>/ ${bMax}</small></div>
       <div class="card-status"><span class="pill ${bStatusTag}">${bStatusText}</span></div>
     </div>
-    <div class="card-desc">${bDesc}</div>
+    <div class="card-desc">${bottomModuleSummary}</div>
   `;
 }
 
@@ -1282,84 +1293,90 @@ function renderSummary(sopScore, sopAction, qqqAboveMA200) {
   `;
 }
 
-let expandedModule = null;
-function renderModules(indicators) {
-  const grid = document.getElementById('module-grid');
-  grid.innerHTML = '';
-  const moduleData = {};
-  Object.entries(MODULES).forEach(([key, mod]) => {
-    const inds = indicators.filter(i => mod.keys.includes(i.key));
-    const rawPoints = inds.reduce((s, i) => s + (i.points || 0), 0);
-    const cappedScore = Math.min(rawPoints, MODULE_CAP);
-    moduleData[key] = { mod, inds, rawPoints, cappedScore };
-  });
+function createModuleRenderer(MODULES_CFG, gridId, detailId) {
+  let expandedModule = null;
 
-  Object.entries(moduleData).forEach(([key, m]) => {
-    const card = document.createElement('div');
-    card.className = 'module-card';
-    card.dataset.module = key;
-    const triggerList = m.inds.map(i => {
-      const cls = i.triggered ? 'triggered' : (isNearTrigger(i) ? 'near' : 'quiet');
+  function toggleDetail(moduleKey, moduleData) {
+    const detail = document.getElementById(detailId);
+    document.querySelectorAll(`#${gridId} .module-card`).forEach(c => c.classList.remove('expanded'));
+    if (expandedModule === moduleKey) {
+      detail.classList.remove('show');
+      expandedModule = null;
+      return;
+    }
+    expandedModule = moduleKey;
+    document.querySelector(`#${gridId} [data-module="${moduleKey}"]`).classList.add('expanded');
+    const m = moduleData[moduleKey];
+    const cardsHTML = m.inds.map(i => {
+      const triggered = i.triggered;
+      const near = !triggered && isNearTrigger(i);
+      const failed = i.confidence === 'failed';
+      const cls = failed ? 'failed' : (triggered ? 'triggered' : (near ? 'near' : ''));
+      const status = triggered ? 't' : (near ? 'n' : 'f');
+      const statusText = triggered ? '已觸發' : (near ? '接近' : (failed ? '無資料' : '未觸發'));
       const shortName = i.name.replace(/^🆕\s*/, '');
-      return `<div class="${cls}">${shortName}</div>`;
+      return `
+        <div class="ind-card ${cls}">
+          <div class="ind-name">${shortName}</div>
+          <div class="ind-value">${fmtNum(i.value)}</div>
+          <div class="ind-meta">
+            <span>${i.threshold}</span>
+            <span class="ind-status ${status}">${statusText}</span>
+          </div>
+        </div>`;
     }).join('');
-    const bars = Array(MODULE_CAP).fill(0).map((_, idx) =>
-      `<div class="mod-bar-seg ${idx < m.cappedScore ? 'filled' : ''}"></div>`
-    ).join('');
-    card.innerHTML = `
-      <div class="module-card-header">
-        <div class="module-card-meta">
-          <div class="mod-name">${m.mod.name}</div>
-          <div class="mod-en">${m.mod.en}</div>
-        </div>
-        <div class="mod-score s${m.cappedScore}">${m.cappedScore}<small>/ ${MODULE_CAP}</small></div>
+    detail.innerHTML = `
+      <div class="ind-detail-head">
+        <strong>${m.mod.name} · ${m.mod.en}</strong>${m.mod.description}
+        <span class="meta">原始 ${m.rawPoints} → 上限後 ${m.cappedScore} / ${m.mod.cap}</span>
       </div>
-      <div class="mod-bar">${bars}</div>
-      <div class="mod-trigger-list">${triggerList}</div>
-    `;
-    card.addEventListener('click', () => toggleDetail(key, moduleData));
-    grid.appendChild(card);
-  });
-  return moduleData;
+      <div class="ind-grid">${cardsHTML}</div>`;
+    detail.classList.add('show');
+  }
+
+  return function(indicators) {
+    const grid = document.getElementById(gridId);
+    grid.innerHTML = '';
+    const moduleData = {};
+    Object.entries(MODULES_CFG).forEach(([key, mod]) => {
+      const inds = indicators.filter(i => mod.keys.includes(i.key));
+      const rawPoints = inds.reduce((s, i) => s + (i.points || 0), 0);
+      const cappedScore = Math.min(rawPoints, mod.cap);
+      moduleData[key] = { mod, inds, rawPoints, cappedScore };
+    });
+
+    Object.entries(moduleData).forEach(([key, m]) => {
+      const card = document.createElement('div');
+      card.className = 'module-card';
+      card.dataset.module = key;
+      const triggerList = m.inds.map(i => {
+        const cls = i.triggered ? 'triggered' : (isNearTrigger(i) ? 'near' : 'quiet');
+        const shortName = i.name.replace(/^🆕\s*/, '');
+        return `<div class="${cls}">${shortName}</div>`;
+      }).join('');
+      const bars = Array(m.mod.cap).fill(0).map((_, idx) =>
+        `<div class="mod-bar-seg ${idx < m.cappedScore ? 'filled' : ''}"></div>`
+      ).join('');
+      card.innerHTML = `
+        <div class="module-card-header">
+          <div class="module-card-meta">
+            <div class="mod-name">${m.mod.name}</div>
+            <div class="mod-en">${m.mod.en}</div>
+          </div>
+          <div class="mod-score s${m.cappedScore}">${m.cappedScore}<small>/ ${m.mod.cap}</small></div>
+        </div>
+        <div class="mod-bar">${bars}</div>
+        <div class="mod-trigger-list">${triggerList}</div>
+      `;
+      card.addEventListener('click', () => toggleDetail(key, moduleData));
+      grid.appendChild(card);
+    });
+    return moduleData;
+  };
 }
 
-function toggleDetail(moduleKey, moduleData) {
-  const detail = document.getElementById('ind-detail');
-  document.querySelectorAll('.module-card').forEach(c => c.classList.remove('expanded'));
-  if (expandedModule === moduleKey) {
-    detail.classList.remove('show');
-    expandedModule = null;
-    return;
-  }
-  expandedModule = moduleKey;
-  document.querySelector(`[data-module="${moduleKey}"]`).classList.add('expanded');
-  const m = moduleData[moduleKey];
-  const cardsHTML = m.inds.map(i => {
-    const triggered = i.triggered;
-    const near = !triggered && isNearTrigger(i);
-    const failed = i.confidence === 'failed';
-    const cls = failed ? 'failed' : (triggered ? 'triggered' : (near ? 'near' : ''));
-    const status = triggered ? 't' : (near ? 'n' : 'f');
-    const statusText = triggered ? '已觸發' : (near ? '接近' : (failed ? '無資料' : '未觸發'));
-    const shortName = i.name.replace(/^🆕\s*/, '');
-    return `
-      <div class="ind-card ${cls}">
-        <div class="ind-name">${shortName}</div>
-        <div class="ind-value">${fmtNum(i.value)}</div>
-        <div class="ind-meta">
-          <span>${i.threshold}</span>
-          <span class="ind-status ${status}">${statusText}</span>
-        </div>
-      </div>`;
-  }).join('');
-  detail.innerHTML = `
-    <div class="ind-detail-head">
-      <strong>${m.mod.name} · ${m.mod.en}</strong>${m.mod.description}
-      <span class="meta">原始 ${m.rawPoints} → 上限後 ${m.cappedScore}</span>
-    </div>
-    <div class="ind-grid">${cardsHTML}</div>`;
-  detail.classList.add('show');
-}
+const renderTopModules = createModuleRenderer(MODULES, 'module-grid', 'ind-detail');
+const renderBottomModules = createModuleRenderer(BOTTOM_MODULES, 'bottom-module-grid', 'bottom-ind-detail');
 
 function renderActionList(currentScore) {
   const list = document.getElementById('action-list');
@@ -1424,111 +1441,16 @@ function renderWatchlist(indicators) {
   }).join('');
 }
 
-function renderChart(history) {
-  const svg = document.getElementById('trend-chart');
-  svg.innerHTML = '';
-  if (!history || history.length === 0) {
-    svg.innerHTML = `<text x="500" y="140" fill="#888B8D" text-anchor="middle"
-      style="font-family:Poppins; font-size:14px">尚無歷史資料</text>`;
-    return;
-  }
-  const W = 1000, H = 280, PAD = { top: 28, right: 20, bottom: 38, left: 32 };
-  const innerW = W - PAD.left - PAD.right, innerH = H - PAD.top - PAD.bottom;
-  const maxScore = 22;
-  const recent = history.slice(-90);
-  const n = recent.length;
-  const xStep = n > 1 ? innerW / (n - 1) : 0;
-
-  for (let s = 0; s <= maxScore; s += 5) {
-    const y = PAD.top + innerH - (s / maxScore) * innerH;
-    svg.innerHTML += `<line x1="${PAD.left}" y1="${y}" x2="${W - PAD.right}" y2="${y}"
-      stroke="rgba(83,86,90,0.08)" stroke-width="1"/>`;
-    svg.innerHTML += `<text x="${PAD.left - 8}" y="${y + 4}" fill="#B5B4B2"
-      font-family="Poppins" font-size="11" text-anchor="end">${s}</text>`;
-  }
-  const y7 = PAD.top + innerH - (7 / maxScore) * innerH;
-  svg.innerHTML += `<line x1="${PAD.left}" y1="${y7}" x2="${W - PAD.right}" y2="${y7}"
-    stroke="#DD2F3B" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>`;
-  svg.innerHTML += `<text x="${W - PAD.right - 6}" y="${y7 - 6}" fill="#DD2F3B"
-    font-family="Poppins" font-size="11" text-anchor="end" opacity="0.7">頂部觸發 ≥ 7</text>`;
-
-  const y5 = PAD.top + innerH - (5 / maxScore) * innerH;
-  svg.innerHTML += `<line x1="${PAD.left}" y1="${y5}" x2="${W - PAD.right}" y2="${y5}"
-    stroke="#6B8C73" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>`;
-  svg.innerHTML += `<text x="${W - PAD.right - 6}" y="${y5 - 6}" fill="#6B8C73"
-    font-family="Poppins" font-size="11" text-anchor="end" opacity="0.7">底部觸發 ≥ 5</text>`;
-
-  const topPath = recent.map((d, i) => {
-    const x = PAD.left + i * xStep;
-    const y = PAD.top + innerH - (d.top_score / maxScore) * innerH;
-    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-  }).join(' ');
-  const topArea = topPath + ` L ${PAD.left + (n-1) * xStep} ${PAD.top + innerH} L ${PAD.left} ${PAD.top + innerH} Z`;
-  svg.innerHTML += `<path d="${topArea}" fill="rgba(221,47,59,0.06)" />`;
-  svg.innerHTML += `<path d="${topPath}" stroke="#DD2F3B" stroke-width="2.5" fill="none" stroke-linejoin="round"/>`;
-
-  const botPath = recent.map((d, i) => {
-    const x = PAD.left + i * xStep;
-    const y = PAD.top + innerH - (d.bottom_score / maxScore) * innerH;
-    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
-  }).join(' ');
-  svg.innerHTML += `<path d="${botPath}" stroke="#6B8C73" stroke-width="2.5" fill="none" stroke-linejoin="round"/>`;
-
-  const lastIdx = n - 1;
-  const lastX = PAD.left + lastIdx * xStep;
-  const topY = PAD.top + innerH - (recent[lastIdx].top_score / maxScore) * innerH;
-  svg.innerHTML += `<circle cx="${lastX}" cy="${topY}" r="6" fill="white" stroke="#DD2F3B" stroke-width="2.5"/>`;
-  svg.innerHTML += `<text x="${lastX - 10}" y="${topY - 10}" fill="#DD2F3B"
-    font-family="Poppins" font-size="12" text-anchor="end" font-weight="500">${recent[lastIdx].top_score}</text>`;
-
-  if (n >= 3) {
-    const dates = [0, Math.floor(n / 2), n - 1];
-    dates.forEach(i => {
-      const x = PAD.left + i * xStep;
-      svg.innerHTML += `<text x="${x}" y="${H - 12}" fill="#888B8D"
-        font-family="Poppins" font-size="11" text-anchor="middle">${recent[i].date}</text>`;
-    });
-  }
-}
-
-function parseCSV(text) {
-  const lines = text.trim().split(/\r?\n/);
-  if (lines.length < 2) return [];
-  const headers = lines[0].split(',');
-  return lines.slice(1).map(line => {
-    const vals = line.split(',');
-    const obj = {};
-    headers.forEach((h, i) => {
-      const v = vals[i];
-      if (v === '' || v === undefined) { obj[h] = null; return; }
-      const n = Number(v);
-      obj[h] = (v === 'True') ? true : (v === 'False') ? false :
-               (!Number.isNaN(n) && v.trim() !== '') ? n : v;
-    });
-    return obj;
-  });
-}
-
 async function loadDashboard() {
   const btn = document.getElementById('btn-refresh');
   btn.disabled = true;
   setStatus('loading', '抓取中…');
   try {
     const cacheBust = Math.floor(Date.now() / 60000);
-    const [jsonRes, csvRes] = await Promise.allSettled([
-      fetch(`${JSON_URL}?t=${cacheBust}`),
-      fetch(`${HISTORY_URL}?t=${cacheBust}`)
-    ]);
-    if (jsonRes.status !== 'fulfilled' || !jsonRes.value.ok) {
-      throw new Error(`讀取失敗：${jsonRes.value?.status || 'network error'}`);
-    }
-    const json = await jsonRes.value.json();
-    let history = [];
-    if (csvRes.status === 'fulfilled' && csvRes.value.ok) {
-      const csvText = await csvRes.value.text();
-      history = parseCSV(csvText);
-    }
-    renderAll(json, history);
+    const res = await fetch(`${JSON_URL}?t=${cacheBust}`);
+    if (!res.ok) throw new Error(`讀取失敗：${res.status}`);
+    const json = await res.json();
+    renderAll(json);
     setStatus('ok', '已更新');
     document.getElementById('main-content').classList.remove('hidden');
     document.getElementById('loading-screen').classList.add('hidden');
@@ -1545,20 +1467,28 @@ async function loadDashboard() {
   }
 }
 
-function renderAll(json, history) {
-  const moduleData = renderModules(json.top_indicators);
+function renderAll(json) {
+  // Render top modules (returns moduleData with capped scores)
+  const moduleData = renderTopModules(json.top_indicators);
   const sopScore = Object.values(moduleData).reduce((s, m) => s + m.cappedScore, 0);
   const sopAction = getActionFor(sopScore);
+
+  // Render bottom modules
+  const bottomModuleData = renderBottomModules(json.bottom_indicators);
+  const bScore = Object.values(bottomModuleData).reduce((s, m) => s + m.cappedScore, 0);
+  const bMax = Object.values(BOTTOM_MODULES).reduce((s, m) => s + m.cap, 0);
+
   document.getElementById('header-date').textContent = json.date;
   document.getElementById('last-updated').textContent = fmtTimeAgo(json.timestamp);
+
   const qqqDD = json.raw_data?.qqq_drawdown_pct;
   const qqqAboveMA200 = qqqDD === null || qqqDD === undefined || qqqDD > -8;
-  renderScorePanel(sopScore, sopAction, json, moduleData);
+
+  renderScorePanel(sopScore, sopAction, json, moduleData, bottomModuleData, bScore, bMax);
   renderSummary(sopScore, sopAction, qqqAboveMA200);
   renderActionList(sopScore);
-  renderBottomActionList(json.bottom_score);
+  renderBottomActionList(bScore);
   renderWatchlist(json.top_indicators);
-  renderChart(history);
 }
 
 document.getElementById('btn-refresh').addEventListener('click', loadDashboard);
