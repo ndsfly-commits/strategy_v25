@@ -674,49 +674,73 @@ section { margin-bottom: 36px; }
   letter-spacing: 0.04em;
 }
 
-/* ==================== ORIGINAL VIEW (mobile-friendly list) ==================== */
-.original-list {
+/* ==================== BOTTOM SIGNAL ==================== */
+.bottom-signal {
   background: var(--surface);
   border-radius: var(--r-lg);
+  padding: 22px 22px;
   box-shadow: var(--shadow-sm);
-  overflow: hidden;
+  border-left: 3px solid var(--surface-3);
+  transition: border-color 0.3s, background 0.3s;
 }
-.original-row {
-  padding: 14px 18px;
-  border-bottom: 1px solid var(--line);
+.bottom-signal.active {
+  border-left-color: var(--sage);
+  background: linear-gradient(90deg, var(--sage-soft), var(--surface) 60%);
+}
+.bs-main {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.original-row:last-child { border-bottom: none; }
-.original-row.highlight {
-  background: linear-gradient(90deg, var(--orange-soft), transparent 70%);
-}
-.original-row .or-label {
-  font-size: 13px;
-  color: var(--ink-3);
-}
-.original-row.highlight .or-label {
-  color: var(--ink);
-  font-weight: 500;
-}
-.original-row .or-value {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
+  gap: 18px;
+  align-items: flex-start;
   flex-wrap: wrap;
 }
-.original-row .or-num {
+.bs-score-block { flex-shrink: 0; min-width: 86px; }
+.bs-score {
   font-family: var(--font-en);
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--ink);
-}
-.original-row .or-action {
-  font-size: 14px;
+  font-size: 38px;
+  font-weight: 300;
   color: var(--ink-2);
-  line-height: 1.5;
+  letter-spacing: -0.03em;
+  line-height: 0.95;
+}
+.bottom-signal.active .bs-score { color: var(--sage); }
+.bs-score small {
+  font-size: 14px;
+  color: var(--ink-4);
+  margin-left: 3px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.bs-zone { margin-top: 10px; }
+.bs-desc {
+  font-size: 14.5px;
+  color: var(--ink-2);
+  line-height: 1.65;
+  flex: 1;
+  min-width: 200px;
+  padding-top: 6px;
+}
+.bs-triggered {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
+.bs-triggered-label {
+  font-family: var(--font-en);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.bs-trigger-item {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  line-height: 1.8;
+}
+.bs-trigger-item::before {
+  content: '● ';
+  color: var(--sage);
 }
 
 /* ==================== LOADING / ERROR ==================== */
@@ -948,16 +972,17 @@ footer a:hover { color: var(--ink); }
       <div class="watch-grid" id="watch-grid"></div>
     </section>
 
-    <!-- ORIGINAL -->
+    <!-- BOTTOM SIGNAL -->
     <section>
       <div class="section-head">
         <div class="section-bar"></div>
         <div class="section-titles">
-          <h2>原始 v2.5 對照</h2>
-          <div class="section-sub">Original v2.5</div>
+          <h2>底部訊號</h2>
+          <div class="section-sub">Bottom Signal · Buy-the-Dip</div>
         </div>
       </div>
-      <div class="original-list" id="original-list"></div>
+      <p class="section-desc">與頂部訊號相反方向：恐慌、極端超賣、信用利差爆開。觸發 5 分以上時考慮加碼 / 開 TQQQ 部位。</p>
+      <div id="bottom-signal-wrap"></div>
     </section>
 
   </div>
@@ -1231,34 +1256,53 @@ function renderWatchlist(indicators) {
   }).join('');
 }
 
-function renderOriginalView(json, sopScore) {
-  const list = document.getElementById('original-list');
-  const sopAction = getActionFor(sopScore);
-  list.innerHTML = `
-    <div class="original-row">
-      <div class="or-label">原始 v2.5 頂部分數</div>
-      <div class="or-value">
-        <span class="or-num">${json.top_score} / ${json.top_max}</span>
-        <span class="pill yellow">${json.top_zone}</span>
+function renderBottomSignal(json) {
+  const wrap = document.getElementById('bottom-signal-wrap');
+  const score = json.bottom_score;
+  const max = json.bottom_max;
+  const threshold = 5;
+
+  let statusText, statusTag, desc;
+  if (score >= threshold) {
+    statusText = '觸發';
+    statusTag = 'green';
+    desc = '多項極端訊號出現，考慮加碼或開 TQQQ 部位。';
+  } else if (score >= 3) {
+    statusText = '警戒';
+    statusTag = 'yellow';
+    desc = `已出現 ${score} 個訊號，留意是否進一步惡化至觸發門檻 (${threshold})。`;
+  } else if (score === 0) {
+    statusText = '靜止';
+    statusTag = 'grey';
+    desc = '無任何抄底訊號，市場無極端恐慌。';
+  } else {
+    statusText = '靜止';
+    statusTag = 'grey';
+    desc = `僅 ${score} 個訊號觸發，距離抄底門檻 (${threshold}) 還差 ${threshold - score} 分。`;
+  }
+
+  const triggered = json.bottom_indicators
+    .filter(i => i.triggered)
+    .map(i => i.name.replace(/^🆕\s*/, ''));
+
+  const triggeredHTML = triggered.length > 0
+    ? `<div class="bs-triggered">
+         <div class="bs-triggered-label">已觸發</div>
+         ${triggered.map(n => `<div class="bs-trigger-item">${n}</div>`).join('')}
+       </div>`
+    : '';
+
+  const isActive = score >= threshold;
+  wrap.innerHTML = `
+    <div class="bottom-signal${isActive ? ' active' : ''}">
+      <div class="bs-main">
+        <div class="bs-score-block">
+          <div class="bs-score">${score}<small>/ ${max}</small></div>
+          <div class="bs-zone"><span class="pill ${statusTag}">${statusText}</span></div>
+        </div>
+        <div class="bs-desc">${desc}</div>
       </div>
-    </div>
-    <div class="original-row">
-      <div class="or-label">原始 v2.5 底部分數</div>
-      <div class="or-value">
-        <span class="or-num">${json.bottom_score} / ${json.bottom_max}</span>
-        ${json.bottom_score >= 6 ? '<span class="pill green">觸發中</span>' : '<span class="pill grey">靜止</span>'}
-      </div>
-    </div>
-    <div class="original-row">
-      <div class="or-label">原始 v2.5 建議</div>
-      <div class="or-action">${json.action}</div>
-    </div>
-    <div class="original-row highlight">
-      <div class="or-label">SOP 五模塊總分（每模塊上限 3）</div>
-      <div class="or-value">
-        <span class="or-num">${sopScore} / 15</span>
-        <span class="pill ${sopAction.status.tag}">${sopAction.status.text}</span>
-      </div>
+      ${triggeredHTML}
     </div>`;
 }
 
@@ -1388,7 +1432,7 @@ function renderAll(json, history) {
   renderHero(sopScore, sopAction, qqqAboveMA200);
   renderActionList(sopScore);
   renderWatchlist(json.top_indicators);
-  renderOriginalView(json, sopScore);
+  renderBottomSignal(json);
   renderChart(history);
 }
 
