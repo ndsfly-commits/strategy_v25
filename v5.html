@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F0EFEE">
+<title>守牛之道 · v2.5 SOP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ===================================================================
+   Mobile-First Design (Wonder Core CIS)
+   Base: 360-414px mobile | Scale up: 640+ tablet | 960+ desktop
+=================================================================== */
+:root {
+  /* Surface */
+  --bg: #F0EFEE;
+  --surface: #FFFFFF;
+  --surface-2: #F8F7F6;
+  --surface-3: #ECEBEA;
+
+  /* Ink (text) */
+  --ink: #1F2024;
+  --ink-2: #53565A;
+  --ink-3: #888B8D;
+  --ink-4: #B5B4B2;
+
+  /* Lines */
+  --line: rgba(83, 86, 90, 0.10);
+  --line-2: rgba(83, 86, 90, 0.16);
+
+  /* Neutrals */
+  --silver: #C9C8C7;
+
+  /* Accent */
+  --red: #DD2F3B;
+  --red-soft: rgba(221, 47, 59, 0.10);
+  --orange: #EA8C5A;
+  --orange-soft: rgba(234, 140, 90, 0.14);
+  --sage: #6B8C73;
+  --sage-soft: rgba(107, 140, 115, 0.14);
+  --slate: #6B7A8C;
+  --slate-soft: rgba(107, 122, 140, 0.12);
+
+  /* Typography */
+  --font-zh: 'Noto Sans TC', 'PingFang TC', -apple-system, sans-serif;
+  --font-en: 'Poppins', -apple-system, sans-serif;
+  --font-mix: 'Poppins', 'Noto Sans TC', 'PingFang TC', sans-serif;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(83,86,90,0.04), 0 0 0 1px rgba(83,86,90,0.04);
+  --shadow-md: 0 1px 3px rgba(83,86,90,0.06), 0 8px 24px rgba(83,86,90,0.06);
+
+  /* Radius */
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 22px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; font-size: 16px; }
+
+body {
+  font-family: var(--font-mix);
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink);
+  background: var(--bg);
+  background-image:
+    radial-gradient(ellipse at top right, rgba(255,255,255,0.5), transparent 60%),
+    radial-gradient(ellipse at bottom left, rgba(201,200,199,0.18), transparent 60%);
+  background-attachment: fixed;
+  min-height: 100vh;
+  padding: 24px 16px 48px;
+  padding-top: max(24px, env(safe-area-inset-top));
+  padding-bottom: max(48px, env(safe-area-inset-bottom));
+  font-feature-settings: "palt" 1;
+  -webkit-font-smoothing: antialiased;
+}
+
+.container { max-width: 1200px; margin: 0 auto; }
+
+/* ==================== HEADER ==================== */
+header.top {
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 42px; height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--ink-2), var(--ink-3));
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-family: var(--font-mix); font-weight: 600;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.brand-text h1 {
+  font-family: var(--font-mix);
+  font-weight: 600;
+  font-size: 22px;
+  line-height: 1.15;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.brand-sub {
+  font-family: var(--font-en);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+.header-meta {
+  font-family: var(--font-en);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  text-align: right;
+  text-transform: uppercase;
+  line-height: 1.4;
+  flex-shrink: 0;
+}
+.header-meta .meta-date {
+  color: var(--ink-2);
+  font-weight: 500;
+  font-size: 13px;
+}
+
+/* ==================== STATUS BAR ==================== */
+.status-bar {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 14px 18px;
+  background: var(--surface);
+  padding: 14px 18px;
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+}
+.status-item {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-en);
+  font-size: 12px;
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.status-item strong {
+  color: var(--ink);
+  font-weight: 500;
+  font-family: var(--font-mix);
+  letter-spacing: normal;
+  text-transform: none;
+  font-size: 14px;
+}
+.dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--ink-4);
+}
+.dot.ok { background: var(--sage); box-shadow: 0 0 0 4px var(--sage-soft); }
+.dot.err { background: var(--red); box-shadow: 0 0 0 4px var(--red-soft); }
+.dot.warn { background: var(--orange); box-shadow: 0 0 0 4px var(--orange-soft); }
+.dot.loading { background: var(--slate); animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+.btn-refresh {
+  width: 100%;
+  background: var(--ink);
+  color: white;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 99px;
+  font-family: var(--font-mix);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 4px;
+  min-height: 44px;
+}
+.btn-refresh:active { background: var(--ink-2); }
+.btn-refresh:disabled { opacity: 0.4; cursor: wait; }
+
+/* ==================== HERO ==================== */
+.hero {
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  padding: 26px 22px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, var(--silver) 0%, transparent 60%);
+  opacity: 0.35;
+  pointer-events: none;
+}
+.score-block { position: relative; z-index: 1; margin-bottom: 24px; }
+.score-label {
+  font-family: var(--font-en);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  font-weight: 500;
+}
+.score-label-zh {
+  font-size: 14px;
+  color: var(--ink-2);
+  margin-bottom: 12px;
+}
+.score-big {
+  font-family: var(--font-en);
+  font-weight: 200;
+  font-size: 88px;
+  line-height: 0.95;
+  color: var(--ink);
+  letter-spacing: -0.04em;
+  transition: color 0.4s ease;
+}
+.score-big.cool { color: var(--sage); }
+.score-big.warm { color: var(--orange); }
+.score-big.hot { color: var(--red); }
+.score-big small {
+  font-family: var(--font-en);
+  font-size: 22px;
+  color: var(--ink-4);
+  font-weight: 300;
+  margin-left: 4px;
+  letter-spacing: 0;
+}
+.score-zone {
+  margin-top: 6px;
+  font-size: 15px;
+  color: var(--ink-2);
+  font-weight: 500;
+}
+.rec-block { position: relative; z-index: 1; }
+.rec-title {
+  font-family: var(--font-mix);
+  font-size: 21px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  line-height: 1.3;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+.rec-body {
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1.7;
+  margin-bottom: 18px;
+}
+.rec-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.rec-tag {
+  font-family: var(--font-mix);
+  font-size: 13px;
+  padding: 7px 14px;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  border-radius: 99px;
+  white-space: nowrap;
+}
+.rec-tag strong {
+  color: var(--ink-3);
+  margin-right: 6px;
+  font-weight: 500;
+  font-size: 11px;
+  font-family: var(--font-en);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.rec-tag.red { background: var(--red-soft); color: var(--red); }
+.rec-tag.red strong { color: var(--red); opacity: 0.7; }
+.rec-tag.sage { background: var(--sage-soft); color: var(--sage); }
+.rec-tag.sage strong { color: var(--sage); opacity: 0.7; }
+.rec-tag.orange { background: var(--orange-soft); color: #B86640; }
+.rec-tag.orange strong { color: #B86640; opacity: 0.7; }
+.rec-tag.slate { background: var(--slate-soft); color: var(--slate); }
+.rec-tag.slate strong { color: var(--slate); opacity: 0.7; }
+
+/* ==================== SECTION HEADER ==================== */
+section { margin-bottom: 36px; }
+.section-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.section-bar {
+  width: 3px;
+  height: 36px;
+  background: var(--ink);
+  border-radius: 2px;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.section-titles h2 {
+  font-family: var(--font-mix);
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 1.3;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+.section-sub {
+  font-family: var(--font-en);
+  font-size: 12px;
+  color: var(--ink-3);
+  letter-spacing: 0.08em;
+  margin-top: 3px;
+  font-weight: 400;
+}
+.section-desc {
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.65;
+  margin-bottom: 18px;
+}
+
+/* ==================== MODULE CARDS ==================== */
+.module-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.module-card {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  padding: 20px 22px;
+  cursor: pointer;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.module-card:active { transform: scale(0.99); }
+.module-card.expanded {
+  border-color: var(--ink-3);
+  box-shadow: var(--shadow-md);
+}
+.module-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 14px;
+  gap: 12px;
+}
+.module-card-meta { flex: 1; min-width: 0; }
+.mod-name {
+  font-family: var(--font-mix);
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 3px;
+  color: var(--ink);
+}
+.mod-en {
+  font-family: var(--font-en);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.mod-score {
+  font-family: var(--font-en);
+  font-weight: 300;
+  font-size: 42px;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+.mod-score small {
+  font-family: var(--font-en);
+  font-size: 13px;
+  color: var(--ink-4);
+  margin-left: 3px;
+  font-weight: 400;
+}
+.mod-score.s0 { color: var(--sage); }
+.mod-score.s1 { color: var(--slate); }
+.mod-score.s2 { color: var(--orange); }
+.mod-score.s3 { color: var(--red); }
+.mod-bar {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 14px;
+}
+.mod-bar-seg {
+  flex: 1; height: 4px;
+  background: var(--surface-3);
+  border-radius: 2px;
+}
+.mod-bar-seg.filled { background: var(--ink-3); }
+.mod-card.s3 .mod-bar-seg.filled { background: var(--red); }
+.mod-trigger-list {
+  font-size: 13.5px;
+  line-height: 1.85;
+  color: var(--ink-3);
+}
+.mod-trigger-list .triggered { color: var(--red); }
+.mod-trigger-list .triggered::before { content: '● '; }
+.mod-trigger-list .near { color: var(--orange); }
+.mod-trigger-list .near::before { content: '○ '; }
+.mod-trigger-list .quiet { color: var(--ink-4); }
+.mod-trigger-list .quiet::before { content: '· '; opacity: 0.5; }
+
+/* ==================== INDICATOR DETAIL ==================== */
+.ind-detail {
+  margin-top: 16px;
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+.ind-detail.show { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.ind-detail-head {
+  margin-bottom: 12px;
+  padding: 14px 18px;
+  background: var(--surface);
+  border-radius: var(--r-md);
+  border-left: 3px solid var(--ink-3);
+  font-size: 14px;
+  color: var(--ink-2);
+  line-height: 1.6;
+}
+.ind-detail-head strong {
+  display: block;
+  color: var(--ink);
+  font-weight: 600;
+  margin-bottom: 4px;
+  font-size: 15px;
+}
+.ind-detail-head .meta {
+  font-family: var(--font-en);
+  color: var(--ink-3);
+  font-size: 12px;
+  display: block;
+  margin-top: 4px;
+}
+.ind-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+.ind-card {
+  background: var(--surface);
+  border-radius: var(--r-md);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+  border-left: 3px solid transparent;
+}
+.ind-card.triggered { border-left-color: var(--red); }
+.ind-card.near { border-left-color: var(--orange); }
+.ind-card.failed { opacity: 0.5; }
+.ind-name {
+  font-size: 14px;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.4;
+  font-weight: 500;
+}
+.ind-value {
+  font-family: var(--font-en);
+  font-size: 22px;
+  font-weight: 300;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+.ind-card.triggered .ind-value { color: var(--red); }
+.ind-meta {
+  font-family: var(--font-en);
+  font-size: 12px;
+  color: var(--ink-3);
+  letter-spacing: 0.02em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.ind-status {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-family: var(--font-mix);
+  font-size: 11px;
+  font-weight: 500;
+}
+.ind-status.t { background: var(--red-soft); color: var(--red); }
+.ind-status.n { background: var(--orange-soft); color: #B86640; }
+.ind-status.f { background: var(--surface-3); color: var(--ink-3); }
+
+/* ==================== CHART ==================== */
+.chart-wrap {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  padding: 22px 18px 18px;
+  box-shadow: var(--shadow-sm);
+}
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.chart-title {
+  font-family: var(--font-mix);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.chart-legend {
+  display: flex;
+  gap: 14px;
+  font-family: var(--font-en);
+  font-size: 11.5px;
+  color: var(--ink-2);
+}
+.chart-legend span { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+.legend-dot.top { background: var(--red); }
+.legend-dot.bot { background: var(--sage); }
+.chart-svg { width: 100%; height: 240px; display: block; }
+
+/* ==================== ACTION LIST (mobile card style) ==================== */
+.action-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.action-row {
+  background: var(--surface);
+  border-radius: var(--r-md);
+  padding: 16px 18px;
+  box-shadow: var(--shadow-sm);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 14px;
+  align-items: center;
+  border-left: 3px solid transparent;
+}
+.action-row.current {
+  border-left-color: var(--orange);
+  background: linear-gradient(90deg, var(--orange-soft), var(--surface) 60%);
+}
+.action-row .ar-score {
+  font-family: var(--font-en);
+  font-size: 17px;
+  font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.01em;
+}
+.action-row .ar-status { justify-self: end; }
+.action-row .ar-details {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  margin-top: 2px;
+}
+.ar-tag {
+  font-size: 13px;
+  color: var(--ink-2);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.ar-tag strong {
+  font-family: var(--font-en);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.ar-tag.highlight strong { color: var(--red); }
+.ar-tag.highlight { color: var(--red); font-weight: 500; }
+
+/* ==================== PILL ==================== */
+.pill {
+  display: inline-block;
+  padding: 4px 11px;
+  border-radius: 99px;
+  font-family: var(--font-mix);
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.pill.green { background: var(--sage-soft); color: var(--sage); }
+.pill.yellow { background: var(--orange-soft); color: #B86640; }
+.pill.red { background: var(--red-soft); color: var(--red); }
+.pill.grey { background: var(--surface-3); color: var(--ink-3); }
+.pill.blue { background: var(--slate-soft); color: var(--slate); }
+
+/* ==================== WATCHLIST ==================== */
+.watch-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.watch-item {
+  background: var(--surface);
+  border-radius: var(--r-md);
+  padding: 16px 16px;
+  box-shadow: var(--shadow-sm);
+}
+.watch-name {
+  font-family: var(--font-en);
+  font-size: 11px;
+  color: var(--ink-3);
+  margin-bottom: 6px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.watch-current {
+  font-family: var(--font-en);
+  font-size: 24px;
+  font-weight: 300;
+  color: var(--ink);
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.watch-trigger {
+  font-size: 12.5px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  margin-top: 6px;
+}
+.watch-distance {
+  font-family: var(--font-en);
+  font-size: 11px;
+  margin-top: 6px;
+  color: var(--ink-3);
+  letter-spacing: 0.04em;
+}
+
+/* ==================== ORIGINAL VIEW (mobile-friendly list) ==================== */
+.original-list {
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+.original-row {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.original-row:last-child { border-bottom: none; }
+.original-row.highlight {
+  background: linear-gradient(90deg, var(--orange-soft), transparent 70%);
+}
+.original-row .or-label {
+  font-size: 13px;
+  color: var(--ink-3);
+}
+.original-row.highlight .or-label {
+  color: var(--ink);
+  font-weight: 500;
+}
+.original-row .or-value {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.original-row .or-num {
+  font-family: var(--font-en);
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.original-row .or-action {
+  font-size: 14px;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+/* ==================== LOADING / ERROR ==================== */
+.loading-screen, .error-screen {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--ink-3);
+}
+.loading-screen .spin {
+  display: inline-block;
+  width: 28px; height: 28px;
+  border: 2px solid var(--line-2);
+  border-top-color: var(--ink-3);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.error-screen .err-icon {
+  font-size: 32px;
+  color: var(--red);
+  margin-bottom: 12px;
+}
+
+/* ==================== FOOTER ==================== */
+footer {
+  margin-top: 48px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 12px;
+  font-family: var(--font-en);
+  letter-spacing: 0.06em;
+  line-height: 1.7;
+}
+footer a { color: var(--ink-2); text-decoration: none; }
+footer a:hover { color: var(--ink); }
+
+.hidden { display: none !important; }
+
+/* ===================================================================
+   TABLET (640px+) — Increase spacing, 2-col grids
+=================================================================== */
+@media (min-width: 640px) {
+  body { padding: 36px 24px 64px; font-size: 16px; }
+
+  header.top { margin-bottom: 32px; }
+  .brand-text h1 { font-size: 26px; }
+  .brand-mark { width: 46px; height: 46px; font-size: 20px; }
+
+  .status-bar {
+    padding: 14px 22px;
+    margin-bottom: 28px;
+  }
+  .btn-refresh {
+    width: auto;
+    margin-top: 0;
+    margin-left: auto;
+    padding: 9px 22px;
+    background: transparent;
+    color: var(--ink-2);
+    border: 1px solid var(--line-2);
+    font-size: 12px;
+    min-height: auto;
+  }
+  .btn-refresh:hover { background: var(--ink); color: white; border-color: var(--ink); }
+
+  .hero {
+    padding: 36px 36px;
+    display: grid;
+    grid-template-columns: minmax(220px, 280px) 1fr;
+    gap: 40px;
+    align-items: center;
+    margin-bottom: 40px;
+  }
+  .score-block { margin-bottom: 0; }
+  .score-big { font-size: 108px; }
+  .rec-title { font-size: 24px; }
+
+  section { margin-bottom: 44px; }
+  .section-titles h2 { font-size: 22px; }
+  .section-desc { font-size: 15px; }
+
+  .module-grid {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+  .module-card { padding: 24px 22px; }
+  .module-card-header {
+    flex-direction: column;
+    margin-bottom: 18px;
+    gap: 0;
+  }
+  .module-card-header .mod-score {
+    margin-top: 14px;
+    font-size: 46px;
+  }
+
+  .ind-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+
+  .action-row {
+    grid-template-columns: 80px 100px 1fr;
+    gap: 14px 18px;
+  }
+  .action-row .ar-details {
+    grid-column: 3;
+    padding-top: 0;
+    border-top: none;
+    margin-top: 0;
+  }
+
+  .watch-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+  .chart-svg { height: 280px; }
+}
+
+/* ===================================================================
+   DESKTOP (960px+)
+=================================================================== */
+@media (min-width: 960px) {
+  body { padding: 56px 32px 80px; }
+  .hero { padding: 44px 48px; gap: 48px; }
+  .score-big { font-size: 128px; }
+  .section-titles h2 { font-size: 24px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="top">
+    <div class="brand">
+      <div class="brand-mark">守</div>
+      <div class="brand-text">
+        <h1>守牛之道</h1>
+        <div class="brand-sub">The Way · v2.5</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="meta-date" id="header-date">—</div>
+      <div>SOP Live</div>
+    </div>
+  </header>
+
+  <!-- ==================== STATUS BAR ==================== -->
+  <div class="status-bar">
+    <div class="status-item">
+      <span class="dot loading" id="status-dot"></span>
+      <span id="status-text">載入中…</span>
+    </div>
+    <div class="status-item">
+      Updated · <strong id="last-updated">—</strong>
+    </div>
+    <button class="btn-refresh" id="btn-refresh">↻ 重新整理</button>
+  </div>
+
+  <!-- ==================== MAIN ==================== -->
+  <div id="main-content" class="hidden">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="score-block">
+        <div class="score-label">SOP Score</div>
+        <div class="score-label-zh">五模塊總分</div>
+        <div class="score-big" id="sop-score">—<small>/ 15</small></div>
+        <div class="score-zone" id="sop-zone">—</div>
+      </div>
+      <div class="rec-block">
+        <div class="rec-title" id="rec-title">—</div>
+        <div class="rec-body" id="rec-body">—</div>
+        <div class="rec-actions" id="rec-actions"></div>
+      </div>
+    </div>
+
+    <!-- MODULES -->
+    <section>
+      <div class="section-head">
+        <div class="section-bar"></div>
+        <div class="section-titles">
+          <h2>五大模塊計分</h2>
+          <div class="section-sub">Five Module Scoring</div>
+        </div>
+      </div>
+      <p class="section-desc">每模塊上限 3 分。點任一張卡片展開明細。</p>
+      <div class="module-grid" id="module-grid"></div>
+      <div class="ind-detail" id="ind-detail"></div>
+    </section>
+
+    <!-- TREND -->
+    <section>
+      <div class="section-head">
+        <div class="section-bar"></div>
+        <div class="section-titles">
+          <h2>評分趨勢</h2>
+          <div class="section-sub">Score Trend · 90 Days</div>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-header">
+          <div class="chart-title">頂部 vs 底部訊號</div>
+          <div class="chart-legend">
+            <span><span class="legend-dot top"></span>頂部 Top</span>
+            <span><span class="legend-dot bot"></span>底部 Bottom</span>
+          </div>
+        </div>
+        <svg class="chart-svg" id="trend-chart" viewBox="0 0 1000 280" preserveAspectRatio="none"></svg>
+      </div>
+    </section>
+
+    <!-- ACTION MAP -->
+    <section>
+      <div class="section-head">
+        <div class="section-bar"></div>
+        <div class="section-titles">
+          <h2>部位映射</h2>
+          <div class="section-sub">SOP Action Map</div>
+        </div>
+      </div>
+      <p class="section-desc">當前位置以橘色標記。</p>
+      <div class="action-list" id="action-list"></div>
+    </section>
+
+    <!-- WATCHLIST -->
+    <section>
+      <div class="section-head">
+        <div class="section-bar"></div>
+        <div class="section-titles">
+          <h2>關鍵盯盤</h2>
+          <div class="section-sub">Watchlist</div>
+        </div>
+      </div>
+      <p class="section-desc">最接近觸發的指標。</p>
+      <div class="watch-grid" id="watch-grid"></div>
+    </section>
+
+    <!-- ORIGINAL -->
+    <section>
+      <div class="section-head">
+        <div class="section-bar"></div>
+        <div class="section-titles">
+          <h2>原始 v2.5 對照</h2>
+          <div class="section-sub">Original v2.5</div>
+        </div>
+      </div>
+      <div class="original-list" id="original-list"></div>
+    </section>
+
+  </div>
+
+  <!-- LOADING / ERROR -->
+  <div class="loading-screen" id="loading-screen">
+    <div class="spin"></div>
+    <div>讀取資料中…</div>
+  </div>
+
+  <div class="error-screen hidden" id="error-screen">
+    <div class="err-icon">⚠</div>
+    <div id="error-message">無法讀取資料</div>
+    <div style="margin-top: 12px; font-size: 12px;">請檢查網路連線</div>
+  </div>
+
+  <footer>
+    守牛之道 · v2.5 SOP Live<br>
+    Auto-fetched · Not Investment Advice
+  </footer>
+
+</div>
+
+<script>
+const JSON_URL = 'https://ndsfly-commits.github.io/strategy_v25/output/latest_score.json';
+const HISTORY_URL = 'https://ndsfly-commits.github.io/strategy_v25/output/history.csv';
+
+const MODULES = {
+  valuation: { name: '估值', en: 'Valuation', description: '估值與槓桿結構',
+    keys: ['cape_30', 'cape_35', 'buffett_200', 'margin_30', 'margin_50'] },
+  sentiment: { name: '情緒', en: 'Sentiment', description: '貪婪、自滿、持倉熱度',
+    keys: ['fg_75', 'fg_85', 'naaim_high', 'vvix_divergence', 'vix_21ma_low'] },
+  breadth: { name: '廣度', en: 'Breadth', description: '市場內部健康度',
+    keys: ['rsp_spy_breadth', 'breadth_200d', 'xly_xlp', 'smh_spy'] },
+  credit: { name: '信用', en: 'Credit', description: '高收益債、殖利率曲線',
+    keys: ['hy_oas_low', 'hy_oas_expansion', 'yield_inversion'] },
+  technical: { name: '技術', en: 'Technical', description: '動能、機構行為',
+    keys: ['rsi_75', 'rsi_80', 'distribution_days'] }
+};
+const MODULE_CAP = 3;
+
+const ACTION_MAP = [
+  { range: [0, 3], status: { text: '健康', tag: 'green' }, tqqq: '可滿倉', qqq: '滿倉', total: '100%' },
+  { range: [4, 5], status: { text: '略熱', tag: 'blue' }, tqqq: '減半', qqq: '滿倉', total: '100%' },
+  { range: [6, 6], status: { text: '高檔警戒', tag: 'yellow' }, tqqq: '全部出清', qqq: '100% QQQ', total: '100%' },
+  { range: [7, 8], status: { text: '避險啟動', tag: 'yellow' }, tqqq: '—', qqq: '減至 80%', total: '80%' },
+  { range: [9, 10], status: { text: '明顯偏空', tag: 'red' }, tqqq: '—', qqq: '減至 60%', total: '60%' },
+  { range: [11, 15], status: { text: '全面避險', tag: 'red' }, tqqq: '—', qqq: '30% 或以下', total: '≤ 40%' }
+];
+
+function setStatus(state, msg) {
+  document.getElementById('status-dot').className = 'dot ' + state;
+  document.getElementById('status-text').textContent = msg;
+}
+function fmtNum(v, digits = 2) {
+  if (v === null || v === undefined) return '—';
+  if (typeof v === 'boolean') return v ? '✓' : '✗';
+  if (typeof v === 'string') return v;
+  const n = Number(v);
+  if (Number.isNaN(n)) return String(v);
+  return n.toFixed(digits);
+}
+function fmtTimeAgo(timestamp) {
+  if (!timestamp) return '—';
+  const d = new Date(timestamp.replace(' ', 'T'));
+  const diff = (Date.now() - d.getTime()) / 1000;
+  if (diff < 60) return `${Math.floor(diff)}s`;
+  if (diff < 3600) return `${Math.floor(diff/60)}m`;
+  if (diff < 86400) return `${Math.floor(diff/3600)}h`;
+  return `${Math.floor(diff/86400)}d`;
+}
+function getActionFor(score) {
+  return ACTION_MAP.find(a => score >= a.range[0] && score <= a.range[1]) || ACTION_MAP[0];
+}
+function nearTriggerDistance(ind) {
+  if (ind.triggered) return 0;
+  if (ind.value === null || ind.value === undefined) return Infinity;
+  if (ind.confidence === 'failed') return Infinity;
+  const t = String(ind.threshold);
+  const valNum = typeof ind.value === 'string'
+    ? parseFloat(ind.value.replace(/[^\d.\-+]/g, ''))
+    : Number(ind.value);
+  if (Number.isNaN(valNum)) return Infinity;
+  const m = t.match(/([≥≤<>]=?)\s*(-?\d+\.?\d*)/);
+  if (!m) return Infinity;
+  const op = m[1]; const target = parseFloat(m[2]);
+  if (op === '≥' || op === '>=' || op === '>') return Math.max(0, target - valNum);
+  if (op === '≤' || op === '<=' || op === '<') return Math.max(0, valNum - target);
+  return Infinity;
+}
+function isNearTrigger(ind) {
+  if (ind.triggered) return false;
+  const dist = nearTriggerDistance(ind);
+  if (dist === Infinity || dist === 0) return false;
+  const t = String(ind.threshold);
+  const m = t.match(/([≥≤<>]=?)\s*(-?\d+\.?\d*)/);
+  if (!m) return false;
+  const target = Math.abs(parseFloat(m[2]));
+  return dist < Math.max(target * 0.08, 3);
+}
+
+function renderHero(sopScore, sopAction, qqqAboveMA200) {
+  const elScore = document.getElementById('sop-score');
+  elScore.innerHTML = `${sopScore}<small>/ 15</small>`;
+  elScore.classList.remove('cool', 'warm', 'hot');
+  if (sopScore <= 4) elScore.classList.add('cool');
+  else if (sopScore <= 8) elScore.classList.add('warm');
+  else elScore.classList.add('hot');
+
+  document.getElementById('sop-zone').textContent = sopAction.status.text;
+
+  const titleMap = {
+    0: '健康多頭 · 安心持倉', 1: '健康多頭 · 安心持倉', 2: '健康多頭 · 安心持倉', 3: '健康多頭 · 安心持倉',
+    4: '略熱 · 檢視槓桿', 5: '略熱 · 檢視槓桿',
+    6: '高檔警戒 · 拆槓桿', 7: '避險啟動 · 減碼',
+    8: '避險啟動 · 減碼', 9: '明顯偏空 · 大幅減碼',
+    10: '明顯偏空 · 大幅減碼', 11: '全面避險', 12: '全面避險',
+    13: '全面避險', 14: '極端避險', 15: '極端避險'
+  };
+  document.getElementById('rec-title').textContent = titleMap[sopScore] || '—';
+
+  let body;
+  if (sopScore <= 3) body = '市場結構健康，可滿倉。允許 TQQQ / SOXL 衛星部位。';
+  else if (sopScore <= 5) body = '部分模塊出現過熱訊號。減半 TQQQ 部位但維持滿倉。';
+  else if (sopScore === 6) body = '估值與槓桿達高位，廣度開始走弱。TQQQ 全部出清，QQQ 留。';
+  else if (sopScore <= 8) body = '多模塊同時惡化。整體股票降至 80%，但 QQQ 仍 > 200MA 時不轉現金。';
+  else if (sopScore <= 10) body = '系統性風險明顯。整體股票降至 60%，搭配防禦資產。';
+  else body = '進入歷史性高風險區。整體股票壓到 40% 以下，現金與防禦為主。';
+  document.getElementById('rec-body').textContent = body;
+
+  const tagClass = { green: 'sage', yellow: 'orange', red: 'red', blue: 'slate' };
+  const t = tagClass[sopAction.status.tag] || 'slate';
+  document.getElementById('rec-actions').innerHTML = `
+    <span class="rec-tag ${t}"><strong>TQQQ</strong>${sopAction.tqqq}</span>
+    <span class="rec-tag ${t}"><strong>QQQ</strong>${sopAction.qqq}</span>
+    <span class="rec-tag ${t}"><strong>Total</strong>${sopAction.total}</span>
+    <span class="rec-tag ${qqqAboveMA200 ? 'sage' : 'red'}"><strong>Trend</strong>${qqqAboveMA200 ? '> 200MA' : '< 200MA'}</span>
+  `;
+}
+
+let expandedModule = null;
+function renderModules(indicators) {
+  const grid = document.getElementById('module-grid');
+  grid.innerHTML = '';
+  const moduleData = {};
+  Object.entries(MODULES).forEach(([key, mod]) => {
+    const inds = indicators.filter(i => mod.keys.includes(i.key));
+    const rawPoints = inds.reduce((s, i) => s + (i.points || 0), 0);
+    const cappedScore = Math.min(rawPoints, MODULE_CAP);
+    moduleData[key] = { mod, inds, rawPoints, cappedScore };
+  });
+
+  Object.entries(moduleData).forEach(([key, m]) => {
+    const card = document.createElement('div');
+    card.className = 'module-card';
+    card.dataset.module = key;
+    const triggerList = m.inds.map(i => {
+      const cls = i.triggered ? 'triggered' : (isNearTrigger(i) ? 'near' : 'quiet');
+      const shortName = i.name.replace(/^🆕\s*/, '');
+      return `<div class="${cls}">${shortName}</div>`;
+    }).join('');
+    const bars = Array(MODULE_CAP).fill(0).map((_, idx) =>
+      `<div class="mod-bar-seg ${idx < m.cappedScore ? 'filled' : ''}"></div>`
+    ).join('');
+    card.innerHTML = `
+      <div class="module-card-header">
+        <div class="module-card-meta">
+          <div class="mod-name">${m.mod.name}</div>
+          <div class="mod-en">${m.mod.en}</div>
+        </div>
+        <div class="mod-score s${m.cappedScore}">${m.cappedScore}<small>/ ${MODULE_CAP}</small></div>
+      </div>
+      <div class="mod-bar">${bars}</div>
+      <div class="mod-trigger-list">${triggerList}</div>
+    `;
+    card.addEventListener('click', () => toggleDetail(key, moduleData));
+    grid.appendChild(card);
+  });
+  return moduleData;
+}
+
+function toggleDetail(moduleKey, moduleData) {
+  const detail = document.getElementById('ind-detail');
+  document.querySelectorAll('.module-card').forEach(c => c.classList.remove('expanded'));
+  if (expandedModule === moduleKey) {
+    detail.classList.remove('show');
+    expandedModule = null;
+    return;
+  }
+  expandedModule = moduleKey;
+  document.querySelector(`[data-module="${moduleKey}"]`).classList.add('expanded');
+  const m = moduleData[moduleKey];
+  const cardsHTML = m.inds.map(i => {
+    const triggered = i.triggered;
+    const near = !triggered && isNearTrigger(i);
+    const failed = i.confidence === 'failed';
+    const cls = failed ? 'failed' : (triggered ? 'triggered' : (near ? 'near' : ''));
+    const status = triggered ? 't' : (near ? 'n' : 'f');
+    const statusText = triggered ? '已觸發' : (near ? '接近' : (failed ? '無資料' : '未觸發'));
+    const shortName = i.name.replace(/^🆕\s*/, '');
+    return `
+      <div class="ind-card ${cls}">
+        <div class="ind-name">${shortName}</div>
+        <div class="ind-value">${fmtNum(i.value)}</div>
+        <div class="ind-meta">
+          <span>${i.threshold}</span>
+          <span class="ind-status ${status}">${statusText}</span>
+        </div>
+      </div>`;
+  }).join('');
+  detail.innerHTML = `
+    <div class="ind-detail-head">
+      <strong>${m.mod.name} · ${m.mod.en}</strong>${m.mod.description}
+      <span class="meta">原始 ${m.rawPoints} → 上限後 ${m.cappedScore}</span>
+    </div>
+    <div class="ind-grid">${cardsHTML}</div>`;
+  detail.classList.add('show');
+}
+
+function renderActionList(currentScore) {
+  const list = document.getElementById('action-list');
+  list.innerHTML = '';
+  ACTION_MAP.forEach(a => {
+    const rangeText = a.range[0] === a.range[1] ? `${a.range[0]}`
+      : (a.range[1] === 15 ? `≥ ${a.range[0]}` : `${a.range[0]}–${a.range[1]}`);
+    const isCurrent = currentScore >= a.range[0] && currentScore <= a.range[1];
+    const row = document.createElement('div');
+    row.className = 'action-row' + (isCurrent ? ' current' : '');
+    const tqqqHighlight = a.tqqq === '全部出清';
+    row.innerHTML = `
+      <div class="ar-score">${rangeText}</div>
+      <div class="ar-status"><span class="pill ${a.status.tag}">${a.status.text}</span></div>
+      <div class="ar-details">
+        <div class="ar-tag ${tqqqHighlight ? 'highlight' : ''}"><strong>TQQQ</strong>${a.tqqq}</div>
+        <div class="ar-tag"><strong>QQQ</strong>${a.qqq}</div>
+        <div class="ar-tag"><strong>Total</strong>${a.total}</div>
+      </div>`;
+    list.appendChild(row);
+  });
+}
+
+function renderWatchlist(indicators) {
+  const candidates = indicators
+    .filter(i => !i.triggered && i.confidence !== 'failed')
+    .map(i => ({ ind: i, distance: nearTriggerDistance(i) }))
+    .filter(x => x.distance !== Infinity && x.distance > 0)
+    .sort((a, b) => {
+      const tA = parseFloat((a.ind.threshold.match(/(-?\d+\.?\d*)/) || [0])[0]) || 1;
+      const tB = parseFloat((b.ind.threshold.match(/(-?\d+\.?\d*)/) || [0])[0]) || 1;
+      return (a.distance / Math.abs(tA)) - (b.distance / Math.abs(tB));
+    }).slice(0, 8);
+  const grid = document.getElementById('watch-grid');
+  grid.innerHTML = candidates.map(({ ind, distance }) => {
+    const shortName = ind.name.replace(/^🆕\s*/, '');
+    return `
+      <div class="watch-item">
+        <div class="watch-name">${shortName}</div>
+        <div class="watch-current">${fmtNum(ind.value)}</div>
+        <div class="watch-trigger">門檻 ${ind.threshold}</div>
+        <div class="watch-distance">距觸發 ${distance.toFixed(2)}</div>
+      </div>`;
+  }).join('');
+}
+
+function renderOriginalView(json, sopScore) {
+  const list = document.getElementById('original-list');
+  const sopAction = getActionFor(sopScore);
+  list.innerHTML = `
+    <div class="original-row">
+      <div class="or-label">原始 v2.5 頂部分數</div>
+      <div class="or-value">
+        <span class="or-num">${json.top_score} / ${json.top_max}</span>
+        <span class="pill yellow">${json.top_zone}</span>
+      </div>
+    </div>
+    <div class="original-row">
+      <div class="or-label">原始 v2.5 底部分數</div>
+      <div class="or-value">
+        <span class="or-num">${json.bottom_score} / ${json.bottom_max}</span>
+        ${json.bottom_score >= 6 ? '<span class="pill green">觸發中</span>' : '<span class="pill grey">靜止</span>'}
+      </div>
+    </div>
+    <div class="original-row">
+      <div class="or-label">原始 v2.5 建議</div>
+      <div class="or-action">${json.action}</div>
+    </div>
+    <div class="original-row highlight">
+      <div class="or-label">SOP 五模塊總分（每模塊上限 3）</div>
+      <div class="or-value">
+        <span class="or-num">${sopScore} / 15</span>
+        <span class="pill ${sopAction.status.tag}">${sopAction.status.text}</span>
+      </div>
+    </div>`;
+}
+
+function renderChart(history) {
+  const svg = document.getElementById('trend-chart');
+  svg.innerHTML = '';
+  if (!history || history.length === 0) {
+    svg.innerHTML = `<text x="500" y="140" fill="#888B8D" text-anchor="middle"
+      style="font-family:Poppins; font-size:14px">尚無歷史資料</text>`;
+    return;
+  }
+  const W = 1000, H = 280, PAD = { top: 28, right: 20, bottom: 38, left: 32 };
+  const innerW = W - PAD.left - PAD.right, innerH = H - PAD.top - PAD.bottom;
+  const maxScore = 22;
+  const recent = history.slice(-90);
+  const n = recent.length;
+  const xStep = n > 1 ? innerW / (n - 1) : 0;
+
+  for (let s = 0; s <= maxScore; s += 5) {
+    const y = PAD.top + innerH - (s / maxScore) * innerH;
+    svg.innerHTML += `<line x1="${PAD.left}" y1="${y}" x2="${W - PAD.right}" y2="${y}"
+      stroke="rgba(83,86,90,0.08)" stroke-width="1"/>`;
+    svg.innerHTML += `<text x="${PAD.left - 8}" y="${y + 4}" fill="#B5B4B2"
+      font-family="Poppins" font-size="11" text-anchor="end">${s}</text>`;
+  }
+  const y7 = PAD.top + innerH - (7 / maxScore) * innerH;
+  svg.innerHTML += `<line x1="${PAD.left}" y1="${y7}" x2="${W - PAD.right}" y2="${y7}"
+    stroke="#DD2F3B" stroke-width="1" stroke-dasharray="4,4" opacity="0.4"/>`;
+  svg.innerHTML += `<text x="${W - PAD.right - 6}" y="${y7 - 6}" fill="#DD2F3B"
+    font-family="Poppins" font-size="11" text-anchor="end" opacity="0.7">≥ 7</text>`;
+
+  const topPath = recent.map((d, i) => {
+    const x = PAD.left + i * xStep;
+    const y = PAD.top + innerH - (d.top_score / maxScore) * innerH;
+    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+  const topArea = topPath + ` L ${PAD.left + (n-1) * xStep} ${PAD.top + innerH} L ${PAD.left} ${PAD.top + innerH} Z`;
+  svg.innerHTML += `<path d="${topArea}" fill="rgba(221,47,59,0.06)" />`;
+  svg.innerHTML += `<path d="${topPath}" stroke="#DD2F3B" stroke-width="2.5" fill="none" stroke-linejoin="round"/>`;
+
+  const botPath = recent.map((d, i) => {
+    const x = PAD.left + i * xStep;
+    const y = PAD.top + innerH - (d.bottom_score / maxScore) * innerH;
+    return `${i === 0 ? 'M' : 'L'} ${x} ${y}`;
+  }).join(' ');
+  svg.innerHTML += `<path d="${botPath}" stroke="#6B8C73" stroke-width="2.5" fill="none" stroke-linejoin="round"/>`;
+
+  const lastIdx = n - 1;
+  const lastX = PAD.left + lastIdx * xStep;
+  const topY = PAD.top + innerH - (recent[lastIdx].top_score / maxScore) * innerH;
+  svg.innerHTML += `<circle cx="${lastX}" cy="${topY}" r="6" fill="white" stroke="#DD2F3B" stroke-width="2.5"/>`;
+  svg.innerHTML += `<text x="${lastX - 10}" y="${topY - 10}" fill="#DD2F3B"
+    font-family="Poppins" font-size="12" text-anchor="end" font-weight="500">${recent[lastIdx].top_score}</text>`;
+
+  if (n >= 3) {
+    const dates = [0, Math.floor(n / 2), n - 1];
+    dates.forEach(i => {
+      const x = PAD.left + i * xStep;
+      svg.innerHTML += `<text x="${x}" y="${H - 12}" fill="#888B8D"
+        font-family="Poppins" font-size="11" text-anchor="middle">${recent[i].date}</text>`;
+    });
+  }
+}
+
+function parseCSV(text) {
+  const lines = text.trim().split(/\r?\n/);
+  if (lines.length < 2) return [];
+  const headers = lines[0].split(',');
+  return lines.slice(1).map(line => {
+    const vals = line.split(',');
+    const obj = {};
+    headers.forEach((h, i) => {
+      const v = vals[i];
+      if (v === '' || v === undefined) { obj[h] = null; return; }
+      const n = Number(v);
+      obj[h] = (v === 'True') ? true : (v === 'False') ? false :
+               (!Number.isNaN(n) && v.trim() !== '') ? n : v;
+    });
+    return obj;
+  });
+}
+
+async function loadDashboard() {
+  const btn = document.getElementById('btn-refresh');
+  btn.disabled = true;
+  setStatus('loading', '抓取中…');
+  try {
+    const cacheBust = Math.floor(Date.now() / 60000);
+    const [jsonRes, csvRes] = await Promise.allSettled([
+      fetch(`${JSON_URL}?t=${cacheBust}`),
+      fetch(`${HISTORY_URL}?t=${cacheBust}`)
+    ]);
+    if (jsonRes.status !== 'fulfilled' || !jsonRes.value.ok) {
+      throw new Error(`讀取失敗：${jsonRes.value?.status || 'network error'}`);
+    }
+    const json = await jsonRes.value.json();
+    let history = [];
+    if (csvRes.status === 'fulfilled' && csvRes.value.ok) {
+      const csvText = await csvRes.value.text();
+      history = parseCSV(csvText);
+    }
+    renderAll(json, history);
+    setStatus('ok', '已更新');
+    document.getElementById('main-content').classList.remove('hidden');
+    document.getElementById('loading-screen').classList.add('hidden');
+    document.getElementById('error-screen').classList.add('hidden');
+  } catch (err) {
+    console.error(err);
+    setStatus('err', '失敗');
+    document.getElementById('error-message').textContent = err.message;
+    document.getElementById('main-content').classList.add('hidden');
+    document.getElementById('loading-screen').classList.add('hidden');
+    document.getElementById('error-screen').classList.remove('hidden');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+function renderAll(json, history) {
+  const moduleData = renderModules(json.top_indicators);
+  const sopScore = Object.values(moduleData).reduce((s, m) => s + m.cappedScore, 0);
+  const sopAction = getActionFor(sopScore);
+  document.getElementById('header-date').textContent = json.date;
+  document.getElementById('last-updated').textContent = fmtTimeAgo(json.timestamp);
+  const qqqDD = json.raw_data?.qqq_drawdown_pct;
+  const qqqAboveMA200 = qqqDD === null || qqqDD === undefined || qqqDD > -8;
+  renderHero(sopScore, sopAction, qqqAboveMA200);
+  renderActionList(sopScore);
+  renderWatchlist(json.top_indicators);
+  renderOriginalView(json, sopScore);
+  renderChart(history);
+}
+
+document.getElementById('btn-refresh').addEventListener('click', loadDashboard);
+loadDashboard();
+setInterval(loadDashboard, 30 * 60 * 1000);
+</script>
+</body>
+</html>
