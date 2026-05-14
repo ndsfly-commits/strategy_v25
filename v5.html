@@ -568,52 +568,50 @@ section { margin-bottom: 36px; }
 .action-row {
   background: var(--surface);
   border-radius: var(--r-md);
-  padding: 16px 18px;
+  padding: 14px 18px;
   box-shadow: var(--shadow-sm);
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 10px 14px;
-  align-items: center;
   border-left: 3px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 .action-row.current {
   border-left-color: var(--orange);
-  background: linear-gradient(90deg, var(--orange-soft), var(--surface) 60%);
+  background: linear-gradient(90deg, var(--orange-soft), var(--surface) 70%);
 }
-.action-row .ar-score {
+.ar-main {
+  display: grid;
+  grid-template-columns: 48px 1fr auto;
+  align-items: center;
+  gap: 12px;
+}
+.ar-score {
   font-family: var(--font-en);
   font-size: 17px;
   font-weight: 500;
   color: var(--ink);
   letter-spacing: -0.01em;
 }
-.action-row .ar-status { justify-self: end; }
-.action-row .ar-details {
-  grid-column: 1 / -1;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  padding-top: 10px;
-  border-top: 1px solid var(--line);
-  margin-top: 2px;
-}
-.ar-tag {
-  font-size: 13px;
-  color: var(--ink-2);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.ar-tag strong {
+.ar-status { justify-self: start; }
+.ar-total {
   font-family: var(--font-en);
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-  color: var(--ink-3);
-  text-transform: uppercase;
+  font-size: 19px;
   font-weight: 500;
+  color: var(--ink);
+  letter-spacing: -0.02em;
 }
-.ar-tag.highlight strong { color: var(--red); }
-.ar-tag.highlight { color: var(--red); font-weight: 500; }
+.action-row.current .ar-total {
+  color: var(--orange);
+  font-weight: 600;
+}
+.ar-summary {
+  font-size: 13.5px;
+  color: var(--ink-3);
+  line-height: 1.55;
+}
+.action-row.current .ar-summary {
+  color: var(--ink-2);
+}
 
 /* ==================== PILL ==================== */
 .pill {
@@ -821,16 +819,8 @@ footer a:hover { color: var(--ink); }
 
   .ind-grid { grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
 
-  .action-row {
-    grid-template-columns: 80px 100px 1fr;
-    gap: 14px 18px;
-  }
-  .action-row .ar-details {
-    grid-column: 3;
-    padding-top: 0;
-    border-top: none;
-    margin-top: 0;
-  }
+  .action-row { padding: 16px 22px; }
+  .ar-summary { font-size: 14px; }
 
   .watch-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
   .chart-svg { height: 280px; }
@@ -1010,12 +1000,24 @@ const MODULES = {
 const MODULE_CAP = 3;
 
 const ACTION_MAP = [
-  { range: [0, 3], status: { text: '健康', tag: 'green' }, tqqq: '可滿倉', qqq: '滿倉', total: '100%' },
-  { range: [4, 5], status: { text: '略熱', tag: 'blue' }, tqqq: '減半', qqq: '滿倉', total: '100%' },
-  { range: [6, 6], status: { text: '高檔警戒', tag: 'yellow' }, tqqq: '全部出清', qqq: '100% QQQ', total: '100%' },
-  { range: [7, 8], status: { text: '避險啟動', tag: 'yellow' }, tqqq: '—', qqq: '減至 80%', total: '80%' },
-  { range: [9, 10], status: { text: '明顯偏空', tag: 'red' }, tqqq: '—', qqq: '減至 60%', total: '60%' },
-  { range: [11, 15], status: { text: '全面避險', tag: 'red' }, tqqq: '—', qqq: '30% 或以下', total: '≤ 40%' }
+  { range: [0, 3], status: { text: '健康', tag: 'green' },
+    tqqq: '可滿倉', qqq: '滿倉', total: '100%',
+    summary: '滿倉，可開 TQQQ 衛星部位' },
+  { range: [4, 5], status: { text: '略熱', tag: 'blue' },
+    tqqq: '減半', qqq: '滿倉', total: '100%',
+    summary: '維持滿倉，TQQQ 減半' },
+  { range: [6, 6], status: { text: '高檔警戒', tag: 'yellow' },
+    tqqq: '出清', qqq: '滿倉', total: '100%',
+    summary: 'TQQQ 出清，QQQ 維持滿倉' },
+  { range: [7, 8], status: { text: '避險啟動', tag: 'yellow' },
+    tqqq: '出場', qqq: '80%', total: '80%',
+    summary: '股票降至 80%，其餘現金 / 防禦' },
+  { range: [9, 10], status: { text: '明顯偏空', tag: 'red' },
+    tqqq: '出場', qqq: '60%', total: '60%',
+    summary: '減碼至 60%，搭配防禦資產' },
+  { range: [11, 15], status: { text: '全面避險', tag: 'red' },
+    tqqq: '出場', qqq: '≤ 30%', total: '≤ 40%',
+    summary: '股票壓至 40% 以下，現金為主' }
 ];
 
 function setStatus(state, msg) {
@@ -1101,9 +1103,8 @@ function renderHero(sopScore, sopAction, qqqAboveMA200) {
   const tagClass = { green: 'sage', yellow: 'orange', red: 'red', blue: 'slate' };
   const t = tagClass[sopAction.status.tag] || 'slate';
   document.getElementById('rec-actions').innerHTML = `
-    <span class="rec-tag ${t}"><strong>TQQQ</strong>${sopAction.tqqq}</span>
-    <span class="rec-tag ${t}"><strong>QQQ</strong>${sopAction.qqq}</span>
     <span class="rec-tag ${t}"><strong>Total</strong>${sopAction.total}</span>
+    <span class="rec-tag ${t}"><strong>TQQQ</strong>${sopAction.tqqq}</span>
     <span class="rec-tag ${qqqAboveMA200 ? 'sage' : 'red'}"><strong>Trend</strong>${qqqAboveMA200 ? '> 200MA' : '< 200MA'}</span>
   `;
 }
@@ -1196,15 +1197,13 @@ function renderActionList(currentScore) {
     const isCurrent = currentScore >= a.range[0] && currentScore <= a.range[1];
     const row = document.createElement('div');
     row.className = 'action-row' + (isCurrent ? ' current' : '');
-    const tqqqHighlight = a.tqqq === '全部出清';
     row.innerHTML = `
-      <div class="ar-score">${rangeText}</div>
-      <div class="ar-status"><span class="pill ${a.status.tag}">${a.status.text}</span></div>
-      <div class="ar-details">
-        <div class="ar-tag ${tqqqHighlight ? 'highlight' : ''}"><strong>TQQQ</strong>${a.tqqq}</div>
-        <div class="ar-tag"><strong>QQQ</strong>${a.qqq}</div>
-        <div class="ar-tag"><strong>Total</strong>${a.total}</div>
-      </div>`;
+      <div class="ar-main">
+        <div class="ar-score">${rangeText}</div>
+        <div class="ar-status"><span class="pill ${a.status.tag}">${a.status.text}</span></div>
+        <div class="ar-total">${a.total}</div>
+      </div>
+      <div class="ar-summary">${a.summary}</div>`;
     list.appendChild(row);
   });
 }
