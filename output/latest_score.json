@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-17 08:00:47",
-  "date": "2026-05-17",
+  "timestamp": "2026-05-18 12:19:15",
+  "date": "2026-05-18",
   "top_score": 9,
   "top_max": 21,
   "top_zone": "🟠 頂部成型",
@@ -35,7 +35,7 @@
     {
       "key": "fg_75",
       "name": "F&G 10MA ≥ 75",
-      "value": 65.44285714285715,
+      "value": 65.00857142857143,
       "threshold": "≥ 75",
       "triggered": false,
       "points": 0,
@@ -46,7 +46,7 @@
     {
       "key": "fg_85",
       "name": "F&G 10MA ≥ 85",
-      "value": 65.44285714285715,
+      "value": 65.00857142857143,
       "threshold": "≥ 85",
       "triggered": false,
       "points": 0,
@@ -57,7 +57,7 @@
     {
       "key": "vix_21ma_low",
       "name": "VIX 21MA < 13",
-      "value": 18.0280951545352,
+      "value": 18.083809443882533,
       "threshold": "< 13",
       "triggered": false,
       "points": 0,
@@ -79,7 +79,7 @@
     {
       "key": "rsi_75",
       "name": "QQQ 週 RSI > 75",
-      "value": 73.34536615313185,
+      "value": 73.32139636553234,
       "threshold": "> 75",
       "triggered": false,
       "points": 0,
@@ -90,7 +90,7 @@
     {
       "key": "rsi_80",
       "name": "QQQ 週 RSI > 80",
-      "value": 73.34536615313185,
+      "value": 73.32139636553234,
       "threshold": "> 80",
       "triggered": false,
       "points": 0,
@@ -178,7 +178,7 @@
     {
       "key": "vvix_divergence",
       "name": "VVIX 21MA > 110 且 VIX < 15",
-      "value": "VVIX 21MA=96.2, VIX=18.4",
+      "value": "VVIX 21MA=96.2, VIX=18.6",
       "threshold": "VVIX>110 且 VIX<15",
       "triggered": false,
       "points": 0,
@@ -235,7 +235,7 @@
     {
       "key": "vix_40",
       "name": "VIX ≥ 40",
-      "value": 18.43000030517578,
+      "value": 18.649999618530273,
       "threshold": "≥ 40",
       "triggered": false,
       "points": 0,
@@ -246,7 +246,7 @@
     {
       "key": "vix_50",
       "name": "VIX ≥ 50",
-      "value": 18.43000030517578,
+      "value": 18.649999618530273,
       "threshold": "≥ 50",
       "triggered": false,
       "points": 0,
@@ -312,7 +312,7 @@
     {
       "key": "rsi_low",
       "name": "QQQ 週 RSI < 35",
-      "value": 73.34536615313185,
+      "value": 73.32139636553234,
       "threshold": "< 35",
       "triggered": false,
       "points": 0,
@@ -383,13 +383,13 @@
     "spx_pct_above_200d": 52.59,
     "spx_breadth_above_count": 264,
     "spx_breadth_total": 502,
-    "vix_today": 18.43000030517578,
-    "vix_21ma": 18.0280951545352,
+    "vix_today": 18.649999618530273,
+    "vix_21ma": 18.083809443882533,
     "vvix_today": 92.94000244140625,
     "vvix_21ma": 96.15428561256046,
     "qqq_close": 708.9299926757812,
     "qqq_drawdown_pct": -1.508771403198107,
-    "qqq_weekly_rsi": 73.34536615313185,
+    "qqq_weekly_rsi": 73.32139636553234,
     "distribution_days_4w": 5,
     "ftd_in_10d": true,
     "spx_within_3pct_of_high": true,
@@ -404,7 +404,7 @@
     "yield_curve_3m_inverted": false,
     "buffett": 231.39481378022535,
     "fg_today": 62.9142857142857,
-    "fg_10ma": 65.44285714285715,
+    "fg_10ma": 65.00857142857143,
     "naaim": 77.34,
     "cape": 41.66
   }
