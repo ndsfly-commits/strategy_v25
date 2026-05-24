@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-23 07:57:35",
-  "date": "2026-05-23",
+  "timestamp": "2026-05-24 08:08:19",
+  "date": "2026-05-24",
   "top_score": 7,
   "top_max": 21,
   "top_zone": "🟠 頂部成型",
@@ -189,12 +189,12 @@
     {
       "key": "naaim_high",
       "name": "NAAIM > 100",
-      "value": null,
+      "value": 82.02,
       "threshold": "> 100",
       "triggered": false,
       "points": 0,
       "source": "naaim.org",
-      "confidence": "failed",
+      "confidence": "high",
       "note": ""
     },
     {
@@ -367,12 +367,12 @@
     {
       "key": "naaim_capitulation",
       "name": "NAAIM < 30",
-      "value": null,
+      "value": 82.02,
       "threshold": "< 30",
       "triggered": false,
       "points": 0,
       "source": "naaim.org",
-      "confidence": "failed",
+      "confidence": "high",
       "note": ""
     }
   ],
@@ -405,6 +405,7 @@
     "buffett": 233.91992603682218,
     "fg_today": 58.5714285714286,
     "fg_10ma": 61.620000000000005,
+    "naaim": 82.02,
     "cape": 42.04
   }
 }
