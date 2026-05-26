@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-05-25 00:04:58",
-  "date": "2026-05-25",
+  "timestamp": "2026-05-26 00:10:34",
+  "date": "2026-05-26",
   "top_score": 7,
   "top_max": 21,
   "top_zone": "🟠 頂部成型",
@@ -57,7 +57,7 @@
     {
       "key": "vix_21ma_low",
       "name": "VIX 21MA < 13",
-      "value": 17.680476143246604,
+      "value": 17.579523813156854,
       "threshold": "< 13",
       "triggered": false,
       "points": 0,
@@ -178,7 +178,7 @@
     {
       "key": "vvix_divergence",
       "name": "VVIX 21MA > 110 且 VIX < 15",
-      "value": "VVIX 21MA=94.9, VIX=16.7",
+      "value": "VVIX 21MA=94.9, VIX=16.6",
       "threshold": "VVIX>110 且 VIX<15",
       "triggered": false,
       "points": 0,
@@ -235,7 +235,7 @@
     {
       "key": "vix_40",
       "name": "VIX ≥ 40",
-      "value": 16.700000762939453,
+      "value": 16.59000015258789,
       "threshold": "≥ 40",
       "triggered": false,
       "points": 0,
@@ -246,7 +246,7 @@
     {
       "key": "vix_50",
       "name": "VIX ≥ 50",
-      "value": 16.700000762939453,
+      "value": 16.59000015258789,
       "threshold": "≥ 50",
       "triggered": false,
       "points": 0,
@@ -383,8 +383,8 @@
     "spx_pct_above_200d": 59.36,
     "spx_breadth_above_count": 298,
     "spx_breadth_total": 502,
-    "vix_today": 16.700000762939453,
-    "vix_21ma": 17.680476143246604,
+    "vix_today": 16.59000015258789,
+    "vix_21ma": 17.579523813156854,
     "vvix_today": 91.16000366210938,
     "vvix_21ma": 94.8595235915411,
     "qqq_close": 717.5399780273438,
