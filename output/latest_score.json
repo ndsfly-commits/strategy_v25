@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-06-07 00:09:08",
-  "date": "2026-06-07",
+  "timestamp": "2026-06-08 00:13:47",
+  "date": "2026-06-08",
   "top_score": 9,
   "top_max": 21,
   "top_zone": "🟠 頂部成型",
@@ -79,7 +79,7 @@
     {
       "key": "rsi_75",
       "name": "QQQ 週 RSI > 75",
-      "value": 65.4184105050858,
+      "value": 65.4019860537839,
       "threshold": "> 75",
       "triggered": false,
       "points": 0,
@@ -90,7 +90,7 @@
     {
       "key": "rsi_80",
       "name": "QQQ 週 RSI > 80",
-      "value": 65.4184105050858,
+      "value": 65.4019860537839,
       "threshold": "> 80",
       "triggered": false,
       "points": 0,
@@ -312,7 +312,7 @@
     {
       "key": "rsi_low",
       "name": "QQQ 週 RSI < 35",
-      "value": 65.4184105050858,
+      "value": 65.4019860537839,
       "threshold": "< 35",
       "triggered": false,
       "points": 0,
@@ -389,7 +389,7 @@
     "vvix_21ma": 92.70142873128255,
     "qqq_close": 705.0599975585938,
     "qqq_drawdown_pct": -5.5081989204983035,
-    "qqq_weekly_rsi": 65.4184105050858,
+    "qqq_weekly_rsi": 65.4019860537839,
     "distribution_days_4w": 5,
     "ftd_in_10d": true,
     "spx_within_3pct_of_high": true,
