@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-06-13 00:22:42",
-  "date": "2026-06-13",
+  "timestamp": "2026-06-14 00:12:33",
+  "date": "2026-06-14",
   "top_score": 8,
   "top_max": 21,
   "top_zone": "🟠 頂部成型",
@@ -222,7 +222,7 @@
     {
       "key": "buffett_200",
       "name": "🆕 Buffett 指標 > 200%",
-      "value": 232.63475718038492,
+      "value": 233.81143967415667,
       "threshold": "> 200%",
       "triggered": true,
       "points": 1,
@@ -402,7 +402,7 @@
     "hy_oas_expansion_bps": 13.999999999999968,
     "yield_curve_today": 0.39,
     "yield_curve_3m_inverted": false,
-    "buffett": 232.63475718038492,
+    "buffett": 233.81143967415667,
     "fg_today": 34.0,
     "fg_10ma": 40.35142857142858,
     "naaim": 79.27,
