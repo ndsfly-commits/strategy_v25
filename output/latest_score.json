@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-06-20 00:13:39",
-  "date": "2026-06-20",
+  "timestamp": "2026-06-21 00:12:58",
+  "date": "2026-06-21",
   "top_score": 8,
   "top_max": 21,
   "top_zone": "🟠 頂部成型",
@@ -57,7 +57,7 @@
     {
       "key": "vix_21ma_low",
       "name": "VIX 21MA < 13",
-      "value": 17.371428716750373,
+      "value": 17.401000118255617,
       "threshold": "< 13",
       "triggered": false,
       "points": 0,
@@ -178,7 +178,7 @@
     {
       "key": "vvix_divergence",
       "name": "VVIX 21MA > 110 且 VIX < 15",
-      "value": "VVIX 21MA=92.3, VIX=16.8",
+      "value": "VVIX 21MA=92.3, VIX=nan",
       "threshold": "VVIX>110 且 VIX<15",
       "triggered": false,
       "points": 0,
@@ -189,12 +189,12 @@
     {
       "key": "naaim_high",
       "name": "NAAIM > 100",
-      "value": 92.83,
+      "value": null,
       "threshold": "> 100",
       "triggered": false,
       "points": 0,
       "source": "naaim.org",
-      "confidence": "high",
+      "confidence": "failed",
       "note": ""
     },
     {
@@ -235,7 +235,7 @@
     {
       "key": "vix_40",
       "name": "VIX ≥ 40",
-      "value": 16.780000686645508,
+      "value": NaN,
       "threshold": "≥ 40",
       "triggered": false,
       "points": 0,
@@ -246,7 +246,7 @@
     {
       "key": "vix_50",
       "name": "VIX ≥ 50",
-      "value": 16.780000686645508,
+      "value": NaN,
       "threshold": "≥ 50",
       "triggered": false,
       "points": 0,
@@ -367,12 +367,12 @@
     {
       "key": "naaim_capitulation",
       "name": "NAAIM < 30",
-      "value": 92.83,
+      "value": null,
       "threshold": "< 30",
       "triggered": false,
       "points": 0,
       "source": "naaim.org",
-      "confidence": "high",
+      "confidence": "failed",
       "note": ""
     }
   ],
@@ -383,8 +383,8 @@
     "spx_pct_above_200d": 61.28,
     "spx_breadth_above_count": 307,
     "spx_breadth_total": 501,
-    "vix_today": 16.780000686645508,
-    "vix_21ma": 17.371428716750373,
+    "vix_today": NaN,
+    "vix_21ma": 17.401000118255617,
     "vvix_today": 88.43000030517578,
     "vvix_21ma": 92.2585714431036,
     "qqq_close": 740.6199951171875,
@@ -405,7 +405,6 @@
     "buffett": 233.81143967415667,
     "fg_today": 37.2571428571429,
     "fg_10ma": 35.10285714285717,
-    "naaim": 92.83,
     "cape": 41.71
   }
 }
