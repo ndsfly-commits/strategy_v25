@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-07-04 00:09:26",
-  "date": "2026-07-04",
+  "timestamp": "2026-07-05 00:05:23",
+  "date": "2026-07-05",
   "top_score": 8,
   "top_max": 21,
   "top_zone": "🟠 頂部成型",
@@ -57,7 +57,7 @@
     {
       "key": "vix_21ma_low",
       "name": "VIX 21MA < 13",
-      "value": 17.992381005060103,
+      "value": 18.101500034332275,
       "threshold": "< 13",
       "triggered": false,
       "points": 0,
@@ -101,7 +101,7 @@
     {
       "key": "breadth_200d",
       "name": "SPX %>200d <60% 且距高點<3%",
-      "value": "67.8% (339/500)",
+      "value": "67.6% (338/500)",
       "threshold": "< 60% 且 距高點 < 3%",
       "triggered": false,
       "points": 0,
@@ -178,7 +178,7 @@
     {
       "key": "vvix_divergence",
       "name": "VVIX 21MA > 110 且 VIX < 15",
-      "value": "VVIX 21MA=92.7, VIX=15.8",
+      "value": "VVIX 21MA=92.7, VIX=nan",
       "threshold": "VVIX>110 且 VIX<15",
       "triggered": false,
       "points": 0,
@@ -235,7 +235,7 @@
     {
       "key": "vix_40",
       "name": "VIX ≥ 40",
-      "value": 15.8100004196167,
+      "value": NaN,
       "threshold": "≥ 40",
       "triggered": false,
       "points": 0,
@@ -246,7 +246,7 @@
     {
       "key": "vix_50",
       "name": "VIX ≥ 50",
-      "value": 15.8100004196167,
+      "value": NaN,
       "threshold": "≥ 50",
       "triggered": false,
       "points": 0,
@@ -323,7 +323,7 @@
     {
       "key": "breadth_capitulation",
       "name": "SPX % > 200d < 20%",
-      "value": "67.8% (339/500)",
+      "value": "67.6% (338/500)",
       "threshold": "< 20%",
       "triggered": false,
       "points": 0,
@@ -380,11 +380,11 @@
     "margin_debt_yoy_pct": 53.7,
     "margin_debt_latest_month": "May-26",
     "margin_debt_latest_value_b": 1415.557,
-    "spx_pct_above_200d": 67.8,
-    "spx_breadth_above_count": 339,
+    "spx_pct_above_200d": 67.6,
+    "spx_breadth_above_count": 338,
     "spx_breadth_total": 500,
-    "vix_today": 15.8100004196167,
-    "vix_21ma": 17.992381005060103,
+    "vix_today": NaN,
+    "vix_21ma": 18.101500034332275,
     "vvix_today": 88.80000305175781,
     "vvix_21ma": 92.71761975969586,
     "qqq_close": 712.5999755859375,
