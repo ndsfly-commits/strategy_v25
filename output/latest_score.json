@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-07-18 23:57:58",
-  "date": "2026-07-18",
+  "timestamp": "2026-07-20 00:02:28",
+  "date": "2026-07-20",
   "top_score": 8,
   "top_max": 21,
   "top_zone": "🟠 頂部成型",
@@ -79,7 +79,7 @@
     {
       "key": "rsi_75",
       "name": "QQQ 週 RSI > 75",
-      "value": 55.87874400369808,
+      "value": 55.875663808103575,
       "threshold": "> 75",
       "triggered": false,
       "points": 0,
@@ -90,7 +90,7 @@
     {
       "key": "rsi_80",
       "name": "QQQ 週 RSI > 80",
-      "value": 55.87874400369808,
+      "value": 55.875663808103575,
       "threshold": "> 80",
       "triggered": false,
       "points": 0,
@@ -222,7 +222,7 @@
     {
       "key": "buffett_200",
       "name": "🆕 Buffett 指標 > 200%",
-      "value": 237.85632470861086,
+      "value": 234.2977887978747,
       "threshold": "> 200%",
       "triggered": true,
       "points": 1,
@@ -312,7 +312,7 @@
     {
       "key": "rsi_low",
       "name": "QQQ 週 RSI < 35",
-      "value": 55.87874400369808,
+      "value": 55.875663808103575,
       "threshold": "< 35",
       "triggered": false,
       "points": 0,
@@ -389,7 +389,7 @@
     "vvix_21ma": 91.84095219203404,
     "qqq_close": 695.3300170898438,
     "qqq_drawdown_pct": -6.8122062136991275,
-    "qqq_weekly_rsi": 55.87874400369808,
+    "qqq_weekly_rsi": 55.875663808103575,
     "distribution_days_4w": 7,
     "ftd_in_10d": false,
     "spx_within_3pct_of_high": true,
@@ -402,7 +402,7 @@
     "hy_oas_expansion_bps": 8.000000000000007,
     "yield_curve_today": 0.37,
     "yield_curve_3m_inverted": false,
-    "buffett": 237.85632470861086,
+    "buffett": 234.2977887978747,
     "fg_today": 37.0571428571429,
     "fg_10ma": 40.88285714285715,
     "naaim": 95.64,
