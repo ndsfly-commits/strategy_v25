@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-08-14 23:25:45",
-  "date": "2026-08-14",
+  "timestamp": "2026-08-15 23:23:31",
+  "date": "2026-08-15",
   "top_score": 7,
   "top_max": 21,
   "top_zone": "🟠 頂部成型",
@@ -101,7 +101,7 @@
     {
       "key": "breadth_200d",
       "name": "SPX %>200d <60% 且距高點<3%",
-      "value": "74.2% (372/501)",
+      "value": "74.5% (373/501)",
       "threshold": "< 60% 且 距高點 < 3%",
       "triggered": false,
       "points": 0,
@@ -222,7 +222,7 @@
     {
       "key": "buffett_200",
       "name": "🆕 Buffett 指標 > 200%",
-      "value": 240.3166234336899,
+      "value": 240.03912811495294,
       "threshold": "> 200%",
       "triggered": true,
       "points": 1,
@@ -323,7 +323,7 @@
     {
       "key": "breadth_capitulation",
       "name": "SPX % > 200d < 20%",
-      "value": "74.2% (372/501)",
+      "value": "74.5% (373/501)",
       "threshold": "< 20%",
       "triggered": false,
       "points": 0,
@@ -380,8 +380,8 @@
     "margin_debt_yoy_pct": 38.6,
     "margin_debt_latest_month": "Jul-26",
     "margin_debt_latest_value_b": 1417.225,
-    "spx_pct_above_200d": 74.25,
-    "spx_breadth_above_count": 372,
+    "spx_pct_above_200d": 74.45,
+    "spx_breadth_above_count": 373,
     "spx_breadth_total": 501,
     "vix_today": 14.25,
     "vix_21ma": 16.733333224341983,
@@ -402,7 +402,7 @@
     "hy_oas_expansion_bps": 8.000000000000007,
     "yield_curve_today": 0.51,
     "yield_curve_3m_inverted": false,
-    "buffett": 240.3166234336899,
+    "buffett": 240.03912811495294,
     "fg_today": 64.9714285714286,
     "fg_10ma": 62.87142857142858,
     "cape": 42.56
