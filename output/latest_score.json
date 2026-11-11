@@ -1,19 +1,19 @@
 {
-  "timestamp": "2026-11-10 04:31:28",
-  "date": "2026-11-10",
-  "top_score": 7,
+  "timestamp": "2026-11-11 02:38:08",
+  "date": "2026-11-11",
+  "top_score": 6,
   "top_max": 21,
-  "top_zone": "🟠 頂部成型",
+  "top_zone": "🟡 高檔警戒",
   "bottom_score": 0,
   "bottom_max": 14,
-  "middle_triggered": false,
-  "middle_strength": "none",
-  "action": "🟠 50% QQQI + 50% QQQ",
+  "middle_triggered": true,
+  "middle_strength": "light",
+  "action": "🔄 中度訊號（light）：30% QQQ ↔ QQQI 轉換",
   "top_indicators": [
     {
       "key": "cape_30",
       "name": "CAPE ≥ 30",
-      "value": 39.85,
+      "value": 39.7,
       "threshold": "≥ 30",
       "triggered": true,
       "points": 1,
@@ -24,7 +24,7 @@
     {
       "key": "cape_35",
       "name": "CAPE ≥ 35",
-      "value": 39.85,
+      "value": 39.7,
       "threshold": "≥ 35",
       "triggered": true,
       "points": 1,
@@ -35,7 +35,7 @@
     {
       "key": "fg_75",
       "name": "F&G 10MA ≥ 75",
-      "value": 27.636545167566908,
+      "value": 27.69654516756692,
       "threshold": "≥ 75",
       "triggered": false,
       "points": 0,
@@ -46,7 +46,7 @@
     {
       "key": "fg_85",
       "name": "F&G 10MA ≥ 85",
-      "value": 27.636545167566908,
+      "value": 27.69654516756692,
       "threshold": "≥ 85",
       "triggered": false,
       "points": 0,
@@ -57,7 +57,7 @@
     {
       "key": "vix_21ma_low",
       "name": "VIX 21MA < 13",
-      "value": 18.880000114440918,
+      "value": 19.082381021408807,
       "threshold": "< 13",
       "triggered": false,
       "points": 0,
@@ -68,7 +68,7 @@
     {
       "key": "rsp_spy_breadth",
       "name": "RSP/SPY 6M 跌幅",
-      "value": 6.319919379302854,
+      "value": 7.7461936969661345,
       "threshold": "< -5%",
       "triggered": false,
       "points": 0,
@@ -79,7 +79,7 @@
     {
       "key": "rsi_75",
       "name": "QQQ 週 RSI > 75",
-      "value": 45.656640672749454,
+      "value": 44.52030113441294,
       "threshold": "> 75",
       "triggered": false,
       "points": 0,
@@ -90,7 +90,7 @@
     {
       "key": "rsi_80",
       "name": "QQQ 週 RSI > 80",
-      "value": 45.656640672749454,
+      "value": 44.52030113441294,
       "threshold": "> 80",
       "triggered": false,
       "points": 0,
@@ -101,18 +101,18 @@
     {
       "key": "breadth_200d",
       "name": "SPX %>200d <60% 且距高點<3%",
-      "value": "66.8% (334/500)",
+      "value": "65.8% (329/500)",
       "threshold": "< 60% 且 距高點 < 3%",
       "triggered": false,
       "points": 0,
       "source": "yfinance 計算（500 檔成分股）",
       "confidence": "high",
-      "note": "距高點: -3.4%"
+      "note": "距高點: -3.7%"
     },
     {
       "key": "distribution_days",
       "name": "QQQ 派發日 (4w)",
-      "value": 7,
+      "value": 6,
       "threshold": "≥ 4",
       "triggered": true,
       "points": 1,
@@ -167,7 +167,7 @@
     {
       "key": "hy_oas_low",
       "name": "HY OAS < 3.25%",
-      "value": 3.42,
+      "value": 3.34,
       "threshold": "< 3.25%",
       "triggered": false,
       "points": 0,
@@ -178,7 +178,7 @@
     {
       "key": "vvix_divergence",
       "name": "VVIX 21MA > 110 且 VIX < 15",
-      "value": "VVIX 21MA=102.4, VIX=19.9",
+      "value": "VVIX 21MA=102.9, VIX=19.5",
       "threshold": "VVIX>110 且 VIX<15",
       "triggered": false,
       "points": 0,
@@ -200,10 +200,10 @@
     {
       "key": "hy_oas_expansion",
       "name": "🆕 HY OAS 擴大 ≥ 75 bps（從 12m 低）",
-      "value": "82 bps",
+      "value": "74 bps",
       "threshold": "≥ 75 bps",
-      "triggered": true,
-      "points": 1,
+      "triggered": false,
+      "points": 0,
       "source": "FRED BAMLH0A0HYM2 計算",
       "confidence": "high",
       "note": ""
@@ -222,7 +222,7 @@
     {
       "key": "buffett_200",
       "name": "🆕 Buffett 指標 > 200%",
-      "value": 228.3962358826267,
+      "value": 227.52102856688796,
       "threshold": "> 200%",
       "triggered": true,
       "points": 1,
@@ -235,7 +235,7 @@
     {
       "key": "vix_40",
       "name": "VIX ≥ 40",
-      "value": 19.920000076293945,
+      "value": 19.459999084472656,
       "threshold": "≥ 40",
       "triggered": false,
       "points": 0,
@@ -246,7 +246,7 @@
     {
       "key": "vix_50",
       "name": "VIX ≥ 50",
-      "value": 19.920000076293945,
+      "value": 19.459999084472656,
       "threshold": "≥ 50",
       "triggered": false,
       "points": 0,
@@ -257,7 +257,7 @@
     {
       "key": "fg_25",
       "name": "F&G ≤ 25",
-      "value": 31.7142857142857,
+      "value": 33.4571428571429,
       "threshold": "≤ 25",
       "triggered": false,
       "points": 0,
@@ -268,7 +268,7 @@
     {
       "key": "fg_15",
       "name": "F&G ≤ 15",
-      "value": 31.7142857142857,
+      "value": 33.4571428571429,
       "threshold": "≤ 15",
       "triggered": false,
       "points": 0,
@@ -279,7 +279,7 @@
     {
       "key": "dd_15",
       "name": "QQQ 回撤 ≤ -15%",
-      "value": -10.571834820539392,
+      "value": -11.176048018888231,
       "threshold": "≤ -15%",
       "triggered": false,
       "points": 0,
@@ -290,7 +290,7 @@
     {
       "key": "dd_20",
       "name": "QQQ 回撤 ≤ -20%",
-      "value": -10.571834820539392,
+      "value": -11.176048018888231,
       "threshold": "≤ -20%",
       "triggered": false,
       "points": 0,
@@ -301,7 +301,7 @@
     {
       "key": "dd_30",
       "name": "QQQ 回撤 ≤ -30%",
-      "value": -10.571834820539392,
+      "value": -11.176048018888231,
       "threshold": "≤ -30%",
       "triggered": false,
       "points": 0,
@@ -312,7 +312,7 @@
     {
       "key": "rsi_low",
       "name": "QQQ 週 RSI < 35",
-      "value": 45.656640672749454,
+      "value": 44.52030113441294,
       "threshold": "< 35",
       "triggered": false,
       "points": 0,
@@ -323,7 +323,7 @@
     {
       "key": "breadth_capitulation",
       "name": "SPX % > 200d < 20%",
-      "value": "66.8% (334/500)",
+      "value": "65.8% (329/500)",
       "threshold": "< 20%",
       "triggered": false,
       "points": 0,
@@ -345,7 +345,7 @@
     {
       "key": "oas_stress",
       "name": "HY OAS > 6%",
-      "value": 3.42,
+      "value": 3.34,
       "threshold": "> 6%",
       "triggered": false,
       "points": 0,
@@ -356,7 +356,7 @@
     {
       "key": "oas_recession",
       "name": "HY OAS > 8%",
-      "value": 3.42,
+      "value": 3.34,
       "threshold": "> 8%",
       "triggered": false,
       "points": 0,
@@ -377,31 +377,31 @@
     }
   ],
   "raw_data": {
-    "spx_pct_above_200d": 66.8,
-    "spx_breadth_above_count": 334,
+    "spx_pct_above_200d": 65.8,
+    "spx_breadth_above_count": 329,
     "spx_breadth_total": 500,
-    "vix_today": 19.920000076293945,
-    "vix_21ma": 18.880000114440918,
-    "vvix_today": 98.43000030517578,
-    "vvix_21ma": 102.38476271856399,
-    "qqq_close": 679.3499755859375,
-    "qqq_drawdown_pct": -10.571834820539392,
-    "qqq_weekly_rsi": 45.656640672749454,
-    "distribution_days_4w": 7,
+    "vix_today": 19.459999084472656,
+    "vix_21ma": 19.082381021408807,
+    "vvix_today": 96.62999725341797,
+    "vvix_21ma": 102.894286382766,
+    "qqq_close": 674.760009765625,
+    "qqq_drawdown_pct": -11.176048018888231,
+    "qqq_weekly_rsi": 44.52030113441294,
+    "distribution_days_4w": 6,
     "ftd_in_10d": false,
     "spx_within_3pct_of_high": false,
-    "spx_distance_to_high_pct": -3.388571731641489,
-    "rsp_spy_6m_pct": 6.319919379302854,
+    "spx_distance_to_high_pct": -3.744117231617947,
+    "rsp_spy_6m_pct": 7.7461936969661345,
     "xly_xlp_below_50d": true,
     "smh_spy_below_50d_3d": true,
-    "hy_oas_current": 3.42,
+    "hy_oas_current": 3.34,
     "hy_oas_12m_min": 2.6,
-    "hy_oas_expansion_bps": 81.99999999999999,
-    "yield_curve_today": 0.32,
+    "hy_oas_expansion_bps": 73.99999999999997,
+    "yield_curve_today": 0.25,
     "yield_curve_3m_inverted": false,
-    "buffett": 228.3962358826267,
-    "fg_today": 31.7142857142857,
-    "fg_10ma": 27.636545167566908,
-    "cape": 39.85
+    "buffett": 227.52102856688796,
+    "fg_today": 33.4571428571429,
+    "fg_10ma": 27.69654516756692,
+    "cape": 39.7
   }
 }
